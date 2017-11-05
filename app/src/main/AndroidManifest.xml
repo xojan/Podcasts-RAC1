@@ -38,6 +38,8 @@
 
         <activity android:name=".ui.activity.BrowseActivity"/>
 
+        <activity android:name=".ui.activity.MediaPlaybackActivity"/>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="5742c867fe11c1f0cb1fc503b90ed10ff5f54e91" />
@@ -54,6 +56,13 @@
         <service android:name=".service.MusicPlayerService"
             android:exported="false"
             android:stopWithTask="false"/>
+
+        <service android:name=".service.MediaPlaybackService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
 
     </application>
 </manifest>

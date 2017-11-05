@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
+import cat.xojan.random1.ui.activity.MediaPlaybackActivity
 import cat.xojan.random1.ui.activity.RadioPlayerActivity
 import cat.xojan.random1.ui.view.CircleTransform
 import com.squareup.picasso.Picasso
@@ -52,17 +53,16 @@ class PodcastListAdapter(private val programInteractor: ProgramDataInteractor)
         holder?.bind(podcasts[position], programInteractor)
     }
 
-    override fun getItemCount(): Int {
-        return podcasts.size
-    }
+    override fun getItemCount(): Int = podcasts.size
 
     class ViewHolder(override val containerView: View)
         : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bind(podcast: Podcast, interactor: ProgramDataInteractor) {
             itemView.setOnClickListener {
-                val intent = Intent(itemView.context, RadioPlayerActivity::class.java)
-                intent.putExtra(RadioPlayerActivity.EXTRA_PODCAST, podcast)
+                val intent = Intent(itemView.context, MediaPlaybackActivity::class.java)
+//                val intent = Intent(itemView.context, RadioPlayerActivity::class.java)
+//                intent.putExtra(RadioPlayerActivity.EXTRA_PODCAST, podcast)
                 itemView.context.startActivity(intent)
             }
 
