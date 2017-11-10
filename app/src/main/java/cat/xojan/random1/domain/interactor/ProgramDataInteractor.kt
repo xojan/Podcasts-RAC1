@@ -38,7 +38,7 @@ class ProgramDataInteractor @Inject constructor(
     private val PREF_SECTION = "pref_section"
     private val TAG = ProgramDataInteractor::class.java.simpleName
 
-    private var programs: List<Program> = listOf()
+    var programs: List<Program> = listOf()
     private var podcastsBySection: Flowable<List<Podcast>>? = null
     private var podcastsByProgram: Flowable<List<Podcast>>? = null
     private var mSection: Section? = null
