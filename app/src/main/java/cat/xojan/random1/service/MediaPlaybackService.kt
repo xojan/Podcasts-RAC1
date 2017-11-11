@@ -83,7 +83,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         audioManager.abandonAudioFocus(this)
         unregisterReceiver(noisyReceiver)
         mediaSession.release()
-        NotificationManagerCompat.from(this).cancel(1)
+        notificationController.release()
     }
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {

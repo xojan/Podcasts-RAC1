@@ -1,6 +1,9 @@
 package cat.xojan.random1.ui.notification
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -11,8 +14,30 @@ import android.support.v4.media.session.PlaybackStateCompat
 import cat.xojan.random1.R
 import cat.xojan.random1.service.MediaPlaybackService
 
+
 class NotificationController(private val service: MediaPlaybackService,
                              private val mediaSession: MediaSessionCompat) {
+
+    private val notificationId = "podcastsRAC1"
+    private val notificationName = service.getString(R.string.app_name)
+
+    init {
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(
+                    notificationId,
+                    notificationName,
+                    importance)
+
+            val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE)
+                    as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 
     fun showPlaying() {
         val builder = createNotificationBuilder(
@@ -64,7 +89,7 @@ class NotificationController(private val service: MediaPlaybackService,
         val mediaMetadata = controller.metadata
         val description = mediaMetadata.description
 
-        val builder = NotificationCompat.Builder(context, "66")
+        val builder = NotificationCompat.Builder(context, notificationId)
         builder
                 .setContentTitle(description.title)
                 .setContentText(description.subtitle)
@@ -75,5 +100,9 @@ class NotificationController(private val service: MediaPlaybackService,
                         .buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_STOP))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         return builder
+    }
+
+    fun release() {
+        NotificationManagerCompat.from(service).cancel(1)
     }
 }
