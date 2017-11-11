@@ -8,7 +8,6 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.ResultReceiver
-import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
@@ -18,7 +17,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import cat.xojan.random1.R
-import cat.xojan.random1.ui.helper.MediaStyleHelper
+import cat.xojan.random1.ui.notification.NotificationController
 import java.io.IOException
 
 
@@ -26,6 +25,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
 
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var notificationController: NotificationController
 
     override fun onCreate() {
         super.onCreate()
@@ -33,6 +33,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         initMediaPlayer()
         initMediaSession()
         initNoisyReceiver()
+        initNotificationController()
     }
 
     private fun initMediaPlayer() {
@@ -65,6 +66,10 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         //Handles headphones coming unplugged. cannot be done through a manifest receiver
         val filter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
         registerReceiver(noisyReceiver, filter)
+    }
+
+    private fun initNotificationController() {
+        notificationController = NotificationController(this, mediaSession)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -123,9 +128,9 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
             if( !successfullyRetrievedAudioFocus() ) {
                 return
             }
-            mediaSession.isActive = true;
+            mediaSession.isActive = true
             setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING)
-            showPlayingNotification()
+            notificationController.showPlaying()
             mediaPlayer.start()
         }
 
@@ -134,7 +139,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
             if( mediaPlayer.isPlaying) {
                 mediaPlayer.pause()
                 setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED)
-                showPausedNotification()
+                notificationController.showPaused()
             }
         }
 
@@ -200,27 +205,6 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         }
         playbackstateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
         mediaSession.setPlaybackState(playbackstateBuilder.build())
-    }
-
-    private fun showPlayingNotification() {
-        val builder = MediaStyleHelper.from(this@MediaPlaybackService, mediaSession)
-        builder.addAction(NotificationCompat.Action(android.R.drawable.ic_media_pause, "Pause",
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_PLAY_PAUSE)))
-        builder.setStyle(android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0)
-                .setMediaSession(mediaSession.sessionToken))
-        builder.setSmallIcon(R.mipmap.ic_launcher)
-        NotificationManagerCompat.from(this@MediaPlaybackService).notify(1, builder.build())
-    }
-
-    private fun showPausedNotification() {
-        val builder = MediaStyleHelper.from(this, mediaSession)
-
-        builder.addAction(NotificationCompat.Action(android.R.drawable.ic_media_play, "Play",
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_PLAY_PAUSE)))
-        builder.setStyle(android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0)
-                .setMediaSession(mediaSession.sessionToken))
-        builder.setSmallIcon(R.mipmap.ic_launcher)
-        NotificationManagerCompat.from(this).notify(1, builder.build())
     }
 
     private fun initMediaSessionMetadata() {
