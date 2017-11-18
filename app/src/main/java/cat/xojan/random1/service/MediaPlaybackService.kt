@@ -2,7 +2,6 @@ package cat.xojan.random1.service
 
 import android.app.PendingIntent
 import android.content.*
-import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -10,21 +9,19 @@ import android.os.PowerManager
 import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import cat.xojan.random1.Application
-import cat.xojan.random1.R
 import cat.xojan.random1.domain.interactor.MusicProvider
+import cat.xojan.random1.other.MediaIDHelper.MEDIA_ID_ROOT
 import cat.xojan.random1.ui.notification.NotificationController
 import javax.inject.Inject
 
 
 class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFocusChangeListener {
 
-    private val MEDIA_ID_ROOT = "MEDIA_ID_ROOT"
     private val TAG = MediaPlaybackService::class.java.simpleName
 
     private lateinit var mediaSession: MediaSessionCompat
@@ -106,13 +103,15 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
 
     override fun onLoadChildren(parentId: String, result
     : Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        Log.d("joan", "onloadChildren: " + parentId)
+        Log.d(TAG, "onloadChildren: " + parentId)
         result.detach()
-        musicProvider.retrieveMedia(result, parentId, mediaSession, resources)
+        musicProvider.retrieveMedia(result, parentId, resources)
     }
 
-    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?)
-            : BrowserRoot? = MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_ROOT, null)
+    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
+        Log.d(TAG, "ongetRoot: " + MEDIA_ID_ROOT)
+        return MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_ROOT, null)
+    }
 
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {

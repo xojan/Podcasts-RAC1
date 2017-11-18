@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="cat.xojan.random1">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -65,11 +66,11 @@
             android:exported="false"
             android:stopWithTask="false"/>
 
-        <service android:name=".service.MediaPlaybackService"
-            android:exported="true">
+        <service
+            android:name=".service.MediaPlaybackService"
+            android:exported="true"
+            tools:ignore="ExportedService">
             <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>

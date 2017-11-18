@@ -20,7 +20,6 @@ class MediaPlaybackActivity: BaseActivity() {
     private val STATE_PAUSED = 0
     private val STATE_PLAYING = 1
 
-    private lateinit var mediaBrowser: MediaBrowserCompat
     private var currentState: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
