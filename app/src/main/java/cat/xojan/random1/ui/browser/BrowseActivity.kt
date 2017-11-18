@@ -49,7 +49,13 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
         /*if (intent.getBooleanExtra(EXTRA_IS_SECTION, false)) {
             addFragment(SectionFragment.newInstance(program), SectionFragment.TAG, true)
         } else {*/
-            addFragment(HourByHourListFragment(), HourByHourListFragment.TAG, true)
+            addFragment(HourByHourListFragment.newInstance(mediaItem), HourByHourListFragment.TAG, false)
         //}
+    }
+
+    override fun onMediaControllerConnected() {
+        val fragment = supportFragmentManager.findFragmentByTag(HourByHourListFragment.TAG)
+                as HourByHourListFragment?
+        fragment?.onMediaControllerConnected()
     }
 }

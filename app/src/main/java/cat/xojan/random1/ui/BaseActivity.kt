@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.RemoteException
 import android.support.v4.app.Fragment
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -83,9 +84,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     @Throws(RemoteException::class)
     private fun connectToSession(token: MediaSessionCompat.Token) {
-        /*val mediaController = MediaControllerCompat(this, token)
+        val mediaController = MediaControllerCompat(this, token)
         MediaControllerCompat.setMediaController(this, mediaController)
-        mediaController.registerCallback(mMediaControllerCallback)*/
+        /*mediaController.registerCallback(mMediaControllerCallback)*/
 
         onMediaControllerConnected()
     }

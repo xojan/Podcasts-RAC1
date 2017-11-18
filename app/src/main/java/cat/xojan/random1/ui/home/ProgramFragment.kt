@@ -113,6 +113,17 @@ class ProgramFragment: BaseFragment() {
         controller?.registerCallback(mediaControllerCallback)
     }
 
+    override fun onStart() {
+        super.onStart()
+        // fetch browsing information to fill the recycler view
+        val mediaBrowser = mediaBrowser()
+        Log.d(TAG, "onStart, onConnected=" + mediaBrowser.isConnected)
+        if (mediaBrowser.isConnected) {
+            Log.d(TAG, "onStart, mediaId=" + mediaBrowser.root)
+            onMediaControllerConnected()
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         val mediaBrowser = mediaBrowser()
@@ -123,8 +134,6 @@ class ProgramFragment: BaseFragment() {
         val controller = MediaControllerCompat.getMediaController(activity)
         controller?.unregisterCallback(mediaControllerCallback)
     }
-
-    private fun mediaBrowser(): MediaBrowserCompat = (activity as BaseActivity).mediaBrowser
 
     private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
         override fun onChildrenLoaded(parentId: String,

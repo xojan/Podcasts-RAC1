@@ -112,10 +112,10 @@ public class SectionFragment extends BaseFragment {
     }
 
     private void showHourByHour() {
-        mSectionsViewModel.selectedSection(false);
+       /* mSectionsViewModel.selectedSection(false);
         HourByHourListFragment hourByHourListFragment = HourByHourListFragment.Companion
                 .newInstance((Program) getArguments().get(ARG_PROGRAM));
         ((BaseActivity) getActivity()).addFragment(hourByHourListFragment,
-                HourByHourListFragment.Companion.getTAG(), true);
+                HourByHourListFragment.Companion.getTAG(), true);*/
     }
 }
