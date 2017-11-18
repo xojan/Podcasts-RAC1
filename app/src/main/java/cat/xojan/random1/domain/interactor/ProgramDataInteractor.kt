@@ -44,6 +44,7 @@ class ProgramDataInteractor @Inject constructor(
     private var mSection: Section? = null
     private var mProgram: Program? = null
     private val mDownloadedPodcastsSubject: PublishSubject<List<Podcast>> = PublishSubject.create()
+    private var currentProgram: Program? = null
 
     fun loadPrograms(): Observable<List<Program>> {
         return Observable.create { subscriber ->
@@ -75,6 +76,7 @@ class ProgramDataInteractor @Inject constructor(
 
     fun loadPodcasts(program: Program, section: Section?,
                      refresh: Boolean): Flowable<List<Podcast>> {
+        currentProgram = program
         try {
             if (section != null) {
                 if (podcastsBySection == null || refresh || section != section) {
@@ -106,6 +108,18 @@ class ProgramDataInteractor @Inject constructor(
         } else {
             from.delete()
             to.delete()
+        }
+    }
+
+    fun getCurrentPodcasts(): Observable<List<Podcast>> {
+        return Observable.create { subscriber ->
+            try {
+                val podcasts = programRepo.getPodcastPlainData(currentProgram!!.id)
+                subscriber.onNext(podcasts)
+                subscriber.onComplete()
+            } catch (e: IOException) {
+                subscriber.onError(e)
+            }
         }
     }
 

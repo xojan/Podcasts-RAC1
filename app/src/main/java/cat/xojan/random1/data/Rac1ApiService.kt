@@ -17,4 +17,11 @@ interface Rac1ApiService {
     @GET("v1/sessions/{programId}/{sectionId}")
     fun getPodcastData(@Path("programId") programId: String,
                        @Path("sectionId") sectionId: String): Flowable<PodcastData>
+
+    @GET("v1/sessions/{programId}")
+    fun getPodcastDataPlainData(@Path("programId") programId: String): Call<PodcastData>
+
+    @GET("v1/sessions/{programId}/{sectionId}")
+    fun getPodcastDataPlainData(@Path("programId") programId: String,
+                                @Path("sectionId") sectionId: String): Call<PodcastData>
 }

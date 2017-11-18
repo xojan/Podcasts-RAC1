@@ -4,16 +4,14 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class Program(var id: String,
+class Program(val id: String,
               var title: String,
               var sections: List<Section>,
               private var images: Images,
               var active: Boolean
 ): Parcelable {
 
-    fun imageUrl(): String {
-        return images.imageUrl
-    }
+    fun imageUrl(): String = images.imageUrl
 
 
     override fun equals(other: Any?): Boolean {
@@ -26,7 +24,5 @@ class Program(var id: String,
 
     }
 
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
+    override fun hashCode(): Int = id.hashCode()
 }

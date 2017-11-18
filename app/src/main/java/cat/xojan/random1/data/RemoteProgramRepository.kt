@@ -21,4 +21,12 @@ class RemoteProgramRepository(private val service: Rac1ApiService): ProgramRepos
         }
         return service.getPodcastData(programId).map(PodcastData::podcasts)
     }
+
+    @Throws(IOException::class)
+    override fun getPodcastPlainData(programId: String, sectionId: String?): List<Podcast> {
+        sectionId?.let {
+            return service.getPodcastDataPlainData(programId, sectionId).execute().body()!!.podcasts
+        }
+        return service.getPodcastDataPlainData(programId).execute().body()!!.podcasts
+    }
 }

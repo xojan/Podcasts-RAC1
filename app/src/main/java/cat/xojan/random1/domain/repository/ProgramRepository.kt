@@ -10,4 +10,7 @@ interface ProgramRepository {
 
     @Throws(IOException::class)
     fun getPodcast(programId: String, sectionId: String? = null): Flowable<List<Podcast>>
+
+    @Throws(IOException::class)
+    fun getPodcastPlainData(programId: String, sectionId: String? = null): List<Podcast>
 }

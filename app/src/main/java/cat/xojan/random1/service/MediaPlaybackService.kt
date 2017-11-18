@@ -8,7 +8,6 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.ResultReceiver
-import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -16,24 +15,36 @@ import android.support.v4.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import cat.xojan.random1.Application
 import cat.xojan.random1.R
+import cat.xojan.random1.domain.interactor.MusicProvider
 import cat.xojan.random1.ui.notification.NotificationController
-import java.io.IOException
+import javax.inject.Inject
 
 
 class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFocusChangeListener {
+
+    private val MEDIA_ID_ROOT = "MEDIA_ID_ROOT"
+    private val TAG = MediaPlaybackService::class.java.simpleName
 
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var notificationController: NotificationController
 
+    @Inject internal lateinit var musicProvider: MusicProvider
+
     override fun onCreate() {
         super.onCreate()
+        initInjector()
 
         initMediaPlayer()
         initMediaSession()
         initNoisyReceiver()
         initNotificationController()
+    }
+
+    private fun initInjector() {
+        (applicationContext as Application).appComponent.inject(this)
     }
 
     private fun initMediaPlayer() {
@@ -52,7 +63,9 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
                 mediaButtonReceiver, null)
 
         mediaSession.setCallback(mediaSessionCallback)
-        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
+                or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+                or MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
 
         val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
         mediaButtonIntent.setClass(this, MediaButtonReceiver::class.java)
@@ -77,6 +90,11 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         return super.onStartCommand(intent, flags, startId)
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        stopSelf()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -86,18 +104,15 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         notificationController.release()
     }
 
-    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        // I promise we’ll get to browsing
-        result.sendResult(null)
+    override fun onLoadChildren(parentId: String, result
+    : Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        Log.d("joan", "onloadChildren: " + parentId)
+        result.detach()
+        musicProvider.retrieveMedia(result, parentId, mediaSession, resources)
     }
 
-    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
-        // Returning null == no one can connect
-        // so we’ll return something
-        return MediaBrowserServiceCompat.BrowserRoot(
-                getString(R.string.app_name), // Name visible in Android Auto
-                null) // Bundle of optional extras
-    }
+    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?)
+            : BrowserRoot? = MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_ROOT, null)
 
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
@@ -144,33 +159,9 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            super.onPlayFromMediaId(mediaId, extras)
-
-            try {
-                val afd = resources.openRawResourceFd(Integer.valueOf(mediaId)) ?: return
-
-                try {
-                    mediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-
-                } catch (e: IllegalStateException) {
-                    mediaPlayer.release()
-                    initMediaPlayer()
-                    mediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-                }
-
-                afd.close()
-                initMediaSessionMetadata()
-
-            } catch (e: IOException) {
-                return
-            }
-
-
-            try {
-                mediaPlayer.prepare()
-            } catch (e: IOException) {
-            }
-            //Work with extras here if you want
+            Log.d(TAG, "onPlayFromMediaId: " + mediaId)
+            //mQueueManager.setQueueFromMusic(mediaId)
+            //handlePlayRequest()
         }
 
         override fun onCommand(command: String?, extras: Bundle?, cb: ResultReceiver?) {
@@ -205,22 +196,6 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         }
         playbackstateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
         mediaSession.setPlaybackState(playbackstateBuilder.build())
-    }
-
-    private fun initMediaSessionMetadata() {
-        val metadataBuilder = MediaMetadataCompat.Builder()
-        //Notification icon in card
-        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-
-        //lock screen icon for pre lollipop
-        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "Display Title")
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "Display Subtitle")
-        metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 1)
-        metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 1)
-
-        mediaSession.setMetadata(metadataBuilder.build())
     }
 
     private val noisyReceiver = object : BroadcastReceiver() {

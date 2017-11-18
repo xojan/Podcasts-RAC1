@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -22,21 +23,22 @@ class NotificationController(private val service: MediaPlaybackService,
     private val notificationName = service.getString(R.string.app_name)
 
     init {
-        createNotificationChannel()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel()
+        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(
-                    notificationId,
-                    notificationName,
-                    importance)
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(
+                notificationId,
+                notificationName,
+                importance)
 
-            val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE)
-                    as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
+        val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE)
+                as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     fun showPlaying() {
@@ -72,7 +74,7 @@ class NotificationController(private val service: MediaPlaybackService,
                 MediaStyle()
                         .setShowActionsInCompactView(0)
                         .setMediaSession(mediaSession.sessionToken))
-        builder.setSmallIcon(R.mipmap.ic_launcher)
+        builder.setSmallIcon(R.mipmap.ic_notification)
         return builder
     }
 

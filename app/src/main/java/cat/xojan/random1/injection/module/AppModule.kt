@@ -9,6 +9,7 @@ import cat.xojan.random1.data.Rac1ApiService
 import cat.xojan.random1.data.RemoteProgramRepository
 import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.EventLogger
+import cat.xojan.random1.domain.interactor.MusicProvider
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
@@ -87,5 +88,11 @@ class AppModule(private val mApplication: Application) {
     internal fun provideCrashReporter(): CrashReporter {
         return if (BuildConfig.DEBUG) CrashReporter(null) else CrashReporter(Crashlytics
                 .getInstance())
+    }
+
+    @Provides
+    @Singleton
+    internal fun provideMusicProvider(programDataInteractor: ProgramDataInteractor): MusicProvider {
+        return MusicProvider(programDataInteractor)
     }
 }
