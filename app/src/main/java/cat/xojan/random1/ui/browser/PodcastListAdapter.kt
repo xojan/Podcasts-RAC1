@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.adapter
+package cat.xojan.random1.ui.browser
 
 import android.content.Intent
 import android.graphics.drawable.Animatable
@@ -9,9 +9,7 @@ import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
-import cat.xojan.random1.ui.activity.MediaPlaybackActivity
-import cat.xojan.random1.ui.activity.RadioPlayerActivity
-import cat.xojan.random1.ui.view.CircleTransform
+import cat.xojan.random1.ui.mediaplayer.MediaPlaybackActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.podcast_item.*
@@ -46,7 +44,7 @@ class PodcastListAdapter(private val programInteractor: ProgramDataInteractor)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.podcast_item, parent, false)
-        return PodcastListAdapter.ViewHolder(itemView)
+        return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {

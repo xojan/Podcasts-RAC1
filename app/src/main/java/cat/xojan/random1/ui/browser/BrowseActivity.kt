@@ -1,16 +1,15 @@
-package cat.xojan.random1.ui.activity
+package cat.xojan.random1.ui.browser
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
 import cat.xojan.random1.R
-import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.injection.HasComponent
 import cat.xojan.random1.injection.component.BrowseComponent
 import cat.xojan.random1.injection.component.DaggerBrowseComponent
 import cat.xojan.random1.injection.module.BrowseModule
-import cat.xojan.random1.ui.fragment.HourByHourListFragment
-import cat.xojan.random1.ui.fragment.SectionFragment
+import cat.xojan.random1.ui.BaseActivity
 import cat.xojan.random1.viewmodel.PodcastsViewModel
 import javax.inject.Inject
 
@@ -18,12 +17,10 @@ import javax.inject.Inject
 class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
     companion object {
         private val EXTRA_PROGRAM = "extra_program"
-        private val EXTRA_IS_SECTION = "extra_is_section"
 
-        fun newIntent(context: Context, program: Program, isSection: Boolean): Intent {
+        fun newIntent(context: Context, mediaId: MediaBrowserCompat.MediaItem): Intent {
             val intent = Intent(context, BrowseActivity::class.java)
-            intent.putExtra(EXTRA_PROGRAM, program)
-            intent.putExtra(EXTRA_IS_SECTION, isSection)
+            intent.putExtra(EXTRA_PROGRAM, mediaId)
             return intent
         }
     }
@@ -47,17 +44,12 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
 
     private fun initView() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        val program = intent.getParcelableExtra<Program>(EXTRA_PROGRAM)
-        title = program.title
-        if (intent.getBooleanExtra(EXTRA_IS_SECTION, false)) {
+        val mediaItem = intent.getParcelableExtra<MediaBrowserCompat.MediaItem>(EXTRA_PROGRAM)
+        title = mediaItem.description.title
+        /*if (intent.getBooleanExtra(EXTRA_IS_SECTION, false)) {
             addFragment(SectionFragment.newInstance(program), SectionFragment.TAG, true)
-        } else {
-            addFragment(HourByHourListFragment.newInstance(program), HourByHourListFragment.TAG, true)
-        }
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
+        } else {*/
+            addFragment(HourByHourListFragment(), HourByHourListFragment.TAG, true)
+        //}
     }
 }

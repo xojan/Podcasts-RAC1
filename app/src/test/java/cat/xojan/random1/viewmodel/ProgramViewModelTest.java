@@ -5,7 +5,7 @@ import org.junit.Before;
 
 import cat.xojan.random1.domain.entities.Program;
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor;
-import cat.xojan.random1.ui.activity.BaseActivity;
+import cat.xojan.random1.ui.BaseActivity;
 
 import static cat.xojan.random1.testutil.DataKt.getProgram1;
 import static org.mockito.Mockito.mock;

@@ -1,15 +1,10 @@
-package cat.xojan.random1.ui.activity
+package cat.xojan.random1.ui.home
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -18,9 +13,7 @@ import cat.xojan.random1.injection.HasComponent
 import cat.xojan.random1.injection.component.DaggerHomeComponent
 import cat.xojan.random1.injection.component.HomeComponent
 import cat.xojan.random1.injection.module.HomeModule
-import cat.xojan.random1.ui.adapter.HomePagerAdapter
-import cat.xojan.random1.ui.fragment.DownloadsFragment
-import cat.xojan.random1.ui.fragment.ProgramFragment
+import cat.xojan.random1.ui.BaseActivity
 import cat.xojan.random1.viewmodel.PodcastsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -59,7 +52,7 @@ class HomeActivity: BaseActivity(), HasComponent<HomeComponent> {
     }
 
     override fun onMediaControllerConnected() {
-        getProgramFragment().onMediaControllerConnected(mediaBrowser)
+        getProgramFragment().onMediaControllerConnected()
     }
 
     private fun initView() {

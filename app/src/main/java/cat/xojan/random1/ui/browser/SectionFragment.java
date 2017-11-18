@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.fragment;
+package cat.xojan.random1.ui.browser;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,8 +20,8 @@ import cat.xojan.random1.R;
 import cat.xojan.random1.domain.entities.Program;
 import cat.xojan.random1.domain.entities.Section;
 import cat.xojan.random1.injection.component.BrowseComponent;
-import cat.xojan.random1.ui.activity.BaseActivity;
-import cat.xojan.random1.ui.adapter.SectionListAdapter;
+import cat.xojan.random1.ui.BaseActivity;
+import cat.xojan.random1.ui.BaseFragment;
 import cat.xojan.random1.viewmodel.SectionsViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -113,9 +113,9 @@ public class SectionFragment extends BaseFragment {
 
     private void showHourByHour() {
         mSectionsViewModel.selectedSection(false);
-        HourByHourListFragment hourByHourListFragment = HourByHourListFragment
+        HourByHourListFragment hourByHourListFragment = HourByHourListFragment.Companion
                 .newInstance((Program) getArguments().get(ARG_PROGRAM));
         ((BaseActivity) getActivity()).addFragment(hourByHourListFragment,
-                HourByHourListFragment.TAG, true);
+                HourByHourListFragment.Companion.getTAG(), true);
     }
 }

@@ -1,14 +1,11 @@
-package cat.xojan.random1.ui.activity
+package cat.xojan.random1.ui
 
 import android.content.ComponentName
 import android.os.Bundle
 import android.os.RemoteException
 import android.support.v4.app.Fragment
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import cat.xojan.random1.Application
@@ -56,8 +53,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        val controllerCompat = MediaControllerCompat.getMediaController(this)
-        controllerCompat?.unregisterCallback(mMediaControllerCallback)
+        /*val controllerCompat = MediaControllerCompat.getMediaController(this)
+        controllerCompat?.unregisterCallback(mMediaControllerCallback)*/
         mediaBrowser.disconnect()
     }
 
@@ -86,16 +83,16 @@ abstract class BaseActivity : AppCompatActivity() {
 
     @Throws(RemoteException::class)
     private fun connectToSession(token: MediaSessionCompat.Token) {
-        val mediaController = MediaControllerCompat(this, token)
+        /*val mediaController = MediaControllerCompat(this, token)
         MediaControllerCompat.setMediaController(this, mediaController)
-        mediaController.registerCallback(mMediaControllerCallback)
+        mediaController.registerCallback(mMediaControllerCallback)*/
 
         onMediaControllerConnected()
     }
 
     open fun onMediaControllerConnected() {}
 
-    private val mMediaControllerCallback = object : MediaControllerCompat.Callback() {
+    /*private val mMediaControllerCallback = object : MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
             Log.d(TAG, "onPlaybackStateChanged: " + state.state)
         }
@@ -103,5 +100,5 @@ abstract class BaseActivity : AppCompatActivity() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             Log.d(TAG, "onMetadataChanged: " + metadata)
         }
-    }
+    }*/
 }

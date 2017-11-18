@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.activity;
+package cat.xojan.random1.ui.mediaplayer;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -26,6 +26,7 @@ import cat.xojan.random1.injection.component.DaggerRadioPlayerComponent;
 import cat.xojan.random1.injection.component.RadioPlayerComponent;
 import cat.xojan.random1.service.MusicPlayerService;
 import cat.xojan.random1.service.PlayerUtil;
+import cat.xojan.random1.ui.BaseActivity;
 
 public class RadioPlayerActivity extends BaseActivity implements MusicPlayerService.Listener {
 

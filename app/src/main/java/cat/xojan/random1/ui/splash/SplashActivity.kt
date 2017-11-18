@@ -1,8 +1,9 @@
-package cat.xojan.random1.ui.activity
+package cat.xojan.random1.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import cat.xojan.random1.ui.home.HomeActivity
 
 
 class SplashActivity : AppCompatActivity() {

@@ -18,7 +18,7 @@
         android:padding="16dp"
         android:gravity="center">
 
-        <cat.xojan.random1.ui.view.SquareImageView
+        <cat.xojan.random1.ui.home.SquareImageView
             android:id="@+id/player_image"
             android:layout_width="@dimen/player_image_size"
             android:layout_height="@dimen/player_image_size"

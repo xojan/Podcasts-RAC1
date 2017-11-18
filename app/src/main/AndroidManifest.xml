@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.activity.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,14 +33,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.HomeActivity"
+        <activity android:name=".ui.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".ui.activity.RadioPlayerActivity"/>
+        <activity android:name=".ui.mediaplayer.RadioPlayerActivity"/>
 
-        <activity android:name=".ui.activity.BrowseActivity"/>
+        <activity android:name=".ui.browser.BrowseActivity"/>
 
-        <activity android:name=".ui.activity.MediaPlaybackActivity"/>
+        <activity android:name=".ui.mediaplayer.MediaPlaybackActivity"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"

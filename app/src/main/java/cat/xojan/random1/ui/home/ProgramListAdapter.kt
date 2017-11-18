@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.adapter
+package cat.xojan.random1.ui.home
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v7.widget.RecyclerView
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
+import cat.xojan.random1.ui.MediaItemViewHolder
 
 
 class ProgramListAdapter(private val interactor: ProgramDataInteractor)

@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.view
+package cat.xojan.random1.ui.browser
 
 import android.graphics.*
 import com.squareup.picasso.Transformation

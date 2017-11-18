@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import cat.xojan.random1.injection.PerActivity
 import cat.xojan.random1.injection.module.BaseActivityModule
-import cat.xojan.random1.ui.activity.BaseActivity
+import cat.xojan.random1.ui.BaseActivity
 import dagger.Component
 
 @PerActivity // Subtypes of BaseActivityComponent should be decorated with @PerActivity.

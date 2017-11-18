@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.fragment;
+package cat.xojan.random1.ui;
 
 import android.support.v4.app.Fragment;
 

@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.adapter
+package cat.xojan.random1.ui.browser
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.domain.entities.Section
-import cat.xojan.random1.ui.activity.BaseActivity
-import cat.xojan.random1.ui.fragment.PodcastListFragment
-import cat.xojan.random1.ui.view.CircleTransform
+import cat.xojan.random1.ui.BaseActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.section_item.*
@@ -27,7 +25,7 @@ class SectionListAdapter(private val activity: BaseActivity, private val program
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent?.context).inflate(R.layout.section_item, parent, false)
-        return SectionListAdapter.ViewHolder(itemView)
+        return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {

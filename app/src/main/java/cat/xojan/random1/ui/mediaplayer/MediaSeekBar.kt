@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.view
+package cat.xojan.random1.ui.mediaplayer
 
 import android.animation.ValueAnimator
 import android.content.Context

@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.activity
+package cat.xojan.random1.ui.mediaplayer
 
 import android.content.ComponentName
 import android.os.Bundle
@@ -12,6 +12,7 @@ import android.util.Log
 import cat.xojan.random1.R
 import cat.xojan.random1.injection.component.DaggerMediaPlaybackComponent
 import cat.xojan.random1.service.MediaPlaybackService
+import cat.xojan.random1.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_media_playback.*
 
 

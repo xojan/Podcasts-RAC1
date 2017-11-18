@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.view
+package cat.xojan.random1.ui.home
 
 import android.content.Context
 import android.util.AttributeSet

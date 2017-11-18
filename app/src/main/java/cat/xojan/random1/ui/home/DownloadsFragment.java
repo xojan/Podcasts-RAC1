@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.fragment;
+package cat.xojan.random1.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,7 +20,8 @@ import cat.xojan.random1.R;
 import cat.xojan.random1.domain.entities.Podcast;
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor;
 import cat.xojan.random1.injection.component.HomeComponent;
-import cat.xojan.random1.ui.adapter.PodcastListAdapter;
+import cat.xojan.random1.ui.BaseFragment;
+import cat.xojan.random1.ui.browser.PodcastListAdapter;
 import cat.xojan.random1.viewmodel.PodcastsViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

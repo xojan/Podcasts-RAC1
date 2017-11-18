@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.adapter
+package cat.xojan.random1.ui.home
 
 import android.content.Context
 import android.support.v4.app.Fragment

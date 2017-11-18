@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.fragment
+package cat.xojan.random1.ui.home
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -17,7 +17,8 @@ import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.injection.component.HomeComponent
-import cat.xojan.random1.ui.adapter.ProgramListAdapter
+import cat.xojan.random1.ui.BaseActivity
+import cat.xojan.random1.ui.BaseFragment
 import cat.xojan.random1.viewmodel.ProgramsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -89,8 +90,11 @@ class ProgramFragment: BaseFragment() {
         recycler_view.visibility = View.GONE
     }
 
-    fun onMediaControllerConnected(mediaBrowser: MediaBrowserCompat) {
-        val mediaId = mediaBrowser.root
+    fun onMediaControllerConnected() {
+        if (isDetached) {
+            return
+        }
+        val mediaId = mediaBrowser().root
 
         // Unsubscribing before subscribing is required if this mediaId already has a subscriber
         // on this MediaBrowser instance. Subscribing to an already subscribed mediaId will replace
@@ -101,13 +105,26 @@ class ProgramFragment: BaseFragment() {
         // subscriber or not. Currently this only happens if the mediaID has no previous
         // subscriber or if the media content changes on the service side, so we need to
         // unsubscribe first.
-        mediaBrowser.unsubscribe(mediaId)
-        mediaBrowser.subscribe(mediaId, mediaBrowserSubscriptionCallback)
+        mediaBrowser().unsubscribe(mediaId)
+        mediaBrowser().subscribe(mediaId, mediaBrowserSubscriptionCallback)
 
         // Add MediaController callback so we can redraw the list when metadata changes:
         val controller = MediaControllerCompat.getMediaController(activity)
         controller?.registerCallback(mediaControllerCallback)
     }
+
+    override fun onStop() {
+        super.onStop()
+        val mediaBrowser = mediaBrowser()
+        val mediaId = mediaBrowser().root
+        if (mediaBrowser.isConnected) {
+            mediaBrowser.unsubscribe(mediaId)
+        }
+        val controller = MediaControllerCompat.getMediaController(activity)
+        controller?.unregisterCallback(mediaControllerCallback)
+    }
+
+    private fun mediaBrowser(): MediaBrowserCompat = (activity as BaseActivity).mediaBrowser
 
     private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
         override fun onChildrenLoaded(parentId: String,

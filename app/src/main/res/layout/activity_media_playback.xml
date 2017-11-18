@@ -102,7 +102,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent=".5" />
 
-    <cat.xojan.random1.ui.view.MediaSeekBar
+    <cat.xojan.random1.ui.mediaplayer.MediaSeekBar
         android:id="@+id/seekbar_audio"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
