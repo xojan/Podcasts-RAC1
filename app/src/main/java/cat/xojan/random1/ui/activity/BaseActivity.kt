@@ -20,7 +20,7 @@ import cat.xojan.random1.service.MediaPlaybackService
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    val TAG = BaseActivity::class.simpleName
+    private val TAG = BaseActivity::class.simpleName
     lateinit var mediaBrowser: MediaBrowserCompat
 
     /**

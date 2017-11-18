@@ -8,7 +8,6 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.util.Log
 import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.other.MediaIDHelper
-import cat.xojan.random1.other.MediaIDHelper.MEDIA_ID_PODCAST_BY_PROGRAM
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -17,8 +16,6 @@ import javax.inject.Inject
 class MusicProvider @Inject constructor(val programInteractor: ProgramDataInteractor) {
 
     private val TAG = MusicProvider::class.simpleName
-
-    fun isInitialized(): Boolean = false
 
     fun retrieveMedia(
             result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>,
@@ -29,7 +26,7 @@ class MusicProvider @Inject constructor(val programInteractor: ProgramDataIntera
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            { n -> handleSuccess(n, resources, result) },
+                            { n -> handleSuccess(n, result) },
                             { e -> handleError(e) },
                             { handleComplete() }
                     )
@@ -40,18 +37,15 @@ class MusicProvider @Inject constructor(val programInteractor: ProgramDataIntera
                     .subscribe({ this.updateView(it, result) },
                             { this.handleError(it) },
                             { this.handleComplete()})*/
+            result.sendResult(arrayListOf())
         }
-
-        //result.sendResult(getMedia(parentMediaId, getResources()))
     }
 
     private fun handleSuccess(
-            t: List<Program>,
-            resources: Resources,
+            programs: List<Program>,
             result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         Log.d(TAG, "Retrieve programs success")
-        val mediaItems = ArrayList<MediaBrowserCompat.MediaItem>()
-        mediaItems.add(createBrowsableMediaItemForRoot(resources))
+        val mediaItems = programs.mapTo(ArrayList()) { createBrowsableMediaItemForProgram(it) }
         result.sendResult(mediaItems)
     }
 
@@ -63,20 +57,11 @@ class MusicProvider @Inject constructor(val programInteractor: ProgramDataIntera
         Log.e(TAG, it.toString())
     }
 
-    /*private fun updateView(podcasts: List<Podcast>, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        val mediaItems = ArrayList<MediaBrowserCompat.MediaItem>()
-        for (p in podcasts) {
-            mediaItems.add(createBrowsableMediaItemForRoot(p))
-        }
-        result.sendResult(mediaItems)
-    }*/
-
-    private fun createBrowsableMediaItemForRoot(resources: Resources): MediaBrowserCompat.MediaItem {
+    private fun createBrowsableMediaItemForProgram(program: Program): MediaBrowserCompat.MediaItem {
         val description = MediaDescriptionCompat.Builder()
-                .setMediaId(MEDIA_ID_PODCAST_BY_PROGRAM)
-                .setTitle("Browse genres")
-                .setSubtitle("Browse genre subtitle")
-                .setIconUri(Uri.parse("android.resource://" + "com.example.android.uamp/drawable/ic_by_genre"))
+                .setMediaId(program.id)
+                .setTitle(program.title)
+                .setIconUri(Uri.parse(program.imageUrl()))
                 .build()
         return MediaBrowserCompat.MediaItem(description,
                 MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)

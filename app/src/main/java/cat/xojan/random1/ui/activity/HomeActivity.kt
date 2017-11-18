@@ -34,6 +34,8 @@ class HomeActivity: BaseActivity(), HasComponent<HomeComponent> {
         private val PERMISSION_WRITE_EXTERNAL_STORAGE = 20
     }
 
+    private val TAG = HomeActivity::class.simpleName
+
     @Inject internal lateinit var mViewModel: PodcastsViewModel
     private val mCompositeDisposable = CompositeDisposable()
 
@@ -135,7 +137,7 @@ class HomeActivity: BaseActivity(), HasComponent<HomeComponent> {
 
     private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
         override fun onChildrenLoaded(parentId: String,
-                                      children: List<MediaBrowserCompat.MediaItem>) {
+                                       children: List<MediaBrowserCompat.MediaItem>) {
             try {
                 Log.d(TAG, "onChildrenLoaded, parentId=" + parentId +
                         "  count=" + children.size)
