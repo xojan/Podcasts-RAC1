@@ -3,7 +3,12 @@ package cat.xojan.random1.ui.fragment
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +27,8 @@ import javax.inject.Inject
 
 
 class ProgramFragment: BaseFragment() {
+
+    private val TAG = ProgramFragment::class.simpleName
 
     @Inject internal lateinit var programsViewModel: ProgramsViewModel
     @Inject internal lateinit var programInteractor: ProgramDataInteractor
@@ -43,7 +50,7 @@ class ProgramFragment: BaseFragment() {
         adapter = ProgramListAdapter(programInteractor)
         recycler_view.adapter = adapter
         setLayoutManager(resources.configuration.orientation)
-        loadPrograms()
+        //loadPrograms()
     }
 
     override fun onDestroyView() {
@@ -70,7 +77,7 @@ class ProgramFragment: BaseFragment() {
 
     private fun updateView(programs: List<Program>) {
         swipe_refresh.isRefreshing = false
-        adapter.programs = programs
+        //adapter.programs = programs
         empty_list.visibility = View.GONE
         recycler_view.visibility = View.VISIBLE
     }
@@ -80,5 +87,62 @@ class ProgramFragment: BaseFragment() {
         swipe_refresh.isRefreshing = false
         empty_list.visibility = View.VISIBLE
         recycler_view.visibility = View.GONE
+    }
+
+    fun onMediaControllerConnected(mediaBrowser: MediaBrowserCompat) {
+        val mediaId = mediaBrowser.root
+
+        // Unsubscribing before subscribing is required if this mediaId already has a subscriber
+        // on this MediaBrowser instance. Subscribing to an already subscribed mediaId will replace
+        // the callback, but won't trigger the initial callback.onChildrenLoaded.
+        //
+        // This is temporary: A bug is being fixed that will make subscribe
+        // consistently call onChildrenLoaded initially, no matter if it is replacing an existing
+        // subscriber or not. Currently this only happens if the mediaID has no previous
+        // subscriber or if the media content changes on the service side, so we need to
+        // unsubscribe first.
+        mediaBrowser.unsubscribe(mediaId)
+        mediaBrowser.subscribe(mediaId, mediaBrowserSubscriptionCallback)
+
+        // Add MediaController callback so we can redraw the list when metadata changes:
+        val controller = MediaControllerCompat.getMediaController(activity)
+        controller?.registerCallback(mediaControllerCallback)
+    }
+
+    private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
+        override fun onChildrenLoaded(parentId: String,
+                                        children: List<MediaBrowserCompat.MediaItem>) {
+            try {
+                Log.d(TAG, "onChildrenLoaded, parentId=" + parentId + "  count=" + children.size)
+                adapter.programs = children
+            } catch (t: Throwable) {
+                Log.e(TAG, "Error onChildrenLoaded", t)
+            }
+
+        }
+
+        override fun onError(id: String) {
+            Log.e(TAG, "browse fragment subscription onError, id=" + id)
+            //TODO handle error
+        }
+    }
+
+    // Receive callbacks from the MediaController. Here we update our state such as which queue
+    // is being shown, the current title and description and the PlaybackState.
+    private val mediaControllerCallback = object : MediaControllerCompat.Callback() {
+        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+            super.onMetadataChanged(metadata)
+            if (metadata == null) {
+                return
+            }
+            Log.d(TAG, "Received metadata change to media " + metadata.description.mediaId)
+            //TODO update programs adapter
+        }
+
+        override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
+            super.onPlaybackStateChanged(state)
+            Log.d(TAG, "Received state change: " + state)
+            //TODO update whatever
+        }
     }
 }

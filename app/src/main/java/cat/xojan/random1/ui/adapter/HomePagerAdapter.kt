@@ -23,11 +23,9 @@ class HomePagerAdapter(fm: FragmentManager,
         return fragmentList.size
     }
 
-    override fun getPageTitle(position: Int): CharSequence {
-        return when (position) {
-            0 -> context.getString(R.string.podcasts_programs)
-            1 -> context.getString(R.string.podcasts_downloaded)
-            else -> throw IllegalArgumentException("Invalid position: " + position)
-        }
+    override fun getPageTitle(position: Int): CharSequence = when (position) {
+        0 -> context.getString(R.string.podcasts_programs)
+        1 -> context.getString(R.string.podcasts_downloaded)
+        else -> throw IllegalArgumentException("Invalid position: " + position)
     }
 }
