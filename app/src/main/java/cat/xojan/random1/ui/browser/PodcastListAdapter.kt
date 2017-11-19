@@ -2,6 +2,7 @@ package cat.xojan.random1.ui.browser
 
 import android.content.Intent
 import android.graphics.drawable.Animatable
+import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v7.widget.RecyclerView
@@ -63,9 +64,11 @@ class PodcastListAdapter: RecyclerView.Adapter<PodcastListAdapter.MediaItemViewH
 //                val intent = Intent(itemView.context, RadioPlayerActivity::class.java)
 //                intent.putExtra(RadioPlayerActivity.EXTRA_PODCAST, podcast)
                 //itemView.context.startActivity(intent)
+                val extras = Bundle()
 
+                extras.putParcelable("mediaUrl", item.description.mediaUri)
                 MediaControllerCompat.getMediaController(itemView.context as BrowseActivity).transportControls
-                        .playFromMediaId(item.mediaId, null)
+                        .playFromMediaId(item.mediaId, extras)
             }
 
             /*podcast_icon.setOnClickListener {

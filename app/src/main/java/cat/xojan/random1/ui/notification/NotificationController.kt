@@ -8,7 +8,6 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.app.NotificationCompat.MediaStyle
 import android.support.v4.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -71,7 +70,7 @@ class NotificationController(private val service: MediaPlaybackService,
                 title,
                 MediaButtonReceiver.buildMediaButtonPendingIntent(service, playBackState)))
         builder.setStyle(
-                MediaStyle()
+                android.support.v7.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0)
                         .setMediaSession(mediaSession.sessionToken))
         builder.setSmallIcon(R.mipmap.ic_notification)
@@ -91,7 +90,8 @@ class NotificationController(private val service: MediaPlaybackService,
         val mediaMetadata = controller.metadata
         val description = mediaMetadata.description
 
-        val builder = NotificationCompat.Builder(context, notificationId)
+        //val builder = NotificationCompat.Builder(context, notificationId)
+        val builder = NotificationCompat.Builder(context)
         builder
                 .setContentTitle(description.title)
                 .setContentText(description.subtitle)

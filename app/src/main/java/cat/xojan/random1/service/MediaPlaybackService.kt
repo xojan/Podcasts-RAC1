@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.*
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.ResultReceiver
@@ -17,6 +18,18 @@ import cat.xojan.random1.Application
 import cat.xojan.random1.domain.interactor.MediaProvider
 import cat.xojan.random1.other.MediaIDHelper.MEDIA_ID_ROOT
 import cat.xojan.random1.ui.notification.NotificationController
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
+import com.google.android.exoplayer2.extractor.ExtractorsFactory
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Util
 import javax.inject.Inject
 
 
@@ -29,6 +42,8 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
     private lateinit var notificationController: NotificationController
 
     @Inject internal lateinit var musicProvider: MediaProvider
+
+    private lateinit var exoPlayer: SimpleExoPlayer
 
     override fun onCreate() {
         super.onCreate()
@@ -99,6 +114,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         unregisterReceiver(noisyReceiver)
         mediaSession.release()
         notificationController.release()
+        exoPlayer.release()
     }
 
     override fun onLoadChildren(parentId: String, result
@@ -159,8 +175,25 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             Log.d(TAG, "onPlayFromMediaId: " + mediaId)
-            //mQueueManager.setQueueFromMusic(mediaId)
-            //handlePlayRequest()
+
+            // Measures bandwidth during playback. Can be null if not required.
+            val bandwidthMeter = DefaultBandwidthMeter()
+            val audioTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
+            val trackSelector = DefaultTrackSelector(audioTrackSelectionFactory)
+            exoPlayer = ExoPlayerFactory.newSimpleInstance(baseContext, trackSelector)
+
+            // Produces DataSource instances through which media data is loaded.
+            val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(baseContext,
+                Util.getUserAgent(baseContext, "yourApplicationName"), bandwidthMeter)
+            // Produces Extractor instances for parsing the media data.
+            val extractorsFactory: ExtractorsFactory = DefaultExtractorsFactory()
+            // This is the MediaSource representing the media to be played.
+            val uri: Uri? = extras?.getParcelable("mediaUrl")
+            val videoSource: MediaSource = ExtractorMediaSource(uri,
+                dataSourceFactory, extractorsFactory, null, null)
+            // Prepare the player with the source.
+            exoPlayer.prepare(videoSource)
+            exoPlayer.playWhenReady = true
         }
 
         override fun onCommand(command: String?, extras: Bundle?, cb: ResultReceiver?) {
