@@ -15,6 +15,7 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
+import org.intellij.lang.annotations.Flow
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -111,17 +112,8 @@ class ProgramDataInteractor @Inject constructor(
         }
     }
 
-    fun getCurrentPodcasts(): Observable<List<Podcast>> {
-        return Observable.create { subscriber ->
-            try {
-                val podcasts = programRepo.getPodcastPlainData(currentProgram!!.id)
-                subscriber.onNext(podcasts)
-                subscriber.onComplete()
-            } catch (e: IOException) {
-                subscriber.onError(e)
-            }
-        }
-    }
+    fun getHourByHourPodcasts(programId: String): Flowable<List<Podcast>> =
+            programRepo.getPodcast(programId)
 
     fun getDownloadedPodcasts(): Single<List<Podcast>> {
         return Single.just(fetchDownloadedPodcasts())

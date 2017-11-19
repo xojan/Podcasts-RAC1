@@ -48,7 +48,7 @@ class ProgramFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         swipe_refresh.setColorSchemeResources(R.color.colorAccent)
         swipe_refresh.setOnRefreshListener { Handler().postDelayed({ this.loadPrograms() }, 0) }
-        adapter = ProgramListAdapter(programInteractor)
+        adapter = ProgramListAdapter()
         recycler_view.adapter = adapter
         setLayoutManager(resources.configuration.orientation)
         //loadPrograms()

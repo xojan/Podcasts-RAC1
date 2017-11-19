@@ -6,6 +6,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.util.Log
+import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.other.MediaIDHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -26,22 +27,23 @@ class MusicProvider @Inject constructor(val programInteractor: ProgramDataIntera
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            { n -> handleSuccess(n, result) },
+                            { n -> handleNextPrograms(n, result) },
                             { e -> handleError(e) },
                             { handleComplete() }
                     )
         } else {
-            /*var subscription = programInteractor.getCurrentPodcasts()
-                    .subscribeOn(Schedulers.io())
+            programInteractor.getHourByHourPodcasts(parentId)
+                    .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ this.updateView(it, result) },
-                            { this.handleError(it) },
-                            { this.handleComplete()})*/
-            result.sendResult(arrayListOf())
+                    .subscribe(
+                            { n -> handleNextPodcasts(n, result) },
+                            { e -> handleError(e) },
+                            { handleComplete() }
+                    )
         }
     }
 
-    private fun handleSuccess(
+    private fun handleNextPrograms(
             programs: List<Program>,
             result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         Log.d(TAG, "Retrieve programs success")
@@ -49,9 +51,15 @@ class MusicProvider @Inject constructor(val programInteractor: ProgramDataIntera
         result.sendResult(mediaItems)
     }
 
-    private fun handleComplete() {
-
+    private fun handleNextPodcasts(
+            podcasts: List<Podcast>,
+            result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        Log.d(TAG, "Retrieve programs success")
+        val mediaItems = podcasts.mapTo(ArrayList()) { createBrowsableMediaItemForPodcast(it) }
+        result.sendResult(mediaItems)
     }
+
+    private fun handleComplete() {}
 
     private fun handleError(it: Throwable?) {
         Log.e(TAG, it.toString())
@@ -65,5 +73,14 @@ class MusicProvider @Inject constructor(val programInteractor: ProgramDataIntera
                 .build()
         return MediaBrowserCompat.MediaItem(description,
                 MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
+    }
+
+    private fun createBrowsableMediaItemForPodcast(podcast: Podcast): MediaBrowserCompat.MediaItem {
+        val description = MediaDescriptionCompat.Builder()
+                .setMediaId(podcast.audioId)
+                .setTitle(podcast.title)
+                //.setIconUri(Uri.parse(podcast.imageUrl))
+                .build()
+        return MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
     }
 }

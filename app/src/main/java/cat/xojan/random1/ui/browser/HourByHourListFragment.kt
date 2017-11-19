@@ -81,7 +81,7 @@ class HourByHourListFragment : BaseFragment() {
         mSwipeRefresh!!.setOnRefreshListener { loadPodcasts(true) }
         mRecyclerView!!.layoutManager = LinearLayoutManager(activity)
 
-        adapter = PodcastListAdapter(mProgramDataInteractor!!)
+        adapter = PodcastListAdapter()
         mRecyclerView!!.adapter = adapter
 
         return view
@@ -176,7 +176,7 @@ class HourByHourListFragment : BaseFragment() {
     private fun updateView(podcasts: List<Podcast>) {
         mEmptyList!!.visibility = View.GONE
         mSwipeRefresh!!.isRefreshing = false
-        adapter!!.podcasts = podcasts
+        //adapter!!.podcasts = podcasts
         mRecyclerView!!.visibility = View.VISIBLE
     }
 
@@ -225,7 +225,7 @@ class HourByHourListFragment : BaseFragment() {
                                       children: List<MediaBrowserCompat.MediaItem>) {
             try {
                 Log.d(TAG, "onChildrenLoaded, parentId=" + parentId + "  count=" + children.size)
-                //adapter.podcasts = children
+                adapter.podcasts = children
             } catch (t: Throwable) {
                 Log.e(TAG, "Error onChildrenLoaded", t)
             }

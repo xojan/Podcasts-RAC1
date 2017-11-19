@@ -74,7 +74,7 @@ public class PodcastListFragment extends BaseFragment {
         mSwipeRefresh.setColorSchemeResources(R.color.colorAccent);
         mSwipeRefresh.setOnRefreshListener(() -> showPodcasts(true));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new PodcastListAdapter(mProgramDataInteractor);
+        mAdapter = new PodcastListAdapter();
         mRecyclerView.setAdapter(mAdapter);
 
         return view;
@@ -136,7 +136,7 @@ public class PodcastListFragment extends BaseFragment {
 
     private void updateView(List<Podcast> podcasts) {
         mSwipeRefresh.setRefreshing(false);
-        mAdapter.setPodcasts(podcasts);
+        //mAdapter.setPodcasts(podcasts);
         mEmptyList.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
