@@ -32,6 +32,9 @@ class HomeActivity: BaseActivity(), HasComponent<HomeComponent> {
     @Inject internal lateinit var mViewModel: PodcastsViewModel
     private val mCompositeDisposable = CompositeDisposable()
 
+    private lateinit var programFragment: ProgramFragment
+    private lateinit var downloadsFragment: DownloadsFragment
+
     override val component: HomeComponent by lazy {
         DaggerHomeComponent.builder()
                 .appComponent(applicationComponent)
@@ -47,7 +50,7 @@ class HomeActivity: BaseActivity(), HasComponent<HomeComponent> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        initView()
+        initView(savedInstanceState)
         component.inject(this)
     }
 
@@ -55,10 +58,21 @@ class HomeActivity: BaseActivity(), HasComponent<HomeComponent> {
         getProgramFragment().onMediaControllerConnected()
     }
 
-    private fun initView() {
+    private fun initView(savedInstanceState: Bundle?) {
         setSupportActionBar(toolbar)
-        pageAdapter.addFragment(ProgramFragment())
-        pageAdapter.addFragment(DownloadsFragment())
+
+        if (savedInstanceState == null) {
+            programFragment = ProgramFragment()
+            downloadsFragment = DownloadsFragment()
+        } else {
+            programFragment = supportFragmentManager.getFragment(savedInstanceState,
+                    ProgramFragment.TAG) as ProgramFragment
+            downloadsFragment = supportFragmentManager.getFragment(savedInstanceState,
+                    DownloadsFragment.TAG) as DownloadsFragment
+        }
+
+        pageAdapter.addFragment(programFragment)
+        pageAdapter.addFragment(downloadsFragment)
 
         viewPager.adapter = pageAdapter
         tabLayout.setupWithViewPager(viewPager)
@@ -99,6 +113,12 @@ class HomeActivity: BaseActivity(), HasComponent<HomeComponent> {
     override fun onStop() {
         super.onStop()
         mCompositeDisposable.clear()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        supportFragmentManager.putFragment(outState, ProgramFragment.TAG, programFragment)
+        supportFragmentManager.putFragment(outState, DownloadsFragment.TAG, downloadsFragment)
     }
 
     private fun exportPodcasts() {

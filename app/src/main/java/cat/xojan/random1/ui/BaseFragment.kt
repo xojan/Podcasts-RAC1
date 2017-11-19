@@ -19,6 +19,4 @@ abstract class BaseFragment : Fragment() {
     fun handleOnBackPressed(): Boolean {
         return false
     }
-
-    fun mediaBrowser(): MediaBrowserCompat = (activity as BaseActivity).mediaBrowser
 }

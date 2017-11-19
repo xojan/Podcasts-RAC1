@@ -23,8 +23,10 @@ import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.domain.entities.Section
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.injection.component.BrowseComponent
+import cat.xojan.random1.other.MediaIDHelper
 import cat.xojan.random1.ui.BaseActivity
 import cat.xojan.random1.ui.BaseFragment
+import cat.xojan.random1.ui.MediaBrowserProvider
 import cat.xojan.random1.viewmodel.PodcastsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -44,6 +46,8 @@ class HourByHourListFragment : BaseFragment() {
     private var mSwipeRefresh: SwipeRefreshLayout? = null
     private var mEmptyList: TextView? = null
 
+    private var mediaBrowserProvider: MediaBrowserProvider? = null
+
     companion object {
         val TAG = HourByHourListFragment::class.java.simpleName
         val ARG_PROGRAM = "program_param"
@@ -59,11 +63,9 @@ class HourByHourListFragment : BaseFragment() {
         }
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is BrowseActivity) {
-            //mHomeActivity = (HomeActivity) context;
-        }
+        mediaBrowserProvider = context as BaseActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -113,6 +115,18 @@ class HourByHourListFragment : BaseFragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onStart() {
+        super.onStart()
+        // fetch browsing information to fill the recycler view
+        val mediaBrowser = mediaBrowserProvider?.getMediaBrowser()
+        mediaBrowser?.let {
+            if (mediaBrowser.isConnected) {
+                Log.d(TAG, "onStart, onConnected=" + mediaBrowser.isConnected)
+                onMediaControllerConnected()
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         mCompositeDisposable.add(mPodcastsViewModel!!.downloadedPodcastsUpdates
@@ -121,30 +135,27 @@ class HourByHourListFragment : BaseFragment() {
                 .subscribe({ this.updateViewWithDownloaded(it) }))
     }
 
-    override fun onStart() {
-        super.onStart()
-        // fetch browsing information to fill the recycler view
-        val mediaBrowser = mediaBrowser()
-        Log.d(TAG, "onStart, onConnected=" + mediaBrowser.isConnected)
-        if (mediaBrowser.isConnected) {
-            onMediaControllerConnected()
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mCompositeDisposable.clear()
     }
 
     override fun onStop() {
         super.onStop()
-        val mediaBrowser = mediaBrowser()
-        val mediaId = mediaBrowser().root
-        if (mediaBrowser.isConnected) {
-            mediaBrowser.unsubscribe(mediaId)
+        val mediaBrowser = mediaBrowserProvider?.getMediaBrowser()
+        mediaBrowser?.let {
+            val mediaId = mediaId()
+            if (mediaBrowser.isConnected && mediaId != null) {
+                mediaBrowser.unsubscribe(mediaId)
+            }
         }
         val controller = MediaControllerCompat.getMediaController(activity)
         controller?.unregisterCallback(mediaControllerCallback)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mCompositeDisposable.clear()
+    override fun onDetach() {
+        super.onDetach()
+        mediaBrowserProvider = null
     }
 
     /*override fun handleOnBackPressed(): Boolean {
@@ -195,7 +206,7 @@ class HourByHourListFragment : BaseFragment() {
         if (isDetached) {
             return
         }
-        val mediaId = mediaId() ?: mediaBrowser().root
+        val mediaBrowser = mediaBrowserProvider?.getMediaBrowser()
 
         // Unsubscribing before subscribing is required if this mediaId already has a subscriber
         // on this MediaBrowser instance. Subscribing to an already subscribed mediaId will replace
@@ -206,8 +217,11 @@ class HourByHourListFragment : BaseFragment() {
         // subscriber or not. Currently this only happens if the mediaID has no previous
         // subscriber or if the media content changes on the service side, so we need to
         // unsubscribe first.
-        mediaBrowser().unsubscribe(mediaId)
-        mediaBrowser().subscribe(mediaId, mediaBrowserSubscriptionCallback)
+        mediaBrowser?.let {
+            val mediaId = mediaId() ?: MediaIDHelper.MEDIA_ID_ROOT
+            mediaBrowser.unsubscribe(mediaId)
+            mediaBrowser.subscribe(mediaId, mediaBrowserSubscriptionCallback)
+        }
 
         // Add MediaController callback so we can redraw the list when metadata changes:
         val controller = MediaControllerCompat.getMediaController(activity)

@@ -28,7 +28,7 @@ class MediaPlaybackActivity: BaseActivity() {
         setContentView(R.layout.activity_media_playback)
 
         initInjector()
-        mediaBrowser = MediaBrowserCompat(this,
+        mMediaBrowser = MediaBrowserCompat(this,
                 ComponentName(this, MediaPlaybackService::class.java),
                 mediaBrowserConnectionCallback,
                 null)
@@ -51,14 +51,14 @@ class MediaPlaybackActivity: BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        mediaBrowser.connect()
+        mMediaBrowser.connect()
     }
 
     override fun onStop() {
         super.onStop()
         val controllerCompat = MediaControllerCompat.getMediaController(this)
         controllerCompat?.unregisterCallback(mediaControllerCallback)
-        mediaBrowser.disconnect()
+        mMediaBrowser.disconnect()
     }
 
     override fun onDestroy() {
@@ -68,7 +68,7 @@ class MediaPlaybackActivity: BaseActivity() {
             supportMediaController.transportControls.pause()
         }
 
-        mediaBrowser.disconnect()
+        mMediaBrowser.disconnect()
     }
 
     private fun initInjector() {
@@ -82,7 +82,7 @@ class MediaPlaybackActivity: BaseActivity() {
     private val mediaBrowserConnectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             try {
-                connectToSession(mediaBrowser.sessionToken)
+                connectToSession(mMediaBrowser.sessionToken)
             } catch (e: RemoteException) {
                 // TODO handle error
                 //hidePlaybackControls()
@@ -96,7 +96,7 @@ class MediaPlaybackActivity: BaseActivity() {
         val mediaController = MediaControllerCompat(this, token)
         MediaControllerCompat.setMediaController(this, mediaController)
 
-        val root = mediaBrowser.root
+        val root = mMediaBrowser.root
 
         // Unsubscribing before subscribing is required if this mediaId already has a subscriber
         // on this MediaBrowser instance. Subscribing to an already subscribed mediaId will replace
@@ -107,9 +107,9 @@ class MediaPlaybackActivity: BaseActivity() {
         // subscriber or not. Currently this only happens if the mediaID has no previous
         // subscriber or if the media content changes on the service side, so we need to
         // unsubscribe first.
-        mediaBrowser.unsubscribe(root)
+        mMediaBrowser.unsubscribe(root)
 
-        mediaBrowser.subscribe(root, mediaBrowserSubscriptionCallback)
+        mMediaBrowser.subscribe(root, mediaBrowserSubscriptionCallback)
 
         // Add MediaController callback so we can redraw the list when metadata changes:
         val controller = MediaControllerCompat.getMediaController(this)
