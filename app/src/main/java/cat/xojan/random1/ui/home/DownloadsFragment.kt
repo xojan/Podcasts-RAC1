@@ -41,10 +41,10 @@ class DownloadsFragment : BaseFragment() {
     private var mSwipeRefresh: SwipeRefreshLayout? = null
     private var mEmptyList: TextView? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         getComponent(HomeComponent::class.java).inject(this)
-        val view = inflater!!.inflate(R.layout.recycler_view_fragment, container, false)
+        val view = inflater.inflate(R.layout.recycler_view_fragment, container, false)
 
         mSwipeRefresh = view.findViewById(R.id.swipe_refresh)
         mRecyclerView = view.findViewById(R.id.recycler_view)

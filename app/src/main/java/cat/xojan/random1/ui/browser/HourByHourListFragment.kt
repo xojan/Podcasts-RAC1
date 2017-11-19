@@ -1,5 +1,6 @@
 package cat.xojan.random1.ui.browser
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -68,10 +69,10 @@ class HourByHourListFragment : BaseFragment() {
         mediaBrowserProvider = context as BaseActivity
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         getComponent(BrowseComponent::class.java).inject(this)
-        val view = inflater!!.inflate(R.layout.recycler_view_fragment, container, false)
+        val view = inflater.inflate(R.layout.recycler_view_fragment, container, false)
 
         setHasOptionsMenu(true)
 
@@ -149,7 +150,7 @@ class HourByHourListFragment : BaseFragment() {
                 mediaBrowser.unsubscribe(mediaId)
             }
         }
-        val controller = MediaControllerCompat.getMediaController(activity)
+        val controller = MediaControllerCompat.getMediaController(activity as Activity)
         controller?.unregisterCallback(mediaControllerCallback)
     }
 
@@ -166,10 +167,10 @@ class HourByHourListFragment : BaseFragment() {
     private fun loadPodcasts(refresh: Boolean) {
         Handler().postDelayed({
             mSwipeRefresh!!.isRefreshing = true
-            val program = arguments.getParcelable<Program>(PodcastListFragment.ARG_PROGRAM)
-            val section = arguments.getParcelable<Section>(PodcastListFragment.ARG_SECTION)
+            val program = arguments?.getParcelable<Program>(PodcastListFragment.ARG_PROGRAM)
+            val section = arguments?.getParcelable<Section>(PodcastListFragment.ARG_SECTION)
 
-            mCompositeDisposable.add(mPodcastsViewModel!!.loadPodcasts(program, section, refresh)
+            mCompositeDisposable.add(mPodcastsViewModel.loadPodcasts(program, section, refresh)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ this.updateView(it) },
@@ -178,7 +179,7 @@ class HourByHourListFragment : BaseFragment() {
     }
 
     private fun handleError(throwable: Throwable) {
-        mCrashReporter!!.logException(throwable)
+        mCrashReporter.logException(throwable)
         mEmptyList!!.visibility = View.VISIBLE
         mSwipeRefresh!!.isRefreshing = false
         mRecyclerView!!.visibility = View.GONE
@@ -192,12 +193,12 @@ class HourByHourListFragment : BaseFragment() {
     }
 
     private fun updateViewWithDownloaded(podcasts: List<Podcast>) {
-        adapter!!.updateWithDownloaded(podcasts)
+        adapter.updateWithDownloaded(podcasts)
     }
 
     private fun showSections() {
-        mPodcastsViewModel!!.selectedSection(true)
-        val sectionListFragment = SectionFragment.newInstance(arguments.get(ARG_PROGRAM) as Program)
+        mPodcastsViewModel.selectedSection(true)
+        val sectionListFragment = SectionFragment.newInstance(arguments?.get(ARG_PROGRAM) as Program)
         (activity as BaseActivity).addFragment(sectionListFragment, SectionFragment.TAG, true)
     }
 
@@ -224,14 +225,16 @@ class HourByHourListFragment : BaseFragment() {
         }
 
         // Add MediaController callback so we can redraw the list when metadata changes:
-        val controller = MediaControllerCompat.getMediaController(activity)
+        val controller = MediaControllerCompat.getMediaController(activity as Activity)
         controller?.registerCallback(mediaControllerCallback)
     }
 
     private fun mediaId(): String? {
-        val mediaItem = arguments.getParcelable<MediaBrowserCompat.MediaItem>(ARG_PROGRAM)
-        Log.d(TAG, mediaItem.mediaId)
-        return mediaItem.mediaId
+        val mediaItem = arguments?.getParcelable<MediaBrowserCompat.MediaItem>(ARG_PROGRAM)
+        mediaItem?.let {
+            return mediaItem.mediaId
+        }
+        return null;
     }
 
     private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {

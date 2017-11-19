@@ -1,5 +1,6 @@
 package cat.xojan.random1.ui.home
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
@@ -49,13 +50,13 @@ class ProgramFragment: BaseFragment() {
         mediaBrowserProvider = context as BaseActivity
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         getComponent(HomeComponent::class.java).inject(this)
         return inflater!!.inflate(R.layout.recycler_view_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         swipe_refresh.setColorSchemeResources(R.color.colorAccent)
         swipe_refresh.setOnRefreshListener { Handler().postDelayed({ this.loadPrograms() }, 0) }
@@ -124,7 +125,7 @@ class ProgramFragment: BaseFragment() {
 
         // Add MediaController callback so we can redraw the list when metadata changes:
         activity?.let {
-            val controller = MediaControllerCompat.getMediaController(activity)
+            val controller = MediaControllerCompat.getMediaController(activity as Activity)
             controller?.registerCallback(mediaControllerCallback)
         }
     }
@@ -151,7 +152,7 @@ class ProgramFragment: BaseFragment() {
                 mediaBrowser.unsubscribe(mediaId)
             }
         }
-        val controller = MediaControllerCompat.getMediaController(activity)
+        val controller = MediaControllerCompat.getMediaController(activity as Activity)
         controller?.unregisterCallback(mediaControllerCallback)
     }
 
