@@ -99,6 +99,9 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger"
     implementation "com.google.dagger:dagger:$dagger"
 
+    // ExoPlayer
+    compile 'com.google.android.exoplayer:exoplayer-core:r2.5.4'
+
     // JUnit
     testImplementation "junit:junit:$jUnit"
 

@@ -14,7 +14,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import cat.xojan.random1.Application
-import cat.xojan.random1.domain.interactor.MusicProvider
+import cat.xojan.random1.domain.interactor.MediaProvider
 import cat.xojan.random1.other.MediaIDHelper.MEDIA_ID_ROOT
 import cat.xojan.random1.ui.notification.NotificationController
 import javax.inject.Inject
@@ -28,7 +28,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var notificationController: NotificationController
 
-    @Inject internal lateinit var musicProvider: MusicProvider
+    @Inject internal lateinit var musicProvider: MediaProvider
 
     override fun onCreate() {
         super.onCreate()

@@ -36,7 +36,7 @@
         <activity android:name=".ui.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".ui.mediaplayer.RadioPlayerActivity"/>
+        <!--<activity android:name=".ui.mediaplayer.RadioPlayerActivity"/>-->
 
         <activity android:name=".ui.browser.BrowseActivity"/>
 
@@ -55,16 +55,16 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="android.support.v4.media.session.MediaButtonReceiver">
+        <!--<receiver android:name="android.support.v4.media.session.MediaButtonReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
-        <service android:name=".service.MusicPlayerService"
+        <!--<service android:name=".service.MusicPlayerService"
             android:exported="false"
-            android:stopWithTask="false"/>
+            android:stopWithTask="false"/>-->
 
         <service
             android:name=".service.MediaPlaybackService"

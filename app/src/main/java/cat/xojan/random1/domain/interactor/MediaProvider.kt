@@ -14,9 +14,9 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
-class MusicProvider @Inject constructor(val programInteractor: ProgramDataInteractor) {
+class MediaProvider @Inject constructor(val programInteractor: ProgramDataInteractor) {
 
-    private val TAG = MusicProvider::class.simpleName
+    private val TAG = MediaProvider::class.simpleName
 
     fun retrieveMedia(
             result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>,
@@ -79,6 +79,7 @@ class MusicProvider @Inject constructor(val programInteractor: ProgramDataIntera
         val description = MediaDescriptionCompat.Builder()
                 .setMediaId(podcast.audioId)
                 .setTitle(podcast.title)
+                .setMediaUri(Uri.parse(podcast.path))
                 //.setIconUri(Uri.parse(podcast.imageUrl))
                 .build()
         return MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
