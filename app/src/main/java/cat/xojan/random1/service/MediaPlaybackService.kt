@@ -18,18 +18,7 @@ import cat.xojan.random1.Application
 import cat.xojan.random1.domain.interactor.MediaProvider
 import cat.xojan.random1.other.MediaIDHelper.MEDIA_ID_ROOT
 import cat.xojan.random1.ui.notification.NotificationController
-import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
-import com.google.android.exoplayer2.extractor.ExtractorsFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.util.Util
 import javax.inject.Inject
 
 
@@ -115,6 +104,12 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         mediaSession.release()
         notificationController.release()
         exoPlayer.release()
+
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.stop()
+        }
+        mediaPlayer.reset()
+        mediaPlayer.release()
     }
 
     override fun onLoadChildren(parentId: String, result
@@ -176,7 +171,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             Log.d(TAG, "onPlayFromMediaId: " + mediaId)
 
-            // Measures bandwidth during playback. Can be null if not required.
+            /*// Measures bandwidth during playback. Can be null if not required.
             val bandwidthMeter = DefaultBandwidthMeter()
             val audioTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
             val trackSelector = DefaultTrackSelector(audioTrackSelectionFactory)
@@ -193,7 +188,11 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
                 dataSourceFactory, extractorsFactory, null, null)
             // Prepare the player with the source.
             exoPlayer.prepare(videoSource)
-            exoPlayer.playWhenReady = true
+            exoPlayer.playWhenReady = true*/
+            val uri: Uri? = extras?.getParcelable("mediaUrl")
+            mediaPlayer.setDataSource(uri.toString())
+            mediaPlayer.setOnPreparedListener { mediaPlayer.start() }
+            mediaPlayer.prepareAsync()
         }
 
         override fun onCommand(command: String?, extras: Bundle?, cb: ResultReceiver?) {
