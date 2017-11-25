@@ -5,6 +5,7 @@ import javax.inject.Inject
 import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.domain.entities.Section
+import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -12,16 +13,20 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 
 class PodcastsViewModel @Inject
-constructor(private val mProgramDataInteractor: ProgramDataInteractor) {
+constructor(private val podcastInteractor: PodcastDataInteractor) {
 
-    val downloadedPodcastsUpdates: PublishSubject<List<Podcast>>
-        get() = mProgramDataInteractor.getDownloadedPodcastsUpdates()
+    fun selectedSection(b: Boolean) = podcastInteractor.setSectionSelected(b)
 
-    fun loadDownloadedPodcasts(): Single<List<Podcast>> {
+    fun isSectionSelected(): Boolean = podcastInteractor.isSectionSelected()
+
+    /* val downloadedPodcastsUpdates: PublishSubject<List<Podcast>>
+        get() = mProgramDataInteractor.getDownloadedPodcastsUpdates() */
+
+    /* fun loadDownloadedPodcasts(): Single<List<Podcast>> {
         return mProgramDataInteractor.getDownloadedPodcasts()
-    }
+    } */
 
-    fun loadPodcasts(program: Program, section: Section,
+    /*fun loadPodcasts(program: Program, section: Section,
                      refresh: Boolean): Single<List<Podcast>> {
         val loadedPodcasts = mProgramDataInteractor.loadPodcasts(program, section, refresh)
                 .flatMapIterable { list -> list }
@@ -51,13 +56,9 @@ constructor(private val mProgramDataInteractor: ProgramDataInteractor) {
             }
             loaded
         })
-    }
+    }*/
 
-    fun selectedSection(b: Boolean) {
-        mProgramDataInteractor.setSectionSelected(b)
-    }
-
-    fun exportPodcasts(): Observable<Boolean> {
+    /*fun exportPodcasts(): Observable<Boolean> {
         return mProgramDataInteractor.exportPodcasts()
-    }
+    }*/
 }

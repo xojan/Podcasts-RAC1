@@ -25,7 +25,7 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
         }
     }
 
-    @Inject internal lateinit var mViewModel: PodcastsViewModel
+    @Inject internal lateinit var viewModel: PodcastsViewModel
 
     override val component: BrowseComponent by lazy {
         DaggerBrowseComponent.builder()
@@ -46,11 +46,11 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val mediaItem = intent.getParcelableExtra<MediaBrowserCompat.MediaItem>(EXTRA_PROGRAM)
         title = mediaItem.description.title
-        /*if (intent.getBooleanExtra(EXTRA_IS_SECTION, false)) {
-            addFragment(SectionFragment.newInstance(program), SectionFragment.TAG, true)
-        } else {*/
+        if (viewModel.isSectionSelected()) {
+            addFragment(SectionFragment.newInstance(mediaItem), SectionFragment.TAG, false)
+        } else {
             addFragment(HourByHourListFragment.newInstance(mediaItem), HourByHourListFragment.TAG, false)
-        //}
+        }
     }
 
     override fun onMediaControllerConnected() {

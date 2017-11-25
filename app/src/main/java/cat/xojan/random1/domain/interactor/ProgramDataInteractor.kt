@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Environment
 import android.text.TextUtils
 import android.util.Log
-import cat.xojan.random1.data.PreferencesDownloadPodcastRepository
+import cat.xojan.random1.data.SharedPrefDownloadPodcastRepository
 import cat.xojan.random1.domain.entities.EventLogger
 import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.domain.entities.Program
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 class ProgramDataInteractor @Inject constructor(
         private val programRepo: ProgramRepository,
-        private val downloadRepo: PreferencesDownloadPodcastRepository,
+        private val downloadRepo: SharedPrefDownloadPodcastRepository,
         private val context: Context,
         private val downloadManager: DownloadManager,
         private val eventLogger: EventLogger) {
@@ -54,16 +54,6 @@ class ProgramDataInteractor @Inject constructor(
 
     fun loadSections(program: Program): Observable<List<Section>> {
         return Observable.just(program.sections)
-    }
-
-    fun isSectionSelected(): Boolean {
-        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-                .getBoolean(PREF_SECTION, false)
-    }
-
-    fun setSectionSelected(selected: Boolean) {
-        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit()
-                .putBoolean(PREF_SECTION, selected).apply()
     }
 
     fun loadPodcasts(program: Program, section: Section?,

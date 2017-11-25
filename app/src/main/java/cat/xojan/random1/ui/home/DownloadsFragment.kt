@@ -60,7 +60,7 @@ class DownloadsFragment : BaseFragment() {
         return view
     }
 
-    override fun onResume() {
+    /* override fun onResume() {
         super.onResume()
         mCompositeDisposable.add(mPodcastsViewModel!!.loadDownloadedPodcasts()
                 .subscribeOn(Schedulers.io())
@@ -73,7 +73,7 @@ class DownloadsFragment : BaseFragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ this.updateView(it) }))
-    }
+    } */
 
     override fun onPause() {
         super.onPause()

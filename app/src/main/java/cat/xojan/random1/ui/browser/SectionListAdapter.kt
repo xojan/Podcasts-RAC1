@@ -1,5 +1,6 @@
 package cat.xojan.random1.ui.browser
 
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -14,39 +15,38 @@ import kotlinx.android.synthetic.main.section_item.*
 import java.util.*
 
 
-class SectionListAdapter(private val activity: BaseActivity, private val program: Program)
-    : RecyclerView.Adapter<SectionListAdapter.ViewHolder>() {
+class SectionListAdapter(private val activity: BrowseActivity)
+    : RecyclerView.Adapter<SectionListAdapter.MediaItemViewHolder>() {
 
-    var sections: List<Section> = emptyList()
+    var sections: List<MediaBrowserCompat.MediaItem> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MediaItemViewHolder {
         val itemView = LayoutInflater.from(parent?.context).inflate(R.layout.section_item, parent, false)
-        return ViewHolder(itemView)
+        return MediaItemViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        holder?.bind(sections[position], program, activity)
+    override fun onBindViewHolder(holder: MediaItemViewHolder?, position: Int) {
+        holder?.bind(sections[position], activity)
     }
 
-    override fun getItemCount(): Int {
-        return sections.size
-    }
+    override fun getItemCount(): Int = sections.size
 
-    class ViewHolder(override val containerView: View)
+    class MediaItemViewHolder(override val containerView: View)
         : RecyclerView.ViewHolder(containerView),LayoutContainer {
 
-        fun bind(item: Section, program: Program, activity: BaseActivity) {
+        fun bind(item: MediaBrowserCompat.MediaItem, activity: BrowseActivity) {
             itemView.setOnClickListener {
-                val podcastListFragment = PodcastListFragment.newInstance(item, program)
-                activity.addFragment(podcastListFragment, PodcastListFragment.TAG, true)
+               /* val podcastListFragment = PodcastListFragment.newInstance(item)
+                activity.addFragment(podcastListFragment, PodcastListFragment.TAG, true)*/
             }
-            section_title.text = item.title
+            val section = item.description
+            section_title.text = section.title
             Picasso.with(itemView.context)
-                    .load(program.imageUrl() + "?w=" + getWeekOfTheYear())
+                    .load(section.iconUri.toString() + "?w=" + getWeekOfTheYear())
                     .resize(200, 200)
                     .transform(CircleTransform())
                     .placeholder(R.drawable.default_rac1)

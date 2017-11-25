@@ -49,10 +49,10 @@ public class PodcastListFragment extends BaseFragment {
     private SwipeRefreshLayout mSwipeRefresh;
     private TextView mEmptyList;
 
-    public static PodcastListFragment newInstance(Section section, Program program) {
+    public static PodcastListFragment newInstance(Section section) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_SECTION, section);
-        args.putParcelable(ARG_PROGRAM, program);
+        // args.putParcelable(ARG_PROGRAM, program);
 
         PodcastListFragment podcastListFragment = new PodcastListFragment();
         podcastListFragment.setArguments(args);
@@ -97,7 +97,7 @@ public class PodcastListFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
+    /* @Override
     public void onResume() {
         super.onResume();
         mCompositeDisposable.add(mPodcastsViewModel.getDownloadedPodcastsUpdates()
@@ -106,7 +106,7 @@ public class PodcastListFragment extends BaseFragment {
                 .subscribe(this::updateViewWithDownloaded));
         getActivity().setTitle(((Section) getArguments().get(ARG_SECTION)).getTitle());
         showBackArrow();
-    }
+    } */
 
     @Override
     public void onPause() {
@@ -121,7 +121,7 @@ public class PodcastListFragment extends BaseFragment {
     }
 
     private void showPodcasts(final boolean refresh) {
-        new Handler().postDelayed(() -> {
+        /* new Handler().postDelayed(() -> {
             mSwipeRefresh.setRefreshing(true);
             Program program = getArguments().getParcelable(PodcastListFragment.ARG_PROGRAM);
             Section section = getArguments().getParcelable(PodcastListFragment.ARG_SECTION);
@@ -131,7 +131,7 @@ public class PodcastListFragment extends BaseFragment {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::updateView,
                             this::handleError));
-        }, 0);
+        }, 0); */
     }
 
     private void updateView(List<Podcast> podcasts) {

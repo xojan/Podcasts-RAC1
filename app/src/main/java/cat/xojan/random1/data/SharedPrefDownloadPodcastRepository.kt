@@ -10,7 +10,7 @@ import com.squareup.moshi.Rfc3339DateJsonAdapter
 import com.squareup.moshi.Types
 import java.util.*
 
-class PreferencesDownloadPodcastRepository(context: Context) : DownloadPodcastRepository {
+class SharedPrefDownloadPodcastRepository(context: Context) : DownloadPodcastRepository {
 
     private val DOWNLOAD_PODCASTS = "dowload_podcasts_repo"
     private val DOWNLOADING_PODCASTS = "downloading_podcasts"

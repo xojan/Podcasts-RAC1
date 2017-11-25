@@ -12,7 +12,7 @@ import java.io.File
 import java.io.IOException
 import java.util.ArrayList
 
-import cat.xojan.random1.data.PreferencesDownloadPodcastRepository
+import cat.xojan.random1.data.SharedPrefDownloadPodcastRepository
 import cat.xojan.random1.domain.entities.EventLogger
 import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.domain.entities.Program
@@ -34,7 +34,7 @@ import org.mockito.Mockito.`when`
 class ProgramDataInteractorTest {
 
     private lateinit var mProgramRepo: ProgramRepository
-    private lateinit var mDownloadsRepo: PreferencesDownloadPodcastRepository
+    private lateinit var mDownloadsRepo: SharedPrefDownloadPodcastRepository
     private lateinit var mProgramDataInteractor: ProgramDataInteractor
     private lateinit var mMockContext: Context
     private lateinit var mDownloadManager: DownloadManager
@@ -50,7 +50,7 @@ class ProgramDataInteractorTest {
     @Before
     fun setUp() {
         mProgramRepo = mock(ProgramRepository::class.java)
-        mDownloadsRepo = mock(PreferencesDownloadPodcastRepository::class.java)
+        mDownloadsRepo = mock(SharedPrefDownloadPodcastRepository::class.java)
         mMockContext = mock(Context::class.java)
         mDownloadManager = mock(DownloadManager::class.java)
         mEventLogger = mock(EventLogger::class.java)

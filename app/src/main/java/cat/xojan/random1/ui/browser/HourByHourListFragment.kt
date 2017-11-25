@@ -19,7 +19,6 @@ import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.injection.component.BrowseComponent
 import cat.xojan.random1.ui.BaseActivity
 import cat.xojan.random1.ui.BaseFragment
@@ -28,9 +27,7 @@ import cat.xojan.random1.ui.MediaBrowserProvider
 import cat.xojan.random1.ui.home.ProgramFragment
 import cat.xojan.random1.ui.home.ProgramFragment.Companion.MEDIA_ID_ROOT
 import cat.xojan.random1.viewmodel.PodcastsViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recycler_view_fragment.*
 import javax.inject.Inject
 
@@ -116,13 +113,13 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
         }
     }
 
-    override fun onResume() {
+    /* override fun onResume() {
         super.onResume()
         mCompositeDisposable.add(mPodcastsViewModel.downloadedPodcastsUpdates
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ this.updateViewWithDownloaded(it) }))
-    }
+    } */
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -170,9 +167,9 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
     }
 
     private fun showSections() {
-        mPodcastsViewModel.selectedSection(true)
+       /* mPodcastsViewModel.selectedSection(true)
         val sectionListFragment = SectionFragment.newInstance(arguments?.get(ARG_PROGRAM) as Program)
-        (activity as BaseActivity).addFragment(sectionListFragment, SectionFragment.TAG, true)
+        (activity as BaseActivity).addFragment(sectionListFragment, SectionFragment.TAG, true)*/
     }
 
     override fun onMediaControllerConnected() {
@@ -224,7 +221,7 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
 
         override fun onError(id: String) {
             val msg = "hourByHour fragment subscription onError, id=" + id
-            Log.e(ProgramFragment.TAG, msg)
+            Log.e(TAG, msg)
             crashReporter.logException(msg)
         }
     }

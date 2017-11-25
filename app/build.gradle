@@ -80,7 +80,7 @@ buildscript {
 repositories {
     mavenCentral()
     jcenter()
-    maven {url "https://clojars.org/repo/" }
+    maven { url "https://clojars.org/repo/" }
     maven { url 'https://maven.fabric.io/public' }
 }
 
@@ -132,4 +132,7 @@ dependencies {
 
     // RxLint
     implementation 'nl.littlerobots.rxlint:rxlint:1.5'
+
+    // ViewModel
+    implementation "android.arch.lifecycle:extensions:1.0.0"
 }

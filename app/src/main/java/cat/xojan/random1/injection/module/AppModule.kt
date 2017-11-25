@@ -4,16 +4,16 @@ import android.app.DownloadManager
 import android.content.Context
 import cat.xojan.random1.Application
 import cat.xojan.random1.BuildConfig
-import cat.xojan.random1.data.PreferencesDownloadPodcastRepository
+import cat.xojan.random1.data.SharedPrefDownloadPodcastRepository
 import cat.xojan.random1.data.Rac1ApiService
 import cat.xojan.random1.data.RemotePodcastRepository
 import cat.xojan.random1.data.RemoteProgramRepository
 import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.EventLogger
-import cat.xojan.random1.domain.entities.PodcastData
 import cat.xojan.random1.domain.interactor.MediaProvider
 import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
+import cat.xojan.random1.domain.repository.PodcastPreferencesRepository
 import cat.xojan.random1.domain.repository.PodcastRepository
 import cat.xojan.random1.domain.repository.ProgramRepository
 import com.crashlytics.android.Crashlytics
@@ -79,16 +79,17 @@ class AppModule(private val mApplication: Application) {
             eventLogger: EventLogger,
             programRepository: ProgramRepository) : ProgramDataInteractor {
         return ProgramDataInteractor(programRepository,
-                PreferencesDownloadPodcastRepository(mApplication),
+                SharedPrefDownloadPodcastRepository(mApplication),
                 mApplication, downloadManager, eventLogger)
     }
 
     @Provides
     @Singleton
     fun providePodcastDataInteractor(podcastRepository: PodcastRepository,
-                                     programRepository: ProgramRepository)
+                                     programRepository: ProgramRepository,
+                                     podcastPrefRepository: PodcastPreferencesRepository)
             : PodcastDataInteractor {
-        return PodcastDataInteractor(programRepository, podcastRepository)
+        return PodcastDataInteractor(programRepository, podcastRepository, podcastPrefRepository)
     }
 
     @Provides

@@ -122,10 +122,10 @@ class HomeActivity: BaseActivity(), HasComponent<HomeComponent> {
     }
 
     private fun exportPodcasts() {
-        mCompositeDisposable.add(mViewModel.exportPodcasts()
+       /* mCompositeDisposable.add(mViewModel.exportPodcasts()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Consumer<Boolean> { this.notifyUser(it) }))
+                .subscribe({ this.notifyUser(it) }))*/
     }
 
     private fun notifyUser(b: Boolean?) {
