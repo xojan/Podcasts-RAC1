@@ -29,6 +29,6 @@ public class SectionsViewModel {
     }
 
     public void selectedSection(boolean selected) {
-        mProgramDataInteractor.setSectionSelected(selected);
+       // mProgramDataInteractor.setSectionSelected(selected);
     }
 }

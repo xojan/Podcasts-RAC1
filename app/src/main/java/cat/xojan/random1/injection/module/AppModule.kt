@@ -4,10 +4,7 @@ import android.app.DownloadManager
 import android.content.Context
 import cat.xojan.random1.Application
 import cat.xojan.random1.BuildConfig
-import cat.xojan.random1.data.SharedPrefDownloadPodcastRepository
-import cat.xojan.random1.data.Rac1ApiService
-import cat.xojan.random1.data.RemotePodcastRepository
-import cat.xojan.random1.data.RemoteProgramRepository
+import cat.xojan.random1.data.*
 import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.EventLogger
 import cat.xojan.random1.domain.interactor.MediaProvider
@@ -32,7 +29,7 @@ import java.util.*
 import javax.inject.Singleton
 
 @Module
-class AppModule(private val mApplication: Application) {
+class AppModule(private val application: Application) {
 
     companion object {
         private val RAC1_URL = "http://www.rac1.cat/audioteca/api/app/"
@@ -41,7 +38,7 @@ class AppModule(private val mApplication: Application) {
     @Provides
     @Singleton
     internal fun provideDownloadManager(): DownloadManager {
-        return mApplication.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        return application.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     }
 
     @Provides
@@ -79,8 +76,8 @@ class AppModule(private val mApplication: Application) {
             eventLogger: EventLogger,
             programRepository: ProgramRepository) : ProgramDataInteractor {
         return ProgramDataInteractor(programRepository,
-                SharedPrefDownloadPodcastRepository(mApplication),
-                mApplication, downloadManager, eventLogger)
+                SharedPrefDownloadPodcastRepository(application),
+                application, downloadManager, eventLogger)
     }
 
     @Provides
@@ -123,5 +120,10 @@ class AppModule(private val mApplication: Application) {
     @Singleton
     fun provideRemotePodcastRepository(service: Rac1ApiService): PodcastRepository {
         return RemotePodcastRepository(service)
+    }
+
+    @Provides
+    fun providesPodcastsPreferencesRepository(): PodcastPreferencesRepository {
+        return SharedPrefPodcastPreferencesRepository(application)
     }
 }

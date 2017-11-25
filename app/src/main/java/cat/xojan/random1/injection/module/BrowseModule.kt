@@ -23,9 +23,4 @@ class BrowseModule(private val activity: Activity) {
     fun provideSectionsViewModel(programDataInteractor: ProgramDataInteractor): SectionsViewModel {
         return SectionsViewModel(programDataInteractor)
     }
-
-    @Provides
-    fun providesPodcastsPreferencesRepository(): PodcastPreferencesRepository {
-        return SharedPrefPodcastPreferencesRepository(activity)
-    }
 }

@@ -5,6 +5,7 @@ import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.EventLogger
 import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
+import cat.xojan.random1.domain.repository.PodcastPreferencesRepository
 import cat.xojan.random1.domain.repository.PodcastRepository
 import cat.xojan.random1.domain.repository.ProgramRepository
 import cat.xojan.random1.injection.module.AppModule
@@ -28,4 +29,5 @@ interface AppComponent {
     fun crashReporter(): CrashReporter
     fun programRepository(): ProgramRepository
     fun podcastRepository(): PodcastRepository
+    fun podcastPreferencesRepository(): PodcastPreferencesRepository
 }
