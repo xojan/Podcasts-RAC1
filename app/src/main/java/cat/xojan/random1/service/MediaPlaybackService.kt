@@ -18,7 +18,6 @@ import cat.xojan.random1.Application
 import cat.xojan.random1.domain.interactor.MediaProvider
 import cat.xojan.random1.other.MediaIDHelper.MEDIA_ID_ROOT
 import cat.xojan.random1.ui.notification.NotificationController
-import com.google.android.exoplayer2.SimpleExoPlayer
 import javax.inject.Inject
 
 
@@ -31,8 +30,6 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
     private lateinit var notificationController: NotificationController
 
     @Inject internal lateinit var musicProvider: MediaProvider
-
-    private lateinit var exoPlayer: SimpleExoPlayer
 
     override fun onCreate() {
         super.onCreate()
@@ -103,7 +100,6 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         unregisterReceiver(noisyReceiver)
         mediaSession.release()
         notificationController.release()
-        exoPlayer.release()
 
         if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()

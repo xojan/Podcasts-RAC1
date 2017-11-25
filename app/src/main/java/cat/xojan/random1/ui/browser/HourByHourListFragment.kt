@@ -170,7 +170,7 @@ class HourByHourListFragment : BaseFragment() {
             val program = arguments?.getParcelable<Program>(PodcastListFragment.ARG_PROGRAM)
             val section = arguments?.getParcelable<Section>(PodcastListFragment.ARG_SECTION)
 
-            mCompositeDisposable.add(mPodcastsViewModel.loadPodcasts(program, section, refresh)
+            mCompositeDisposable.add(mPodcastsViewModel.loadPodcasts(program!!, section!!, refresh)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ this.updateView(it) },

@@ -8,7 +8,7 @@ import java.util.*
 data class Podcast(private var audio: Audio,
               var path: String,
               var filePath: String?,
-              var dateTime: String,
+              var dateTime: Date,
               private var durationSeconds: Long,
               var programId: String?,
               private var _imageUrl: String?,
