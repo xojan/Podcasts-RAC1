@@ -15,13 +15,11 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
-import org.intellij.lang.annotations.Flow
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.ArrayList
-import java.util.HashSet
+import java.util.*
 import javax.inject.Inject
 
 class ProgramDataInteractor @Inject constructor(
@@ -39,26 +37,19 @@ class ProgramDataInteractor @Inject constructor(
     private val PREF_SECTION = "pref_section"
     private val TAG = ProgramDataInteractor::class.java.simpleName
 
-    var programs: List<Program> = listOf()
     private var podcastsBySection: Flowable<List<Podcast>>? = null
     private var podcastsByProgram: Flowable<List<Podcast>>? = null
     private var mSection: Section? = null
-    private var mProgram: Program? = null
     private val mDownloadedPodcastsSubject: PublishSubject<List<Podcast>> = PublishSubject.create()
-    private var currentProgram: Program? = null
 
-    fun loadPrograms(): Observable<List<Program>> {
-        return Observable.create { subscriber ->
-            try {
-                if (programs.isEmpty()) {
-                    programs = programRepo.getPrograms()
+    fun loadPrograms(): Single<List<Program>> {
+        return programRepo.getPrograms()
+                .flatMap {
+                    podcasts -> Observable.just(podcasts)
+                        .flatMapIterable { p -> p }
+                        .filter { p -> p.active }
+                        .toList()
                 }
-                subscriber.onNext(programs)
-                subscriber.onComplete()
-            } catch (e: IOException) {
-                subscriber.onError(e)
-            }
-        }
     }
 
     fun loadSections(program: Program): Observable<List<Section>> {
@@ -77,24 +68,25 @@ class ProgramDataInteractor @Inject constructor(
 
     fun loadPodcasts(program: Program, section: Section?,
                      refresh: Boolean): Flowable<List<Podcast>> {
-        currentProgram = program
+        /*currentProgram = program
         try {
             if (section != null) {
                 if (podcastsBySection == null || refresh || section != section) {
                     mSection = section
-                    podcastsBySection = programRepo.getPodcast(program.id, section.id)
+                    podcastsBySection = programRepo.getPodcasts(program.id, section.id)
                 }
                 return podcastsBySection as Flowable<List<Podcast>>
             } else {
                 if (podcastsByProgram == null || refresh || mProgram != program) {
                     mProgram = program
-                    podcastsByProgram = programRepo.getPodcast(program.id, null)
+                    podcastsByProgram = programRepo.getPodcasts(program.id, null)
                 }
                 return podcastsByProgram as Flowable<List<Podcast>>
             }
         } catch (e: IOException) {
             return Flowable.error(e)
-        }
+        }*/
+        return Flowable.error(Throwable())
     }
 
     fun addDownload(audioId: String) {
@@ -112,8 +104,8 @@ class ProgramDataInteractor @Inject constructor(
         }
     }
 
-    fun getHourByHourPodcasts(programId: String): Flowable<List<Podcast>> =
-            programRepo.getPodcast(programId)
+    /*fun getHourByHourPodcasts(programId: String): Flowable<List<Podcast>> =
+            programRepo.getPodcasts(programId)*/
 
     fun getDownloadedPodcasts(): Single<List<Podcast>> {
         return Single.just(fetchDownloadedPodcasts())

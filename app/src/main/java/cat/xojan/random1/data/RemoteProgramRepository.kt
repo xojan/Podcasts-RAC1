@@ -1,32 +1,30 @@
 package cat.xojan.random1.data
 
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.PodcastData
 import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.domain.repository.ProgramRepository
-import io.reactivex.Flowable
+import io.reactivex.Single
 import java.io.IOException
 
 class RemoteProgramRepository(private val service: Rac1ApiService): ProgramRepository {
 
-    @Throws(IOException::class)
-    override fun getPrograms(): List<Program> {
-        return service.getProgramData().execute().body()!!.programs
+    var programs: LinkedHashMap<String,  Program> = linkedMapOf()
+
+    override fun getPrograms(): Single<List<Program>> {
+        return Single.create { subscriber ->
+            try {
+                if (programs.isEmpty()) {
+                    for (item in service.getProgramData().execute().body()!!.programs) {
+                        programs.put(item.id, item)
+                    }
+                }
+                subscriber.onSuccess(programs.values.toList())
+            } catch (e: IOException) {
+                subscriber.onError(e)
+            }
+        }
     }
 
-    @Throws(IOException::class)
-    override fun getPodcast(programId: String, sectionId: String?): Flowable<List<Podcast>> {
-        sectionId?.let {
-            return service.getPodcastData(programId, sectionId).map(PodcastData::podcasts)
-        }
-        return service.getPodcastData(programId).map(PodcastData::podcasts)
-    }
-
-    @Throws(IOException::class)
-    override fun getPodcastPlainData(programId: String, sectionId: String?): List<Podcast> {
-        sectionId?.let {
-            return service.getPodcastDataPlainData(programId, sectionId).execute().body()!!.podcasts
-        }
-        return service.getPodcastDataPlainData(programId).execute().body()!!.podcasts
+    override fun getProgram(programId: String): Program? {
+        return programs[programId]
     }
 }

@@ -2,7 +2,7 @@ package cat.xojan.random1.data
 
 import cat.xojan.random1.domain.entities.PodcastData
 import cat.xojan.random1.domain.entities.ProgramData
-import io.reactivex.Flowable
+import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -12,11 +12,11 @@ interface Rac1ApiService {
     fun getProgramData(): Call<ProgramData>
 
     @GET("v1/sessions/{programId}")
-    fun getPodcastData(@Path("programId") programId: String): Flowable<PodcastData>
+    fun getPodcastData(@Path("programId") programId: String): Observable<PodcastData>
 
     @GET("v1/sessions/{programId}/{sectionId}")
     fun getPodcastData(@Path("programId") programId: String,
-                       @Path("sectionId") sectionId: String): Flowable<PodcastData>
+                       @Path("sectionId") sectionId: String): Observable<PodcastData>
 
     @GET("v1/sessions/{programId}")
     fun getPodcastDataPlainData(@Path("programId") programId: String): Call<PodcastData>

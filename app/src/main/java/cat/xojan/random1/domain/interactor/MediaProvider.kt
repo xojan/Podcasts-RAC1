@@ -14,7 +14,9 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
-class MediaProvider @Inject constructor(private val programInteractor: ProgramDataInteractor) {
+class MediaProvider @Inject constructor(
+        private val programInteractor: ProgramDataInteractor,
+        private val podcastInteractor: PodcastDataInteractor) {
 
     companion object {
         val ERROR = "ERROR"
@@ -35,19 +37,18 @@ class MediaProvider @Inject constructor(private val programInteractor: ProgramDa
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             { n -> handleNextPrograms(n, result) },
-                            { e -> handleError(e, result) },
-                            { handleComplete() }
+                            { e -> handleError(e, result) }
                     )
             )
         } else {
-            compositeDisposable.add(programInteractor.getHourByHourPodcasts(parentId)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { n -> handleNextPodcasts(n, result) },
-                            { e -> handleError(e, result) },
-                            { handleComplete() }
-                    )
+            compositeDisposable.add(
+                    podcastInteractor.getHourByHourPodcasts(parentId)
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    { p -> handleNextPodcasts(p, result)},
+                                    { e -> handleError(e, result)}
+                            )
             )
         }
     }
@@ -67,8 +68,6 @@ class MediaProvider @Inject constructor(private val programInteractor: ProgramDa
         val mediaItems = podcasts.mapTo(ArrayList()) { createBrowsableMediaItemForPodcast(it) }
         result.sendResult(mediaItems)
     }
-
-    private fun handleComplete() {}
 
     private fun handleError(
             it: Throwable?,

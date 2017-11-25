@@ -14,13 +14,11 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.CrashReporter
-import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.injection.component.HomeComponent
 import cat.xojan.random1.ui.BaseActivity
 import cat.xojan.random1.ui.BaseFragment
 import cat.xojan.random1.ui.IsMediaBrowserFragment
 import cat.xojan.random1.ui.MediaBrowserProvider
-import cat.xojan.random1.viewmodel.ProgramsViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragments_programs.*
 import javax.inject.Inject
@@ -33,7 +31,6 @@ class ProgramFragment: BaseFragment(), IsMediaBrowserFragment {
         val MEDIA_ID_ROOT = "__PROGRAMS__"
     }
 
-    @Inject internal lateinit var programsViewModel: ProgramsViewModel
     @Inject internal lateinit var crashReporter: CrashReporter
 
     private val mCompositeDisposable = CompositeDisposable()

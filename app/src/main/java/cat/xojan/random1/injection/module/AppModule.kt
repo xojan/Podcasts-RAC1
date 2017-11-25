@@ -6,11 +6,16 @@ import cat.xojan.random1.Application
 import cat.xojan.random1.BuildConfig
 import cat.xojan.random1.data.PreferencesDownloadPodcastRepository
 import cat.xojan.random1.data.Rac1ApiService
+import cat.xojan.random1.data.RemotePodcastRepository
 import cat.xojan.random1.data.RemoteProgramRepository
 import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.EventLogger
+import cat.xojan.random1.domain.entities.PodcastData
 import cat.xojan.random1.domain.interactor.MediaProvider
+import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
+import cat.xojan.random1.domain.repository.PodcastRepository
+import cat.xojan.random1.domain.repository.ProgramRepository
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.squareup.moshi.KotlinJsonAdapterFactory
@@ -69,30 +74,53 @@ class AppModule(private val mApplication: Application) {
 
     @Provides
     @Singleton
-    internal fun provideProgramDataInteractor(service: Rac1ApiService,
-                                              downloadManager: DownloadManager,
-                                              eventLogger: EventLogger): ProgramDataInteractor {
-        return ProgramDataInteractor(RemoteProgramRepository(service),
+    fun provideProgramDataInteractor(
+            downloadManager: DownloadManager,
+            eventLogger: EventLogger,
+            programRepository: ProgramRepository) : ProgramDataInteractor {
+        return ProgramDataInteractor(programRepository,
                 PreferencesDownloadPodcastRepository(mApplication),
                 mApplication, downloadManager, eventLogger)
     }
 
     @Provides
     @Singleton
-    internal fun provideEventLogger(): EventLogger {
+    fun providePodcastDataInteractor(podcastRepository: PodcastRepository,
+                                     programRepository: ProgramRepository)
+            : PodcastDataInteractor {
+        return PodcastDataInteractor(programRepository, podcastRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventLogger(): EventLogger {
         return if (BuildConfig.DEBUG) EventLogger(null) else EventLogger(Answers.getInstance())
     }
 
     @Provides
     @Singleton
-    internal fun provideCrashReporter(): CrashReporter {
+    fun provideCrashReporter(): CrashReporter {
         return if (BuildConfig.DEBUG) CrashReporter(null) else CrashReporter(Crashlytics
                 .getInstance())
     }
 
     @Provides
     @Singleton
-    internal fun provideMusicProvider(programDataInteractor: ProgramDataInteractor): MediaProvider {
-        return MediaProvider(programDataInteractor)
+    fun provideMediaProvider(programDataInteractor: ProgramDataInteractor,
+                             podcastDataInteractor: PodcastDataInteractor
+    ): MediaProvider {
+        return MediaProvider(programDataInteractor, podcastDataInteractor)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoteProgramRepository(service: Rac1ApiService): ProgramRepository {
+        return RemoteProgramRepository(service)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemotePodcastRepository(service: Rac1ApiService): PodcastRepository {
+        return RemotePodcastRepository(service)
     }
 }
