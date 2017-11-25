@@ -93,12 +93,12 @@ class PodcastListAdapter: RecyclerView.Adapter<PodcastListAdapter.MediaItemViewH
 
             val podcast = item.description
             podcast_title.text = podcast.title
-            /*Picasso.with(itemView.context)
-                    .load(podcast.imageUrl + "?w=" + getWeekOfTheYear())
+            Picasso.with(itemView.context)
+                    .load(podcast.iconUri.toString() + "?w=" + getWeekOfTheYear())
                     .resize(200, 200)
                     .placeholder(R.drawable.default_rac1)
                     .transform(CircleTransform())
-                    .into(podcast_image)*/
+                    .into(podcast_image)
         }
 
         private fun getWeekOfTheYear(): Int {

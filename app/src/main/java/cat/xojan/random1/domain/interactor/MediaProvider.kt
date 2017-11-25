@@ -101,7 +101,7 @@ class MediaProvider @Inject constructor(
                 .setMediaId(podcast.audioId)
                 .setTitle(podcast.title)
                 .setMediaUri(Uri.parse(podcast.path))
-                //.setIconUri(Uri.parse(podcast.imageUrl))
+                .setIconUri(Uri.parse(podcast.imageUrl))
                 .build()
         return MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
     }
