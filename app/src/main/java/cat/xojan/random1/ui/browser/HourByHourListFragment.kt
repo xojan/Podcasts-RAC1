@@ -24,10 +24,10 @@ import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.domain.entities.Section
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.injection.component.BrowseComponent
-import cat.xojan.random1.other.MediaIDHelper
 import cat.xojan.random1.ui.BaseActivity
 import cat.xojan.random1.ui.BaseFragment
 import cat.xojan.random1.ui.MediaBrowserProvider
+import cat.xojan.random1.ui.home.ProgramFragment.Companion.MEDIA_ID_ROOT
 import cat.xojan.random1.viewmodel.PodcastsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -219,7 +219,7 @@ class HourByHourListFragment : BaseFragment() {
         // subscriber or if the media content changes on the service side, so we need to
         // unsubscribe first.
         mediaBrowser?.let {
-            val mediaId = mediaId() ?: MediaIDHelper.MEDIA_ID_ROOT
+            val mediaId = mediaId() ?: MEDIA_ID_ROOT
             mediaBrowser.unsubscribe(mediaId)
             mediaBrowser.subscribe(mediaId, mediaBrowserSubscriptionCallback)
         }

@@ -1,6 +1,5 @@
 package cat.xojan.random1.domain.interactor
 
-import android.content.res.Resources
 import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
@@ -8,45 +7,55 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.util.Log
 import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.domain.entities.Program
-import cat.xojan.random1.other.MediaIDHelper
+import cat.xojan.random1.ui.home.ProgramFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
-class MediaProvider @Inject constructor(val programInteractor: ProgramDataInteractor) {
+class MediaProvider @Inject constructor(private val programInteractor: ProgramDataInteractor) {
 
-    private val TAG = MediaProvider::class.simpleName
+    companion object {
+        val ERROR = "ERROR"
+    }
+    private val tag = MediaProvider::class.simpleName
+    private val compositeDisposable = CompositeDisposable()
+
+    fun clear() {
+        compositeDisposable.clear()
+    }
 
     fun retrieveMedia(
             result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>,
-            parentId: String,
-            resources: Resources) {
-        if (parentId == MediaIDHelper.MEDIA_ID_ROOT) {
-            programInteractor.loadPrograms()
+            parentId: String) {
+        if (parentId == ProgramFragment.MEDIA_ID_ROOT) {
+            compositeDisposable.add(programInteractor.loadPrograms()
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             { n -> handleNextPrograms(n, result) },
-                            { e -> handleError(e) },
+                            { e -> handleError(e, result) },
                             { handleComplete() }
                     )
+            )
         } else {
-            programInteractor.getHourByHourPodcasts(parentId)
+            compositeDisposable.add(programInteractor.getHourByHourPodcasts(parentId)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             { n -> handleNextPodcasts(n, result) },
-                            { e -> handleError(e) },
+                            { e -> handleError(e, result) },
                             { handleComplete() }
                     )
+            )
         }
     }
 
     private fun handleNextPrograms(
             programs: List<Program>,
             result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        Log.d(TAG, "Retrieve programs success")
+        Log.d(tag, "Retrieve programs success")
         val mediaItems = programs.mapTo(ArrayList()) { createBrowsableMediaItemForProgram(it) }
         result.sendResult(mediaItems)
     }
@@ -54,15 +63,28 @@ class MediaProvider @Inject constructor(val programInteractor: ProgramDataIntera
     private fun handleNextPodcasts(
             podcasts: List<Podcast>,
             result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        Log.d(TAG, "Retrieve programs success")
+        Log.d(tag, "Retrieve programs success")
         val mediaItems = podcasts.mapTo(ArrayList()) { createBrowsableMediaItemForPodcast(it) }
         result.sendResult(mediaItems)
     }
 
     private fun handleComplete() {}
 
-    private fun handleError(it: Throwable?) {
-        Log.e(TAG, it.toString())
+    private fun handleError(
+            it: Throwable?,
+            result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        Log.e(tag, it.toString())
+        result.sendResult(arrayListOf(createErrorBrowsableMediaItem(it)))
+    }
+
+    private fun createErrorBrowsableMediaItem(it: Throwable?): MediaBrowserCompat.MediaItem {
+        val description = MediaDescriptionCompat.Builder()
+                .setMediaId(ERROR)
+                .setTitle(it?.message)
+                .setDescription(it?.printStackTrace().toString())
+                .build()
+        return MediaBrowserCompat.MediaItem(description,
+                MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
     }
 
     private fun createBrowsableMediaItemForProgram(program: Program): MediaBrowserCompat.MediaItem {

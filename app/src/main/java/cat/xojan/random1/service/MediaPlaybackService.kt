@@ -16,7 +16,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import cat.xojan.random1.Application
 import cat.xojan.random1.domain.interactor.MediaProvider
-import cat.xojan.random1.other.MediaIDHelper.MEDIA_ID_ROOT
+import cat.xojan.random1.ui.home.ProgramFragment.Companion.MEDIA_ID_ROOT
 import cat.xojan.random1.ui.notification.NotificationController
 import javax.inject.Inject
 
@@ -29,7 +29,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var notificationController: NotificationController
 
-    @Inject internal lateinit var musicProvider: MediaProvider
+    @Inject internal lateinit var mediaProvider: MediaProvider
 
     override fun onCreate() {
         super.onCreate()
@@ -106,17 +106,19 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         }
         mediaPlayer.reset()
         mediaPlayer.release()
+        mediaProvider.clear()
     }
 
-    override fun onLoadChildren(parentId: String, result
-    : Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        Log.d(TAG, "onloadChildren: " + parentId)
+    override fun onLoadChildren(
+            parentId: String,
+            result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        Log.d(TAG, "onLoadChildren: " + parentId)
         result.detach()
-        musicProvider.retrieveMedia(result, parentId, resources)
+        mediaProvider.retrieveMedia(result, parentId)
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
-        Log.d(TAG, "ongetRoot: " + MEDIA_ID_ROOT)
+        Log.d(TAG, "onGetRoot: " + MEDIA_ID_ROOT)
         return MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_ROOT, null)
     }
 

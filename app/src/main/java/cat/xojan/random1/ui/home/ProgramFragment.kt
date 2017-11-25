@@ -1,40 +1,36 @@
 package cat.xojan.random1.ui.home
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.CrashReporter
-import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.injection.component.HomeComponent
-import cat.xojan.random1.other.MediaIDHelper
 import cat.xojan.random1.ui.BaseActivity
 import cat.xojan.random1.ui.BaseFragment
+import cat.xojan.random1.ui.IsMediaBrowserFragment
 import cat.xojan.random1.ui.MediaBrowserProvider
 import cat.xojan.random1.viewmodel.ProgramsViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.recycler_view_fragment.*
+import kotlinx.android.synthetic.main.fragments_programs.*
 import javax.inject.Inject
 
 
-class ProgramFragment: BaseFragment() {
+class ProgramFragment: BaseFragment(), IsMediaBrowserFragment {
 
     companion object {
         val TAG = ProgramFragment::class.simpleName
+        val MEDIA_ID_ROOT = "__PROGRAMS__"
     }
 
     @Inject internal lateinit var programsViewModel: ProgramsViewModel
@@ -53,17 +49,16 @@ class ProgramFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         getComponent(HomeComponent::class.java).inject(this)
-        return inflater!!.inflate(R.layout.recycler_view_fragment, container, false)
+        return inflater.inflate(R.layout.fragments_programs, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        swipe_refresh.setColorSchemeResources(R.color.colorAccent)
-        swipe_refresh.setOnRefreshListener { Handler().postDelayed({ this.loadPrograms() }, 0) }
+        programs_progress_bar.visibility = VISIBLE
+        programs_load_button.setOnClickListener({onMediaControllerConnected()})
         adapter = ProgramListAdapter()
-        recycler_view.adapter = adapter
+        programs_recycler_view.adapter = adapter
         setLayoutManager(resources.configuration.orientation)
-        //loadPrograms()
     }
 
     override fun onDestroyView() {
@@ -72,41 +67,34 @@ class ProgramFragment: BaseFragment() {
     }
 
     private fun setLayoutManager(orientation: Int) {
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            recycler_view.layoutManager = GridLayoutManager(activity, 3)
-        } else {
-            recycler_view.layoutManager = GridLayoutManager(activity, 2)
-        }
+        var columns = 2
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) columns = 3
+        programs_recycler_view.layoutManager = GridLayoutManager(activity, columns)
     }
 
-    private fun loadPrograms() {
-        swipe_refresh.isRefreshing = true
-        mCompositeDisposable.add(programsViewModel.loadPrograms()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.updateView(it) },
-                        { this.handleError(it) }))
+    private fun showPrograms() {
+        programs_empty_view.visibility = GONE
+        programs_progress_bar.visibility = GONE
+        programs_recycler_view.visibility = VISIBLE
     }
 
-    private fun updateView(programs: List<Program>) {
-        swipe_refresh.isRefreshing = false
-        //adapter.programs = programs
-        empty_list.visibility = View.GONE
-        recycler_view.visibility = View.VISIBLE
+    private fun handleError(d: MediaDescriptionCompat) {
+        crashReporter.logException(d.description.toString())
+        programs_empty_view.visibility = VISIBLE
+        programs_progress_bar.visibility = GONE
+        programs_recycler_view.visibility = GONE
     }
 
-    private fun handleError(e: Throwable) {
-        crashReporter.logException(e)
-        swipe_refresh.isRefreshing = false
-        empty_list.visibility = View.VISIBLE
-        recycler_view.visibility = View.GONE
-    }
-
-    fun onMediaControllerConnected() {
+    override fun onMediaControllerConnected() {
         if (isDetached) {
             return
         }
-        val mediaId = MediaIDHelper.MEDIA_ID_ROOT
+        programs_empty_view.visibility = GONE
+        programs_progress_bar.visibility = VISIBLE
+        programs_recycler_view.visibility = GONE
+
+
+        val mediaId = MEDIA_ID_ROOT
         val mediaBrowser = mediaBrowserProvider?.getMediaBrowser()
 
         // Unsubscribing before subscribing is required if this mediaId already has a subscriber
@@ -121,12 +109,6 @@ class ProgramFragment: BaseFragment() {
         mediaBrowser?.let {
             mediaBrowser.unsubscribe(mediaId)
             mediaBrowser.subscribe(mediaId, mediaBrowserSubscriptionCallback)
-        }
-
-        // Add MediaController callback so we can redraw the list when metadata changes:
-        activity?.let {
-            val controller = MediaControllerCompat.getMediaController(activity as Activity)
-            controller?.registerCallback(mediaControllerCallback)
         }
     }
 
@@ -152,8 +134,6 @@ class ProgramFragment: BaseFragment() {
                 mediaBrowser.unsubscribe(mediaId)
             }
         }
-        val controller = MediaControllerCompat.getMediaController(activity as Activity)
-        controller?.unregisterCallback(mediaControllerCallback)
     }
 
     override fun onDetach() {
@@ -161,40 +141,23 @@ class ProgramFragment: BaseFragment() {
         mediaBrowserProvider = null
     }
 
-    private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
+    private val mediaBrowserSubscriptionCallback =
+            object : MediaBrowserCompat.SubscriptionCallback() {
         override fun onChildrenLoaded(parentId: String,
                                         children: List<MediaBrowserCompat.MediaItem>) {
-            try {
+            if (isChildrenError(children)) {
+                handleError(children[0].description)
+            } else {
                 Log.d(TAG, "onChildrenLoaded, parentId=" + parentId + "  count=" + children.size)
                 adapter.programs = children
-            } catch (t: Throwable) {
-                Log.e(TAG, "Error onChildrenLoaded", t)
+                showPrograms()
             }
-
         }
 
         override fun onError(id: String) {
-            Log.e(TAG, "browse fragment subscription onError, id=" + id)
-            //TODO handle error
-        }
-    }
-
-    // Receive callbacks from the MediaController. Here we update our state such as which queue
-    // is being shown, the current title and description and the PlaybackState.
-    private val mediaControllerCallback = object : MediaControllerCompat.Callback() {
-        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            super.onMetadataChanged(metadata)
-            if (metadata == null) {
-                return
-            }
-            Log.d(TAG, "Received metadata change to media " + metadata.description.mediaId)
-            //TODO update programs adapter
-        }
-
-        override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
-            super.onPlaybackStateChanged(state)
-            Log.d(TAG, "Received state change: " + state)
-            //TODO update whatever
+            val msg = "browse fragment subscription onError, id=" + id
+            Log.e(TAG, msg)
+            crashReporter.logException(msg)
         }
     }
 }
