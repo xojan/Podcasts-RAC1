@@ -34,7 +34,6 @@ class ProgramFragment: BaseFragment(), IsMediaBrowserFragment {
     }
 
     @Inject internal lateinit var programsViewModel: ProgramsViewModel
-    @Inject internal lateinit var programInteractor: ProgramDataInteractor
     @Inject internal lateinit var crashReporter: CrashReporter
 
     private val mCompositeDisposable = CompositeDisposable()
@@ -155,7 +154,7 @@ class ProgramFragment: BaseFragment(), IsMediaBrowserFragment {
         }
 
         override fun onError(id: String) {
-            val msg = "browse fragment subscription onError, id=" + id
+            val msg = "program fragment subscription onError, id=" + id
             Log.e(TAG, msg)
             crashReporter.logException(msg)
         }

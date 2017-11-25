@@ -3,49 +3,44 @@ package cat.xojan.random1.ui.browser
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.TextView
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.domain.entities.Program
-import cat.xojan.random1.domain.entities.Section
-import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.injection.component.BrowseComponent
 import cat.xojan.random1.ui.BaseActivity
 import cat.xojan.random1.ui.BaseFragment
+import cat.xojan.random1.ui.IsMediaBrowserFragment
 import cat.xojan.random1.ui.MediaBrowserProvider
+import cat.xojan.random1.ui.home.ProgramFragment
 import cat.xojan.random1.ui.home.ProgramFragment.Companion.MEDIA_ID_ROOT
 import cat.xojan.random1.viewmodel.PodcastsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.recycler_view_fragment.*
 import javax.inject.Inject
 
-class HourByHourListFragment : BaseFragment() {
+class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
 
     @Inject internal lateinit var mPodcastsViewModel: PodcastsViewModel
-    @Inject internal lateinit var mProgramDataInteractor: ProgramDataInteractor
-    @Inject internal lateinit var mCrashReporter: CrashReporter
+    @Inject internal lateinit var crashReporter: CrashReporter
 
     private lateinit var adapter: PodcastListAdapter
     private val mCompositeDisposable = CompositeDisposable()
-
-    private var mRecyclerView: RecyclerView? = null
-    private var mSwipeRefresh: SwipeRefreshLayout? = null
-    private var mEmptyList: TextView? = null
 
     private var mediaBrowserProvider: MediaBrowserProvider? = null
 
@@ -73,27 +68,19 @@ class HourByHourListFragment : BaseFragment() {
                               savedInstanceState: Bundle?): View? {
         getComponent(BrowseComponent::class.java).inject(this)
         val view = inflater.inflate(R.layout.recycler_view_fragment, container, false)
-
         setHasOptionsMenu(true)
-
-        mSwipeRefresh = view.findViewById(R.id.swipe_refresh)
-        mRecyclerView = view.findViewById(R.id.recycler_view)
-        mEmptyList = view.findViewById(R.id.empty_list)
-
-        mSwipeRefresh!!.setColorSchemeResources(R.color.colorAccent)
-        mSwipeRefresh!!.setOnRefreshListener { loadPodcasts(true) }
-        mRecyclerView!!.layoutManager = LinearLayoutManager(activity)
-
-        adapter = PodcastListAdapter()
-        mRecyclerView!!.adapter = adapter
-
         return view
     }
 
-    /*override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        loadPodcasts(false)
-    }*/
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        swipe_refresh.setColorSchemeResources(R.color.colorAccent)
+        swipe_refresh.setOnRefreshListener { onMediaControllerConnected() }
+        recycler_view.layoutManager = LinearLayoutManager(activity)
+
+        adapter = PodcastListAdapter()
+        recycler_view.adapter = adapter
+    }
 
     /*override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         if ((arguments.get(ARG_PROGRAM) as Program).sections.size > 1) {
@@ -121,8 +108,9 @@ class HourByHourListFragment : BaseFragment() {
         // fetch browsing information to fill the recycler view
         val mediaBrowser = mediaBrowserProvider?.getMediaBrowser()
         mediaBrowser?.let {
+            Log.d(TAG, "onStart, onConnected=" + mediaBrowser.isConnected)
             if (mediaBrowser.isConnected) {
-                Log.d(TAG, "onStart, onConnected=" + mediaBrowser.isConnected)
+                Log.d(TAG, "onStart, mediaId=" + mediaBrowser.root)
                 onMediaControllerConnected()
             }
         }
@@ -130,7 +118,7 @@ class HourByHourListFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        mCompositeDisposable.add(mPodcastsViewModel!!.downloadedPodcastsUpdates
+        mCompositeDisposable.add(mPodcastsViewModel.downloadedPodcastsUpdates
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ this.updateViewWithDownloaded(it) }))
@@ -159,37 +147,22 @@ class HourByHourListFragment : BaseFragment() {
         mediaBrowserProvider = null
     }
 
-    /*override fun handleOnBackPressed(): Boolean {
+    override fun handleOnBackPressed(): Boolean {
         activity.finish()
         return true
-    }*/
-
-    private fun loadPodcasts(refresh: Boolean) {
-        Handler().postDelayed({
-            mSwipeRefresh!!.isRefreshing = true
-            val program = arguments?.getParcelable<Program>(PodcastListFragment.ARG_PROGRAM)
-            val section = arguments?.getParcelable<Section>(PodcastListFragment.ARG_SECTION)
-
-            mCompositeDisposable.add(mPodcastsViewModel.loadPodcasts(program!!, section!!, refresh)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ this.updateView(it) },
-                            { this.handleError(it) }))
-        }, 0)
     }
 
-    private fun handleError(throwable: Throwable) {
-        mCrashReporter.logException(throwable)
-        mEmptyList!!.visibility = View.VISIBLE
-        mSwipeRefresh!!.isRefreshing = false
-        mRecyclerView!!.visibility = View.GONE
+    private fun handleError(d: MediaDescriptionCompat) {
+        crashReporter.logException(d.description.toString())
+        empty_list.visibility = VISIBLE
+        swipe_refresh.isRefreshing = false
+        recycler_view.visibility = GONE
     }
 
-    private fun updateView(podcasts: List<Podcast>) {
-        mEmptyList!!.visibility = View.GONE
-        mSwipeRefresh!!.isRefreshing = false
-        //adapter!!.podcasts = podcasts
-        mRecyclerView!!.visibility = View.VISIBLE
+    private fun showPodcasts() {
+        empty_list.visibility = GONE
+        swipe_refresh.isRefreshing = false
+        recycler_view.visibility = VISIBLE
     }
 
     private fun updateViewWithDownloaded(podcasts: List<Podcast>) {
@@ -202,11 +175,11 @@ class HourByHourListFragment : BaseFragment() {
         (activity as BaseActivity).addFragment(sectionListFragment, SectionFragment.TAG, true)
     }
 
-    fun onMediaControllerConnected() {
-        Log.d("joan", "on media controller connected - fragment")
+    override fun onMediaControllerConnected() {
         if (isDetached) {
             return
         }
+        swipe_refresh.isRefreshing = true
         val mediaBrowser = mediaBrowserProvider?.getMediaBrowser()
 
         // Unsubscribing before subscribing is required if this mediaId already has a subscriber
@@ -234,24 +207,25 @@ class HourByHourListFragment : BaseFragment() {
         mediaItem?.let {
             return mediaItem.mediaId
         }
-        return null;
+        return null
     }
 
     private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
         override fun onChildrenLoaded(parentId: String,
                                       children: List<MediaBrowserCompat.MediaItem>) {
-            try {
+            if (isChildrenError(children)) {
+                handleError(children[0].description)
+            } else {
                 Log.d(TAG, "onChildrenLoaded, parentId=" + parentId + "  count=" + children.size)
                 adapter.podcasts = children
-            } catch (t: Throwable) {
-                Log.e(TAG, "Error onChildrenLoaded", t)
+                showPodcasts()
             }
-
         }
 
         override fun onError(id: String) {
-            Log.e(TAG, "browse fragment subscription onError, id=" + id)
-            //TODO handle error
+            val msg = "hourByHour fragment subscription onError, id=" + id
+            Log.e(ProgramFragment.TAG, msg)
+            crashReporter.logException(msg)
         }
     }
 

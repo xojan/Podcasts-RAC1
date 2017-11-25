@@ -18,7 +18,7 @@ abstract class BaseFragment : Fragment() {
     /**
      * Override for custom support for back button click event.
      */
-    fun handleOnBackPressed(): Boolean {
+    open fun handleOnBackPressed(): Boolean {
         return false
     }
 
