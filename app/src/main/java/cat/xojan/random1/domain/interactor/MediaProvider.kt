@@ -42,17 +42,23 @@ class MediaProvider @Inject constructor(
                     )
             )
         } else if (parentId.contains("/")) {
-            val sections = programInteractor.loadSections(parentId.split("/")[0])
-            handleNextSections(sections, result)
+            val programId = parentId.split("/")[0]
+            compositeDisposable.add(programInteractor.loadSections(programId)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { s -> handleNextSections(s, result)},
+                            { e -> handleError(e, result)}
+                    )
+            )
         } else {
-            compositeDisposable.add(
-                    podcastInteractor.getHourByHourPodcasts(parentId)
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                    { p -> handleNextPodcasts(p, result)},
-                                    { e -> handleError(e, result)}
-                            )
+            compositeDisposable.add(podcastInteractor.getHourByHourPodcasts(parentId)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { p -> handleNextPodcasts(p, result)},
+                            { e -> handleError(e, result)}
+                    )
             )
         }
     }
@@ -111,7 +117,7 @@ class MediaProvider @Inject constructor(
         val description = MediaDescriptionCompat.Builder()
                 .setMediaId(section.id)
                 .setTitle(section.title)
-                //.setIconUri(Uri.parse(section.imageUrl))
+                .setIconUri(Uri.parse(section.imageUrl))
                 .build()
         return MediaBrowserCompat.MediaItem(description,
                 MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)

@@ -30,10 +30,19 @@ class RemoteProgramRepository(private val service: Rac1ApiService): ProgramRepos
     }
 
     override fun hasSections(programId: String): Boolean {
-        programs[programId]?.sections?.isNotEmpty().let { return true }
+        if (programs[programId]?.sections?.size!! > 1) {
+            return true
+        }
+        return false
     }
 
-    override fun getSections(programId: String): List<Section>? {
-        return programs[programId]?.sections
+    override fun getSections(programId: String): Single<List<Section>> {
+        return Single.create { subscriber ->
+            try {
+                subscriber.onSuccess(programs[programId]!!.sections)
+            } catch (e: IOException) {
+                subscriber.onError(e)
+            }
+        }
     }
 }

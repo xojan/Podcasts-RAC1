@@ -45,7 +45,7 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val mediaItem = intent.getParcelableExtra<MediaBrowserCompat.MediaItem>(EXTRA_PROGRAM)
         title = mediaItem.description.title
-        if (viewModel.isSectionSelected()) {
+        if (viewModel.isSectionSelected() && viewModel.hasSections(mediaItem.mediaId)) {
             addFragment(SectionFragment.newInstance(mediaItem.mediaId),
                     SectionFragment.TAG, false)
         } else {
@@ -56,10 +56,11 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
 
     override fun onMediaControllerConnected() {
         val fragment = supportFragmentManager.findFragmentByTag(HourByHourListFragment.TAG)
-        fragment?.let {
+        if (fragment == null) {
+            (supportFragmentManager.findFragmentByTag(SectionFragment.TAG) as SectionFragment)
+                    .onMediaControllerConnected()
+        } else {
             (fragment as HourByHourListFragment).onMediaControllerConnected()
         }
-        (supportFragmentManager.findFragmentByTag(SectionFragment.TAG) as SectionFragment)
-                .onMediaControllerConnected()
     }
 }

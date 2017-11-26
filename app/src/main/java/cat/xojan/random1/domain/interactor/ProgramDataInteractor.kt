@@ -6,10 +6,7 @@ import android.os.Environment
 import android.text.TextUtils
 import android.util.Log
 import cat.xojan.random1.data.SharedPrefDownloadPodcastRepository
-import cat.xojan.random1.domain.entities.EventLogger
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.Program
-import cat.xojan.random1.domain.entities.Section
+import cat.xojan.random1.domain.entities.*
 import cat.xojan.random1.domain.repository.ProgramRepository
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -37,9 +34,6 @@ class ProgramDataInteractor @Inject constructor(
     private val PREF_SECTION = "pref_section"
     private val TAG = ProgramDataInteractor::class.java.simpleName
 
-    private var podcastsBySection: Flowable<List<Podcast>>? = null
-    private var podcastsByProgram: Flowable<List<Podcast>>? = null
-    private var mSection: Section? = null
     private val mDownloadedPodcastsSubject: PublishSubject<List<Podcast>> = PublishSubject.create()
 
     fun loadPrograms(): Single<List<Program>> {
@@ -56,8 +50,20 @@ class ProgramDataInteractor @Inject constructor(
         return programRepo.hasSections(programId)
     }
 
-    fun loadSections(programId: String): List<Section>? {
+    fun loadSections(programId: String): Single<List<Section>> {
+        val program = programRepo.getProgram(programId)
         return programRepo.getSections(programId)
+                .flatMap {
+                    sections -> Observable.just(sections)
+                        .flatMapIterable { s -> s }
+                        .filter { s -> s.active }
+                        .filter { s -> s.type == SectionType.SECTION }
+                        .map { s ->
+                            s.imageUrl = program?.imageUrl()
+                            s
+                        }
+                        .toList()
+                }
     }
 
     fun loadPodcasts(program: Program, section: Section?,

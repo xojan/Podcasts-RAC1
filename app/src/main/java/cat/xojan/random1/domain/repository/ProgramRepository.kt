@@ -11,5 +11,5 @@ interface ProgramRepository {
 
     fun hasSections(programId: String): Boolean
 
-    fun getSections(programId: String): List<Section>?
+    fun getSections(programId: String): Single<List<Section>>
 }
