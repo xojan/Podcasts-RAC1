@@ -60,7 +60,7 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recycler_view.layoutManager = LinearLayoutManager(activity)
-
+        swipe_refresh.isEnabled = false
         adapter = SectionListAdapter(activity as BrowseActivity)
         recycler_view.adapter = adapter
     }
