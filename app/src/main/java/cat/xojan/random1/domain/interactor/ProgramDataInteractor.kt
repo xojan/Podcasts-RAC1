@@ -52,8 +52,12 @@ class ProgramDataInteractor @Inject constructor(
                 }
     }
 
-    fun loadSections(program: Program): Observable<List<Section>> {
-        return Observable.just(program.sections)
+    fun hasSections(programId: String): Boolean {
+        return programRepo.hasSections(programId)
+    }
+
+    fun loadSections(programId: String): List<Section>? {
+        return programRepo.getSections(programId)
     }
 
     fun loadPodcasts(program: Program, section: Section?,

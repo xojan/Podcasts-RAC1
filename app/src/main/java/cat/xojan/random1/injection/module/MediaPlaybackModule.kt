@@ -12,7 +12,7 @@ class MediaPlaybackModule(private val activity: Activity) {
     }
 
     @Provides
-    internal fun providePOdcastsViewModel(programDataInteractor: ProgramDataInteractor): PodcastsViewModel {
-        return PodcastsViewModel(programDataInteractor)
+    internal fun providePOdcastsViewModel(programDataInteractor: ProgramDataInteractor): BrowserViewModel {
+        return BrowserViewModel(programDataInteractor)
     }*/
 }

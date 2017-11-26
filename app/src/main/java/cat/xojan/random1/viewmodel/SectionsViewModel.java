@@ -16,7 +16,7 @@ public class SectionsViewModel {
         mProgramDataInteractor = programDataInteractor;
     }
 
-    public Single<List<Section>> loadSections(Program program) {
+    /*public Single<List<Section>> loadSections(Program program) {
         return mProgramDataInteractor.loadSections(program)
                 .flatMapIterable(list -> list)
                 .filter(Section::getActive)
@@ -26,7 +26,7 @@ public class SectionsViewModel {
                     return section;
                 })
                 .toList();
-    }
+    }*/
 
     public void selectedSection(boolean selected) {
        // mProgramDataInteractor.setSectionSelected(selected);

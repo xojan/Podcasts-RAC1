@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.injection.component.BrowseComponent
@@ -24,6 +21,7 @@ import javax.inject.Inject
 class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
 
     @Inject internal lateinit var crashReporter: CrashReporter
+    @Inject internal lateinit var viewModel: BrowserViewModel
 
     private lateinit var adapter: SectionListAdapter
     private val mCompositeDisposable = CompositeDisposable()
@@ -33,6 +31,7 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
     companion object {
         val TAG = SectionFragment::class.java.simpleName
         val ARG_PROGRAM = "program_param"
+        val MEDIA_ID_SECTION = "/SECTIONS"
 
         fun newInstance(program: MediaBrowserCompat.MediaItem): SectionFragment {
             val args = Bundle()
@@ -66,10 +65,10 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
         recycler_view.adapter = adapter
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.sections, menu)
         super.onCreateOptionsMenu(menu, inflater)
-    }*/
+    }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
@@ -117,7 +116,7 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
     private fun mediaId(): String? {
         val mediaItem = arguments?.getParcelable<MediaBrowserCompat.MediaItem>(ARG_PROGRAM)
         mediaItem?.let {
-            return mediaItem.mediaId
+            return mediaItem.mediaId + MEDIA_ID_SECTION
         }
         return null
     }
@@ -166,10 +165,10 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
     }*/
 
     private fun showHourByHour() {
-        /* mSectionsViewModel.selectedSection(false);
-        HourByHourListFragment hourByHourListFragment = HourByHourListFragment.Companion
-                .newInstance((Program) getArguments().get(ARG_PROGRAM));
-        ((BaseActivity) getActivity()).addFragment(hourByHourListFragment,
-                HourByHourListFragment.Companion.getTAG(), true);*/
+        viewModel.selectedSection(false)
+        (activity as BrowseActivity).addFragment(
+                HourByHourListFragment.newInstance(arguments.get(ARG_PROGRAM) as MediaBrowserCompat.MediaItem),
+                HourByHourListFragment.TAG,
+                true)
     }
 }

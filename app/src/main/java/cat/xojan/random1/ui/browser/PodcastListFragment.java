@@ -1,7 +1,6 @@
 package cat.xojan.random1.ui.browser;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -20,16 +19,12 @@ import javax.inject.Inject;
 import cat.xojan.random1.R;
 import cat.xojan.random1.domain.entities.CrashReporter;
 import cat.xojan.random1.domain.entities.Podcast;
-import cat.xojan.random1.domain.entities.Program;
 import cat.xojan.random1.domain.entities.Section;
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor;
 import cat.xojan.random1.injection.component.BrowseComponent;
 import cat.xojan.random1.ui.BaseActivity;
 import cat.xojan.random1.ui.BaseFragment;
-import cat.xojan.random1.viewmodel.PodcastsViewModel;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class PodcastListFragment extends BaseFragment {
 
@@ -37,7 +32,8 @@ public class PodcastListFragment extends BaseFragment {
     public static final String ARG_PROGRAM = "program_param";
     public static final String ARG_SECTION = "section_param";
 
-    @Inject PodcastsViewModel mPodcastsViewModel;
+    @Inject
+    BrowserViewModel mPodcastsViewModel;
     @Inject ProgramDataInteractor mProgramDataInteractor;
     @Inject CrashReporter mCrashReporter;
 

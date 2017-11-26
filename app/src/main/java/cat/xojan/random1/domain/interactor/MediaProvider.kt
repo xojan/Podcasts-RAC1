@@ -7,6 +7,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.util.Log
 import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.domain.entities.Program
+import cat.xojan.random1.domain.entities.Section
 import cat.xojan.random1.ui.home.ProgramFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -40,6 +41,9 @@ class MediaProvider @Inject constructor(
                             { e -> handleError(e, result) }
                     )
             )
+        } else if (parentId.contains("/")) {
+            val sections = programInteractor.loadSections(parentId)
+            handleNextSections(sections, result)
         } else {
             compositeDisposable.add(
                     podcastInteractor.getHourByHourPodcasts(parentId)
@@ -64,8 +68,15 @@ class MediaProvider @Inject constructor(
     private fun handleNextPodcasts(
             podcasts: List<Podcast>,
             result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        Log.d(tag, "Retrieve programs success")
+        Log.d(tag, "Retrieve podcasts success")
         val mediaItems = podcasts.mapTo(ArrayList()) { createBrowsableMediaItemForPodcast(it) }
+        result.sendResult(mediaItems)
+    }
+
+    private fun handleNextSections(
+        sections: List<Section>?,
+        result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        val mediaItems = sections?.mapTo(ArrayList()) { createBrowsableMediaItemForSection(it) }
         result.sendResult(mediaItems)
     }
 
@@ -91,6 +102,16 @@ class MediaProvider @Inject constructor(
                 .setMediaId(program.id)
                 .setTitle(program.title)
                 .setIconUri(Uri.parse(program.imageUrl()))
+                .build()
+        return MediaBrowserCompat.MediaItem(description,
+                MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
+    }
+
+    private fun createBrowsableMediaItemForSection(section: Section): MediaBrowserCompat.MediaItem {
+        val description = MediaDescriptionCompat.Builder()
+                .setMediaId(section.id)
+                .setTitle(section.title)
+                .setIconUri(Uri.parse(section.imageUrl))
                 .build()
         return MediaBrowserCompat.MediaItem(description,
                 MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)

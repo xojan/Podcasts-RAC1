@@ -14,11 +14,8 @@ import cat.xojan.random1.injection.component.DaggerHomeComponent
 import cat.xojan.random1.injection.component.HomeComponent
 import cat.xojan.random1.injection.module.HomeModule
 import cat.xojan.random1.ui.BaseActivity
-import cat.xojan.random1.viewmodel.PodcastsViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
+import cat.xojan.random1.ui.browser.BrowserViewModel
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_home.*
 import javax.inject.Inject
 
@@ -29,7 +26,7 @@ class HomeActivity: BaseActivity(), HasComponent<HomeComponent> {
 
     private val TAG = HomeActivity::class.simpleName
 
-    @Inject internal lateinit var mViewModel: PodcastsViewModel
+    @Inject internal lateinit var mViewModel: BrowserViewModel
     private val mCompositeDisposable = CompositeDisposable()
 
     private lateinit var programFragment: ProgramFragment

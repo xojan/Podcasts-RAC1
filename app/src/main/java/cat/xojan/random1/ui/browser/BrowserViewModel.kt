@@ -1,23 +1,24 @@
-package cat.xojan.random1.viewmodel
+package cat.xojan.random1.ui.browser
 
-import javax.inject.Inject
-
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.Program
-import cat.xojan.random1.domain.entities.Section
 import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.functions.BiFunction
-import io.reactivex.subjects.PublishSubject
+import javax.inject.Inject
 
-class PodcastsViewModel @Inject
-constructor(private val podcastInteractor: PodcastDataInteractor) {
+class BrowserViewModel @Inject
+constructor(
+        private val podcastInteractor: PodcastDataInteractor,
+        private val programInteractor: ProgramDataInteractor) {
 
     fun selectedSection(b: Boolean) = podcastInteractor.setSectionSelected(b)
 
     fun isSectionSelected(): Boolean = podcastInteractor.isSectionSelected()
+
+    fun hasSections(programId: String?): Boolean {
+        programId?.let {
+            return programInteractor.hasSections(programId)
+        }
+        return false
+    }
 
     /* val downloadedPodcastsUpdates: PublishSubject<List<Podcast>>
         get() = mProgramDataInteractor.getDownloadedPodcastsUpdates() */

@@ -10,31 +10,25 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.CrashReporter
-import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.injection.component.BrowseComponent
 import cat.xojan.random1.ui.BaseActivity
 import cat.xojan.random1.ui.BaseFragment
 import cat.xojan.random1.ui.IsMediaBrowserFragment
 import cat.xojan.random1.ui.MediaBrowserProvider
-import cat.xojan.random1.ui.home.ProgramFragment
 import cat.xojan.random1.ui.home.ProgramFragment.Companion.MEDIA_ID_ROOT
-import cat.xojan.random1.viewmodel.PodcastsViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.recycler_view_fragment.*
 import javax.inject.Inject
 
 class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
 
-    @Inject internal lateinit var mPodcastsViewModel: PodcastsViewModel
     @Inject internal lateinit var crashReporter: CrashReporter
+    @Inject internal lateinit var viewModel: BrowserViewModel
 
     private lateinit var adapter: PodcastListAdapter
     private val mCompositeDisposable = CompositeDisposable()
@@ -79,12 +73,13 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
         recycler_view.adapter = adapter
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        if ((arguments.get(ARG_PROGRAM) as Program).sections.size > 1) {
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        val mediaItem = arguments.get(ARG_PROGRAM) as MediaBrowserCompat.MediaItem
+        if (viewModel.hasSections(mediaItem.mediaId)) {
             inflater!!.inflate(R.menu.hour_by_hour, menu)
         }
         super.onCreateOptionsMenu(menu, inflater)
-    }*/
+    }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
@@ -162,14 +157,10 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
         recycler_view.visibility = VISIBLE
     }
 
-    private fun updateViewWithDownloaded(podcasts: List<Podcast>) {
-        adapter.updateWithDownloaded(podcasts)
-    }
-
     private fun showSections() {
-       /* mPodcastsViewModel.selectedSection(true)
-        val sectionListFragment = SectionFragment.newInstance(arguments?.get(ARG_PROGRAM) as Program)
-        (activity as BaseActivity).addFragment(sectionListFragment, SectionFragment.TAG, true)*/
+        viewModel.selectedSection(true)
+        val sectionFragment = SectionFragment.newInstance(arguments?.get(ARG_PROGRAM) as MediaBrowserCompat.MediaItem)
+        (activity as BrowseActivity).addFragment(sectionFragment, SectionFragment.TAG, true)
     }
 
     override fun onMediaControllerConnected() {

@@ -10,7 +10,6 @@ import cat.xojan.random1.injection.component.BrowseComponent
 import cat.xojan.random1.injection.component.DaggerBrowseComponent
 import cat.xojan.random1.injection.module.BrowseModule
 import cat.xojan.random1.ui.BaseActivity
-import cat.xojan.random1.viewmodel.PodcastsViewModel
 import javax.inject.Inject
 
 
@@ -25,7 +24,7 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
         }
     }
 
-    @Inject internal lateinit var viewModel: PodcastsViewModel
+    @Inject internal lateinit var viewModel: BrowserViewModel
 
     override val component: BrowseComponent by lazy {
         DaggerBrowseComponent.builder()

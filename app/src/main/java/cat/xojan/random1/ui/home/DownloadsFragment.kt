@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 import java.util.ArrayList
-import java.util.Collections
 
 import javax.inject.Inject
 
@@ -20,11 +19,8 @@ import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.injection.component.HomeComponent
 import cat.xojan.random1.ui.BaseFragment
 import cat.xojan.random1.ui.browser.PodcastListAdapter
-import cat.xojan.random1.viewmodel.PodcastsViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
+import cat.xojan.random1.ui.browser.BrowserViewModel
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
 
 class DownloadsFragment : BaseFragment() {
 
@@ -32,7 +28,7 @@ class DownloadsFragment : BaseFragment() {
         val TAG = DownloadsFragment::class.simpleName
     }
 
-    @Inject internal lateinit var mPodcastsViewModel: PodcastsViewModel
+    @Inject internal lateinit var mPodcastsViewModel: BrowserViewModel
     @Inject internal lateinit var mProgramDataInteractor: ProgramDataInteractor
 
     private val mCompositeDisposable = CompositeDisposable()

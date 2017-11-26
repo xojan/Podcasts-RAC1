@@ -11,6 +11,7 @@ import cat.xojan.random1.domain.entities.Podcast;
 import cat.xojan.random1.domain.entities.Program;
 import cat.xojan.random1.domain.entities.Section;
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor;
+import cat.xojan.random1.ui.browser.BrowserViewModel;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
@@ -28,12 +29,12 @@ import static org.mockito.Mockito.when;
 public class PodcastsViewModelTest {
 
     private ProgramDataInteractor mProgramDataInteractor;
-    private PodcastsViewModel mViewModel;
+    private BrowserViewModel mViewModel;
 
     @Before
     public void setUp() {
         mProgramDataInteractor = mock(ProgramDataInteractor.class);
-        mViewModel = new PodcastsViewModel(mProgramDataInteractor);
+        mViewModel = new BrowserViewModel(mProgramDataInteractor);
     }
 
     @Test
