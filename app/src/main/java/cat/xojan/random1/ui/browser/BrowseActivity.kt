@@ -46,15 +46,20 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
         val mediaItem = intent.getParcelableExtra<MediaBrowserCompat.MediaItem>(EXTRA_PROGRAM)
         title = mediaItem.description.title
         if (viewModel.isSectionSelected()) {
-            addFragment(SectionFragment.newInstance(mediaItem), SectionFragment.TAG, false)
+            addFragment(SectionFragment.newInstance(mediaItem.mediaId),
+                    SectionFragment.TAG, false)
         } else {
-            addFragment(HourByHourListFragment.newInstance(mediaItem), HourByHourListFragment.TAG, false)
+            addFragment(HourByHourListFragment.newInstance(mediaItem.mediaId),
+                    HourByHourListFragment.TAG, false)
         }
     }
 
     override fun onMediaControllerConnected() {
         val fragment = supportFragmentManager.findFragmentByTag(HourByHourListFragment.TAG)
-                as HourByHourListFragment?
-        fragment?.onMediaControllerConnected()
+        fragment?.let {
+            (fragment as HourByHourListFragment).onMediaControllerConnected()
+        }
+        (supportFragmentManager.findFragmentByTag(SectionFragment.TAG) as SectionFragment)
+                .onMediaControllerConnected()
     }
 }

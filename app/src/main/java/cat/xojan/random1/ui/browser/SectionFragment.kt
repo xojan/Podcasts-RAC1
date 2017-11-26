@@ -33,9 +33,9 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
         val ARG_PROGRAM = "program_param"
         val MEDIA_ID_SECTION = "/SECTIONS"
 
-        fun newInstance(program: MediaBrowserCompat.MediaItem): SectionFragment {
+        fun newInstance(programId: String?): SectionFragment {
             val args = Bundle()
-            args.putParcelable(ARG_PROGRAM, program)
+            args.putString(ARG_PROGRAM, programId)
 
             val sectionFragment = SectionFragment()
             sectionFragment.arguments = args
@@ -91,7 +91,6 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
         mediaBrowser?.let {
             Log.d(TAG, "onStart, onConnected=" + mediaBrowser.isConnected)
             if (mediaBrowser.isConnected) {
-                Log.d(TAG, "onStart, mediaId=" + mediaBrowser.root)
                 onMediaControllerConnected()
             }
         }
@@ -114,11 +113,7 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
     }
 
     private fun mediaId(): String? {
-        val mediaItem = arguments?.getParcelable<MediaBrowserCompat.MediaItem>(ARG_PROGRAM)
-        mediaItem?.let {
-            return mediaItem.mediaId + MEDIA_ID_SECTION
-        }
-        return null
+        return arguments?.getString(ARG_PROGRAM) + MEDIA_ID_SECTION
     }
 
     override fun onMediaControllerConnected() {
@@ -167,8 +162,8 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
     private fun showHourByHour() {
         viewModel.selectedSection(false)
         (activity as BrowseActivity).addFragment(
-                HourByHourListFragment.newInstance(arguments.get(ARG_PROGRAM) as MediaBrowserCompat.MediaItem),
+                HourByHourListFragment.newInstance(arguments.getString(ARG_PROGRAM)),
                 HourByHourListFragment.TAG,
-                true)
+                false)
     }
 }

@@ -42,7 +42,7 @@ class MediaProvider @Inject constructor(
                     )
             )
         } else if (parentId.contains("/")) {
-            val sections = programInteractor.loadSections(parentId)
+            val sections = programInteractor.loadSections(parentId.split("/")[0])
             handleNextSections(sections, result)
         } else {
             compositeDisposable.add(
@@ -111,7 +111,7 @@ class MediaProvider @Inject constructor(
         val description = MediaDescriptionCompat.Builder()
                 .setMediaId(section.id)
                 .setTitle(section.title)
-                .setIconUri(Uri.parse(section.imageUrl))
+                //.setIconUri(Uri.parse(section.imageUrl))
                 .build()
         return MediaBrowserCompat.MediaItem(description,
                 MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)

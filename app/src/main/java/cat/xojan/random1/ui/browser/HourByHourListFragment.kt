@@ -39,9 +39,9 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
         val TAG = HourByHourListFragment::class.java.simpleName
         val ARG_PROGRAM = "program_param"
 
-        fun newInstance(program: MediaBrowserCompat.MediaItem): HourByHourListFragment {
+        fun newInstance(programId: String?): HourByHourListFragment {
             val args = Bundle()
-            args.putParcelable(ARG_PROGRAM, program)
+            args.putString(ARG_PROGRAM, programId)
 
             val hourByHourListFragment = HourByHourListFragment()
             hourByHourListFragment.arguments = args
@@ -74,8 +74,8 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        val mediaItem = arguments.get(ARG_PROGRAM) as MediaBrowserCompat.MediaItem
-        if (viewModel.hasSections(mediaItem.mediaId)) {
+        val programId = arguments.getString(ARG_PROGRAM)
+        if (viewModel.hasSections(programId)) {
             inflater!!.inflate(R.menu.hour_by_hour, menu)
         }
         super.onCreateOptionsMenu(menu, inflater)
@@ -102,7 +102,6 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
         mediaBrowser?.let {
             Log.d(TAG, "onStart, onConnected=" + mediaBrowser.isConnected)
             if (mediaBrowser.isConnected) {
-                Log.d(TAG, "onStart, mediaId=" + mediaBrowser.root)
                 onMediaControllerConnected()
             }
         }
@@ -159,8 +158,12 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
 
     private fun showSections() {
         viewModel.selectedSection(true)
-        val sectionFragment = SectionFragment.newInstance(arguments?.get(ARG_PROGRAM) as MediaBrowserCompat.MediaItem)
-        (activity as BrowseActivity).addFragment(sectionFragment, SectionFragment.TAG, true)
+        val sectionFragment = SectionFragment.newInstance(arguments?.getString(ARG_PROGRAM))
+        (activity as BrowseActivity).addFragment(sectionFragment, SectionFragment.TAG, false)
+    }
+
+    private fun mediaId(): String? {
+        return arguments?.getString(ARG_PROGRAM)
     }
 
     override fun onMediaControllerConnected() {
@@ -188,14 +191,6 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
         // Add MediaController callback so we can redraw the list when metadata changes:
         val controller = MediaControllerCompat.getMediaController(activity as Activity)
         controller?.registerCallback(mediaControllerCallback)
-    }
-
-    private fun mediaId(): String? {
-        val mediaItem = arguments?.getParcelable<MediaBrowserCompat.MediaItem>(ARG_PROGRAM)
-        mediaItem?.let {
-            return mediaItem.mediaId
-        }
-        return null
     }
 
     private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
