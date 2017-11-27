@@ -40,7 +40,7 @@ ext {
     minSdk = 16
     targetSdk = 26
 
-    supportLib = '25.4.0'
+    supportLib = '27.0.1'
     retrofit = '2.3.0'
     jUnit = '4.12'
     dagger = '2.11'

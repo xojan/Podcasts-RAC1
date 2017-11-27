@@ -49,15 +49,15 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
         mediaBrowserProvider = context as BaseActivity
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         getComponent(BrowseComponent::class.java).inject(this)
-        val view = inflater!!.inflate(R.layout.recycler_view_fragment, container, false)
+        val view = inflater.inflate(R.layout.recycler_view_fragment, container, false)
         setHasOptionsMenu(true)
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recycler_view.layoutManager = LinearLayoutManager(activity)
         swipe_refresh.isEnabled = false
@@ -162,7 +162,7 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
     private fun showHourByHour() {
         viewModel.selectedSection(false)
         (activity as BrowseActivity).addFragment(
-                HourByHourListFragment.newInstance(arguments.getString(ARG_PROGRAM)),
+                HourByHourListFragment.newInstance(arguments?.getString(ARG_PROGRAM)),
                 HourByHourListFragment.TAG,
                 false)
     }

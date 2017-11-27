@@ -65,7 +65,7 @@ class NotificationController(private val service: MediaPlaybackService,
                                           playBackState: Long
     ): NotificationCompat.Builder {
         val builder = from(service, mediaSession)
-        builder.addAction(NotificationCompat.Action(
+        /*builder.addAction(NotificationCompat.Action(
                 drawable,
                 title,
                 MediaButtonReceiver.buildMediaButtonPendingIntent(service, playBackState)))
@@ -73,7 +73,7 @@ class NotificationController(private val service: MediaPlaybackService,
                 android.support.v7.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0)
                         .setMediaSession(mediaSession.sessionToken))
-        builder.setSmallIcon(R.mipmap.ic_notification)
+        builder.setSmallIcon(R.mipmap.ic_notification)*/
         return builder
     }
 

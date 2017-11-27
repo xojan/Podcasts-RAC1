@@ -63,7 +63,7 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         swipe_refresh.setColorSchemeResources(R.color.colorAccent)
         swipe_refresh.setOnRefreshListener { onMediaControllerConnected() }
@@ -74,7 +74,7 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        val programId = arguments.getString(ARG_PROGRAM)
+        val programId = arguments?.getString(ARG_PROGRAM)
         if (viewModel.hasSections(programId)) {
             inflater!!.inflate(R.menu.hour_by_hour, menu)
         }
@@ -139,7 +139,7 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
     }
 
     override fun handleOnBackPressed(): Boolean {
-        activity.finish()
+        activity?.finish()
         return true
     }
 
