@@ -34,7 +34,7 @@ public class SectionViewModelTest {
     @Test
     public void click_section() {
         mViewModel.onClickSection().onClick(new View(mActivity));
-        verify(mActivity).addFragment(any(PodcastListFragment.class),
-                eq(PodcastListFragment.TAG), eq(true));
+        verify(mActivity).addFragment(any(SectionPodcastListFragment.class),
+                eq(SectionPodcastListFragment.TAG), eq(true));
     }*/
 }

@@ -59,7 +59,10 @@ class ProgramDataInteractor @Inject constructor(
                         .filter { s -> s.active }
                         .filter { s -> s.type == SectionType.SECTION }
                         .map { s ->
-                            s.imageUrl = program?.imageUrl()
+                            program?.let {
+                                s.imageUrl = program.imageUrl()
+                                s.programId = program.id
+                            }
                             s
                         }
                         .toList()

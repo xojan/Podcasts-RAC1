@@ -8,7 +8,8 @@ class Section(val id: String,
               val title: String,
               var imageUrl: String?,
               val active: Boolean,
-              var type: SectionType
+              var type: SectionType,
+              var programId: String?
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {

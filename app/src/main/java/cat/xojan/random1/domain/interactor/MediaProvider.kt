@@ -41,14 +41,25 @@ class MediaProvider @Inject constructor(
                             { e -> handleError(e, result) }
                     )
             )
-        } else if (parentId.contains("/")) {
+        } else if (parentId.contains("/SECTIONS")) {
             val programId = parentId.split("/")[0]
             compositeDisposable.add(programInteractor.loadSections(programId)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            { s -> handleNextSections(s, result)},
-                            { e -> handleError(e, result)}
+                            { s -> handleNextSections(s, result) },
+                            { e -> handleError(e, result) }
+                    )
+            )
+        } else if (parentId.contains("/")) {
+            val programId = parentId.split("/")[0]
+            val sectionId = parentId.split("/")[1]
+            compositeDisposable.add(podcastInteractor.getSectionPodcasts(programId, sectionId)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { p -> handleNextPodcasts(p, result) },
+                            { e -> handleError(e, result) }
                     )
             )
         } else {
@@ -115,7 +126,7 @@ class MediaProvider @Inject constructor(
 
     private fun createBrowsableMediaItemForSection(section: Section): MediaBrowserCompat.MediaItem {
         val description = MediaDescriptionCompat.Builder()
-                .setMediaId(section.id)
+                .setMediaId(section.programId + "/" + section.id)
                 .setTitle(section.title)
                 .setIconUri(Uri.parse(section.imageUrl))
                 .build()

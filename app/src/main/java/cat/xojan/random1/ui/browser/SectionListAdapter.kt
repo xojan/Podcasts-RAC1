@@ -2,6 +2,7 @@ package cat.xojan.random1.ui.browser
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,8 +41,8 @@ class SectionListAdapter(private val activity: BrowseActivity)
 
         fun bind(item: MediaBrowserCompat.MediaItem, activity: BrowseActivity) {
             itemView.setOnClickListener {
-               /* val podcastListFragment = PodcastListFragment.newInstance(item)
-                activity.addFragment(podcastListFragment, PodcastListFragment.TAG, true)*/
+                val podcastListFragment = SectionPodcastListFragment.newInstance(item.mediaId)
+                activity.addFragment(podcastListFragment, SectionPodcastListFragment.TAG, true)
             }
             val section = item.description
             section_title.text = section.title

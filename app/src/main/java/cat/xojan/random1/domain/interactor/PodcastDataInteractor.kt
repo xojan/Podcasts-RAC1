@@ -26,6 +26,20 @@ class PodcastDataInteractor @Inject constructor(
                 .toList()
     }
 
+    fun getSectionPodcasts(programId: String, sectionId: String): Single<List<Podcast>> {
+        val program = programRepo.getProgram(programId)
+        return podcastRepo.getPodcasts(programId, sectionId)
+                .flatMapIterable { list -> list }
+                .map { podcast ->
+                    program?.let {
+                        podcast.programId = program.id
+                        podcast.imageUrl = program.imageUrl()
+                    }
+                    podcast
+                }
+                .toList()
+    }
+
     fun isSectionSelected(): Boolean {
         return podcastPref.isSectionSelected()
     }
