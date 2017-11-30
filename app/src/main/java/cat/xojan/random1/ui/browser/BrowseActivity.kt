@@ -3,6 +3,7 @@ package cat.xojan.random1.ui.browser
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.media.MediaBrowserCompat
 import cat.xojan.random1.R
 import cat.xojan.random1.injection.HasComponent
@@ -38,11 +39,14 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_browse)
         component.inject(this)
-        initView()
+
+        if (savedInstanceState == null) {
+            initView()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initView() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val mediaItem = intent.getParcelableExtra<MediaBrowserCompat.MediaItem>(EXTRA_PROGRAM)
         title = mediaItem.description.title
         if (viewModel.isSectionSelected() && viewModel.hasSections(mediaItem.mediaId)) {
@@ -54,13 +58,27 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
         }
     }
 
+    /*override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            var fragment = getFragment(HourByHourListFragment.TAG)
+            if (fragment == null) fragment = getFragment(SectionFragment.TAG)
+
+            if (fragment != null && supportFragmentManager
+                    .findFragmentByTag(PodcastListFragment.TAG) == null) {
+                if ((fragment as BaseFragment).handleOnBackPressed()) {
+                    return
+                }
+            }
+        }
+        super.onBackPressed()
+    }*/
+
     override fun onMediaControllerConnected() {
-        val fragment = supportFragmentManager.findFragmentByTag(HourByHourListFragment.TAG)
-        if (fragment == null) {
-            (supportFragmentManager.findFragmentByTag(SectionFragment.TAG) as SectionFragment)
-                    .onMediaControllerConnected()
-        } else {
-            (fragment as HourByHourListFragment).onMediaControllerConnected()
+        val frag: Fragment = supportFragmentManager.findFragmentById(R.id.container_fragment)
+        when (frag) {
+            is SectionPodcastListFragment -> frag.onMediaControllerConnected()
+            is SectionFragment -> frag.onMediaControllerConnected()
+            is HourByHourListFragment -> frag.onMediaControllerConnected()
         }
     }
 }

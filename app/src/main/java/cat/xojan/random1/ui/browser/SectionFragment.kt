@@ -141,7 +141,7 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
     private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
         override fun onChildrenLoaded(parentId: String,
                                       children: List<MediaBrowserCompat.MediaItem>) {
-            Log.d(HourByHourListFragment.TAG, "onChildrenLoaded, parentId=" + parentId + "  count=" + children.size)
+            Log.d(TAG, "onChildrenLoaded, parentId=" + parentId + "  count=" + children.size)
             adapter.sections = children
         }
 
@@ -150,6 +150,11 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
             Log.e(TAG, msg)
             crashReporter.logException(msg)
         }
+    }
+
+    override fun handleOnBackPressed(): Boolean {
+        activity?.finish()
+        return true
     }
 
     /*private fun loadSections() {

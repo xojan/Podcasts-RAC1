@@ -69,29 +69,6 @@ class ProgramDataInteractor @Inject constructor(
                 }
     }
 
-    fun loadPodcasts(program: Program, section: Section?,
-                     refresh: Boolean): Flowable<List<Podcast>> {
-        /*currentProgram = program
-        try {
-            if (section != null) {
-                if (podcastsBySection == null || refresh || section != section) {
-                    mSection = section
-                    podcastsBySection = programRepo.getPodcasts(program.id, section.id)
-                }
-                return podcastsBySection as Flowable<List<Podcast>>
-            } else {
-                if (podcastsByProgram == null || refresh || mProgram != program) {
-                    mProgram = program
-                    podcastsByProgram = programRepo.getPodcasts(program.id, null)
-                }
-                return podcastsByProgram as Flowable<List<Podcast>>
-            }
-        } catch (e: IOException) {
-            return Flowable.error(e)
-        }*/
-        return Flowable.error(Throwable())
-    }
-
     fun addDownload(audioId: String) {
         val from = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() +
                 File.separator + audioId + EXTENSION)
@@ -106,9 +83,6 @@ class ProgramDataInteractor @Inject constructor(
             to.delete()
         }
     }
-
-    /*fun getHourByHourPodcasts(programId: String): Flowable<List<Podcast>> =
-            programRepo.getPodcasts(programId)*/
 
     fun getDownloadedPodcasts(): Single<List<Podcast>> {
         return Single.just(fetchDownloadedPodcasts())
