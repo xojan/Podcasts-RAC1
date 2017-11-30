@@ -73,7 +73,7 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             android.R.id.home -> {
-                handleOnBackPressed()
+                activity?.onBackPressed()
                 return true
             }
             R.id.action_hour_by_hour -> {
@@ -150,11 +150,6 @@ class SectionFragment : BaseFragment(), IsMediaBrowserFragment {
             Log.e(TAG, msg)
             crashReporter.logException(msg)
         }
-    }
-
-    override fun handleOnBackPressed(): Boolean {
-        activity?.finish()
-        return true
     }
 
     /*private fun loadSections() {

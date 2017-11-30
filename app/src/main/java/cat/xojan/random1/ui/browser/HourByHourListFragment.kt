@@ -84,7 +84,7 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             android.R.id.home -> {
-                handleOnBackPressed()
+                activity?.onBackPressed()
                 return true
             }
             R.id.action_sections -> {
@@ -136,11 +136,6 @@ class HourByHourListFragment : BaseFragment(), IsMediaBrowserFragment {
     override fun onDetach() {
         super.onDetach()
         mediaBrowserProvider = null
-    }
-
-    override fun handleOnBackPressed(): Boolean {
-        activity?.finish()
-        return true
     }
 
     private fun handleError(d: MediaDescriptionCompat) {

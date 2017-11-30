@@ -58,21 +58,6 @@ class BrowseActivity: BaseActivity(), HasComponent<BrowseComponent> {
         }
     }
 
-    /*override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            var fragment = getFragment(HourByHourListFragment.TAG)
-            if (fragment == null) fragment = getFragment(SectionFragment.TAG)
-
-            if (fragment != null && supportFragmentManager
-                    .findFragmentByTag(PodcastListFragment.TAG) == null) {
-                if ((fragment as BaseFragment).handleOnBackPressed()) {
-                    return
-                }
-            }
-        }
-        super.onBackPressed()
-    }*/
-
     override fun onMediaControllerConnected() {
         val frag: Fragment = supportFragmentManager.findFragmentById(R.id.container_fragment)
         when (frag) {
