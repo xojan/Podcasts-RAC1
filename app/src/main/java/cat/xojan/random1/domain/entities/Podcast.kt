@@ -17,6 +17,10 @@ data class Podcast(private var audio: Audio,
               var downloadReference: Long = 0
 ) : Parcelable {
 
+    companion object {
+        val PODCAST_STATE = "podcast_state"
+    }
+
     val title: String
         get() = appMobileTitle
 

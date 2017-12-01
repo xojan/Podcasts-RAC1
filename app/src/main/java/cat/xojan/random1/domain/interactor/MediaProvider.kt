@@ -1,11 +1,13 @@
 package cat.xojan.random1.domain.interactor
 
 import android.net.Uri
+import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.util.Log
 import cat.xojan.random1.domain.entities.Podcast
+import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_STATE
 import cat.xojan.random1.domain.entities.Program
 import cat.xojan.random1.domain.entities.Section
 import cat.xojan.random1.ui.home.ProgramFragment
@@ -135,11 +137,15 @@ class MediaProvider @Inject constructor(
     }
 
     private fun createBrowsableMediaItemForPodcast(podcast: Podcast): MediaBrowserCompat.MediaItem {
+        val extras = Bundle()
+        extras.putSerializable(PODCAST_STATE, podcast.state)
+
         val description = MediaDescriptionCompat.Builder()
                 .setMediaId(podcast.audioId)
                 .setTitle(podcast.title)
                 .setMediaUri(Uri.parse(podcast.path))
                 .setIconUri(Uri.parse(podcast.imageUrl))
+                .setExtras(extras)
                 .build()
         return MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
     }

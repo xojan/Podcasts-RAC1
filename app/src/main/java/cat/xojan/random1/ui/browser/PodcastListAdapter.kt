@@ -1,6 +1,5 @@
 package cat.xojan.random1.ui.browser
 
-import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -11,8 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.interactor.ProgramDataInteractor
-import cat.xojan.random1.ui.mediaplayer.MediaPlaybackActivity
+import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_STATE
 import com.squareup.picasso.Picasso
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.podcast_item.*
@@ -59,6 +57,8 @@ class PodcastListAdapter: RecyclerView.Adapter<PodcastListAdapter.MediaItemViewH
         : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bind(item: MediaBrowserCompat.MediaItem) {
+            val podcast = item.description
+
             itemView.setOnClickListener {
                 //val intent = Intent(itemView.context, MediaPlaybackActivity::class.java)
 //                val intent = Intent(itemView.context, RadioPlayerActivity::class.java)
@@ -71,16 +71,8 @@ class PodcastListAdapter: RecyclerView.Adapter<PodcastListAdapter.MediaItemViewH
                         .playFromMediaId(item.mediaId, extras)
             }
 
-            /*podcast_icon.setOnClickListener {
-                when (podcast.state) {
-                    Podcast.State.LOADED -> interactor.download(podcast)
-                    Podcast.State.DOWNLOADING -> {}
-                    Podcast.State.DOWNLOADED -> interactor.deleteDownload(podcast)
-                }
-                interactor.refreshDownloadedPodcasts()
-            }*/
-
-           /* when (podcast.state) {
+            val state = podcast.extras?.getSerializable(PODCAST_STATE) as Podcast.State
+            when (state) {
                 Podcast.State.LOADED -> podcast_icon.setImageResource(R.drawable.ic_arrow_down)
                 Podcast.State.DOWNLOADING -> {
                     podcast_icon.setImageResource(R.drawable.animated_arrow)
@@ -89,9 +81,17 @@ class PodcastListAdapter: RecyclerView.Adapter<PodcastListAdapter.MediaItemViewH
                     }
                 }
                 Podcast.State.DOWNLOADED -> podcast_icon.setImageResource(R.drawable.ic_delete)
-            }*/
+            }
 
-            val podcast = item.description
+            podcast_icon.setOnClickListener {
+                when (state) {
+                    //Podcast.State.LOADED -> interactor.download(podcast)
+                    Podcast.State.DOWNLOADING -> {}
+                    //Podcast.State.DOWNLOADED -> interactor.deleteDownload(podcast)
+                }
+                //interactor.refreshDownloadedPodcasts()
+            }
+
             podcast_title.text = podcast.title
             Picasso.with(itemView.context)
                     .load(podcast.iconUri.toString() + "?w=" + getWeekOfTheYear())
