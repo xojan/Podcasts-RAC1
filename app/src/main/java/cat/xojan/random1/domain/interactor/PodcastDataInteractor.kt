@@ -3,6 +3,7 @@ package cat.xojan.random1.domain.interactor
 import android.app.DownloadManager
 import android.content.Context
 import android.os.Environment
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.util.Log
 import cat.xojan.random1.domain.entities.Podcast
@@ -28,7 +29,7 @@ class PodcastDataInteractor @Inject constructor(
 {
     private val TAG = PodcastDataInteractor::class.simpleName
 
-    private val downloadedPodcastsSubject: PublishSubject<List<MediaDescriptionCompat>> =
+    private val downloadedPodcastsSubject: PublishSubject<List<MediaBrowserCompat.MediaItem>> =
             PublishSubject.create()
 
     fun getHourByHourPodcasts(programId: String): Single<List<Podcast>> {
@@ -89,11 +90,11 @@ class PodcastDataInteractor @Inject constructor(
         }
     }
 
-    fun getDownloadedPodcasts(): Single<List<MediaDescriptionCompat>> {
+    fun getDownloadedPodcasts(): Single<List<MediaBrowserCompat.MediaItem>> {
         return Single.just(fetchDownloadedPodcasts())
     }
 
-    fun getDownloadedPodcastsUpdates(): PublishSubject<List<MediaDescriptionCompat>> {
+    fun getDownloadedPodcastsUpdates(): PublishSubject<List<MediaBrowserCompat.MediaItem>> {
         return downloadedPodcastsSubject
     }
 
@@ -101,7 +102,7 @@ class PodcastDataInteractor @Inject constructor(
         downloadedPodcastsSubject.onNext(fetchDownloadedPodcasts())
     }
 
-    private fun fetchDownloadedPodcasts(): List<MediaDescriptionCompat> {
+    private fun fetchDownloadedPodcasts(): List<MediaBrowserCompat.MediaItem> {
         val podcastList = HashSet<MediaDescriptionCompat>()
         val downloading = downloadRepo.getDownloadingPodcasts()
         val downloaded = downloadRepo.getDownloadedPodcasts()
@@ -109,7 +110,10 @@ class PodcastDataInteractor @Inject constructor(
         podcastList.addAll(downloaded)
 
         Log.d(TAG, "Downloading: " + downloading.size + ", downloaded: " + downloaded.size)
-        return ArrayList(podcastList)
+
+        val mediaItemList = podcastList.map { description ->
+            MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE) }
+        return ArrayList(mediaItemList)
     }
 
     fun deleteDownloading(reference: Long) {

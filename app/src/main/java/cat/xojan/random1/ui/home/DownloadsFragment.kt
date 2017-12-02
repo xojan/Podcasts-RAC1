@@ -1,21 +1,22 @@
 package cat.xojan.random1.ui.home
 
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.Podcast
+import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_STATE
 import cat.xojan.random1.injection.component.HomeComponent
 import cat.xojan.random1.ui.BaseFragment
 import cat.xojan.random1.ui.browser.BrowserViewModel
 import cat.xojan.random1.ui.browser.PodcastListAdapter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import java.util.*
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.recycler_view_fragment.*
 import javax.inject.Inject
 
 class DownloadsFragment : BaseFragment() {
@@ -26,67 +27,66 @@ class DownloadsFragment : BaseFragment() {
 
     @Inject internal lateinit var viewModel: BrowserViewModel
 
-    private val mCompositeDisposable = CompositeDisposable()
-    private var mAdapter: PodcastListAdapter? = null
-    private var mRecyclerView: RecyclerView? = null
-    private var mSwipeRefresh: SwipeRefreshLayout? = null
-    private var mEmptyList: TextView? = null
+    private val compositeDisposable = CompositeDisposable()
+    private lateinit var adapter: PodcastListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         getComponent(HomeComponent::class.java).inject(this)
-        val view = inflater.inflate(R.layout.recycler_view_fragment, container, false)
-
-        mSwipeRefresh = view.findViewById(R.id.swipe_refresh)
-        mRecyclerView = view.findViewById(R.id.recycler_view)
-        mEmptyList = view.findViewById(R.id.empty_list)
-
-        mRecyclerView!!.layoutManager = LinearLayoutManager(activity)
-        mSwipeRefresh!!.isEnabled = false
-        mEmptyList!!.text = getString(R.string.no_downloaded_podcasts)
-
-        mAdapter = PodcastListAdapter(viewModel)
-        mRecyclerView!!.adapter = mAdapter
-
-        return view
+        return inflater.inflate(R.layout.recycler_view_fragment, container, false)
     }
 
-    /* override fun onResume() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recycler_view.layoutManager = LinearLayoutManager(activity)
+        swipe_refresh.isEnabled = false
+        empty_list.text = getString(R.string.no_downloaded_podcasts)
+
+        adapter = PodcastListAdapter(viewModel)
+        recycler_view.adapter = adapter
+    }
+
+    override fun onResume() {
         super.onResume()
-        mCompositeDisposable.add(mPodcastsViewModel!!.loadDownloadedPodcasts()
-                .subscribeOn(Schedulers.io())
+        compositeDisposable.add(viewModel.loadDownloadedPodcasts()
+                .subscribeOn(Schedulers.newThread())
                 /*.flatMap(Observable::from)
                 .filter(podcast -> podcast.getState().equals(Podcast.State.DOWNLOADED))
                 .toSortedList((podcast, podcast2) -> podcast2.getDate().compareTo(podcast.getDate()))*/
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Consumer<List<Podcast>> { this.updateView(it) }))
-        mCompositeDisposable.add(mPodcastsViewModel!!.downloadedPodcastsUpdates
-                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        {p -> this.updateView(p)},
+                        {e -> this.onError(e)}
+                ))
+        /*compositeDisposable.add(viewModel.downloadedPodcastsUpdates
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.updateView(it) }))
-    } */
+                .subscribe({ this.updateView(it) }))*/
+    }
 
     override fun onPause() {
         super.onPause()
-        mCompositeDisposable.clear()
+        compositeDisposable.clear()
     }
 
-    private fun updateView(podcasts: List<Podcast>) {
-        val downloaded = ArrayList<Podcast>()
+    private fun updateView(podcasts: List<MediaBrowserCompat.MediaItem>) {
+        val downloaded = mutableListOf<MediaBrowserCompat.MediaItem>()
         if (podcasts.isEmpty()) {
-            mEmptyList!!.visibility = View.VISIBLE
+            empty_list.visibility = View.VISIBLE
         } else {
-            for (p in podcasts) {
-                if (p.state == Podcast.State.DOWNLOADED) {
-                    downloaded.add(p)
-                }
+            podcasts.filterTo(downloaded) {
+                it.description.extras?.getSerializable(PODCAST_STATE)
+                        as Podcast.State == Podcast.State.DOWNLOADED
             }
             /*Collections.sort(downloaded) { (_, _, _, dateTime), (_, _, _, dateTime) ->
                 dateTime.compareTo(dateTime)
             }*/
-            mEmptyList!!.visibility = View.GONE
+            empty_list.visibility = View.GONE
         }
+        adapter.podcasts = downloaded
+    }
 
-        //mAdapter.setPodcasts(downloaded);
+    private fun onError(e: Throwable) {
+
     }
 }
