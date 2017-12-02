@@ -25,10 +25,6 @@ class ProgramDataInteractor @Inject constructor(
         private val context: Context,
         private val eventLogger: EventLogger) {
 
-    companion object {
-        val EXTENSION = ".mp3"
-    }
-
     fun loadPrograms(): Single<List<Program>> {
         return programRepo.getPrograms()
                 .flatMap {

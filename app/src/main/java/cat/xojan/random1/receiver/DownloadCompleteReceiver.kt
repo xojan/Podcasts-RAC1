@@ -12,7 +12,6 @@ import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.EventLogger
 import cat.xojan.random1.domain.interactor.PodcastDataInteractor
-import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import javax.inject.Inject
 
 
@@ -45,7 +44,7 @@ class DownloadCompleteReceiver : BroadcastReceiver() {
                     val localUriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)
                     val uri = cursor.getString(localUriIndex)
                     val audioId = uri.split((Environment.DIRECTORY_DOWNLOADS + "/").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
-                            .replace(ProgramDataInteractor.EXTENSION, "")
+                            .replace(PodcastDataInteractor.EXTENSION, "")
 
                     eventLogger.logDownloadedPodcast(title)
                     podcastDataInteractor.addDownload(audioId)

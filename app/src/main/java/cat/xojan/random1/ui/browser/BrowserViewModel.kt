@@ -5,12 +5,17 @@ import android.support.v4.media.MediaDescriptionCompat
 import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import io.reactivex.Single
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 class BrowserViewModel @Inject
 constructor(
         private val podcastInteractor: PodcastDataInteractor,
         private val programInteractor: ProgramDataInteractor) {
+
+    fun downloadedPodcastsUpdates(): PublishSubject<List<MediaBrowserCompat.MediaItem>> {
+        return podcastInteractor.getDownloadedPodcastsUpdates()
+    }
 
     fun selectedSection(b: Boolean) = podcastInteractor.setSectionSelected(b)
 
@@ -38,9 +43,6 @@ constructor(
     fun loadDownloadedPodcasts(): Single<List<MediaBrowserCompat.MediaItem>> {
         return podcastInteractor.getDownloadedPodcasts()
     }
-
-    /* val downloadedPodcastsUpdates: PublishSubject<List<Podcast>>
-        get() = mProgramDataInteractor.getDownloadedPodcastsUpdates() */
 
     /* fun loadDownloadedPodcasts(): Single<List<Podcast>> {
         return mProgramDataInteractor.getDownloadedPodcasts()

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import cat.xojan.random1.R
+import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.Podcast
 import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_STATE
 import cat.xojan.random1.injection.component.HomeComponent
@@ -26,6 +27,7 @@ class DownloadsFragment : BaseFragment() {
     }
 
     @Inject internal lateinit var viewModel: BrowserViewModel
+    @Inject internal lateinit var crashReporter: CrashReporter
 
     private val compositeDisposable = CompositeDisposable()
     private lateinit var adapter: PodcastListAdapter
@@ -58,10 +60,13 @@ class DownloadsFragment : BaseFragment() {
                         {p -> this.updateView(p)},
                         {e -> this.onError(e)}
                 ))
-        /*compositeDisposable.add(viewModel.downloadedPodcastsUpdates
+        compositeDisposable.add(viewModel.downloadedPodcastsUpdates()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.updateView(it) }))*/
+                .subscribe(
+                        {p -> this.updateView(p)},
+                        {e -> this.onError(e)}
+                ))
     }
 
     override fun onPause() {
@@ -87,6 +92,6 @@ class DownloadsFragment : BaseFragment() {
     }
 
     private fun onError(e: Throwable) {
-
+        crashReporter.logException(e)
     }
 }

@@ -27,6 +27,10 @@ class PodcastDataInteractor @Inject constructor(
         private val context: Context,
         private val downloadRepo: DownloadPodcastRepository)
 {
+
+    companion object {
+        val EXTENSION = ".mp3"
+    }
     private val TAG = PodcastDataInteractor::class.simpleName
 
     private val downloadedPodcastsSubject: PublishSubject<List<MediaBrowserCompat.MediaItem>> =
@@ -75,7 +79,7 @@ class PodcastDataInteractor @Inject constructor(
                 .setDestinationInExternalFilesDir(
                         context,
                         Environment.DIRECTORY_DOWNLOADS,
-                        podcast.mediaId + ProgramDataInteractor.EXTENSION)
+                        podcast.mediaId + EXTENSION)
                 .setVisibleInDownloadsUi(true)
 
         val reference = downloadManager.enqueue(request)
@@ -128,9 +132,9 @@ class PodcastDataInteractor @Inject constructor(
 
     fun addDownload(audioId: String) {
         val from = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() +
-                File.separator + audioId + ProgramDataInteractor.EXTENSION)
+                File.separator + audioId + EXTENSION)
         val to = File(context.getExternalFilesDir(Environment.DIRECTORY_PODCASTS).toString() +
-                File.separator + audioId + ProgramDataInteractor.EXTENSION)
+                File.separator + audioId + EXTENSION)
 
         if (from.renameTo(to)) {
             Log.d(TAG, "moving download from " + from.path + " to " + to.path)
