@@ -1,20 +1,20 @@
 package cat.xojan.random1.domain.repository
 
-import cat.xojan.random1.domain.entities.Podcast
+import android.support.v4.media.MediaDescriptionCompat
 
 interface DownloadPodcastRepository {
 
-    fun addDownloadingPodcast(podcast: Podcast): Boolean
+    fun addDownloadingPodcast(podcast: MediaDescriptionCompat): Boolean
 
-    fun deleteDownloadingPodcast(podcast: Podcast): Boolean
+    fun deleteDownloadingPodcast(podcast: MediaDescriptionCompat): Boolean
 
-    fun setPodcastAsDownloaded(audioId: String, filePath: String)
+    fun setPodcastAsDownloaded(mediaId: String, filePath: String)
 
-    fun getDownloadingPodcasts(): MutableSet<Podcast>
+    fun getDownloadingPodcasts(): MutableSet<MediaDescriptionCompat>
 
-    fun getDownloadedPodcasts(): Set<Podcast>
+    fun getDownloadedPodcasts(): Set<MediaDescriptionCompat>
 
-    fun deleteDownloadedPodcast(podcast: Podcast)
+    fun deleteDownloadedPodcast(podcast: MediaDescriptionCompat)
 
-    fun getDownloadedPodcastTitle(audioId: String): String?
+    fun getDownloadedPodcastTitle(mediaId: String): String?
 }

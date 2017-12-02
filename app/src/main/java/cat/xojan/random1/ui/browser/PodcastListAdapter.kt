@@ -17,7 +17,8 @@ import kotlinx.android.synthetic.main.podcast_item.*
 import java.util.*
 
 
-class PodcastListAdapter: RecyclerView.Adapter<PodcastListAdapter.MediaItemViewHolder>() {
+class PodcastListAdapter(private val viewModel: BrowserViewModel) : RecyclerView
+.Adapter<PodcastListAdapter.MediaItemViewHolder>() {
 
     var podcasts: List<MediaBrowserCompat.MediaItem> = emptyList()
         set(value) {
@@ -48,7 +49,7 @@ class PodcastListAdapter: RecyclerView.Adapter<PodcastListAdapter.MediaItemViewH
     }
 
     override fun onBindViewHolder(holder: MediaItemViewHolder?, position: Int) {
-        holder?.bind(podcasts[position])
+        holder?.bind(podcasts[position], viewModel)
     }
 
     override fun getItemCount(): Int = podcasts.size
@@ -56,7 +57,7 @@ class PodcastListAdapter: RecyclerView.Adapter<PodcastListAdapter.MediaItemViewH
     class MediaItemViewHolder(override val containerView: View)
         : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-        fun bind(item: MediaBrowserCompat.MediaItem) {
+        fun bind(item: MediaBrowserCompat.MediaItem, viewModel: BrowserViewModel) {
             val podcast = item.description
 
             itemView.setOnClickListener {
@@ -85,11 +86,11 @@ class PodcastListAdapter: RecyclerView.Adapter<PodcastListAdapter.MediaItemViewH
 
             podcast_icon.setOnClickListener {
                 when (state) {
-                    //Podcast.State.LOADED -> interactor.download(podcast)
+                    Podcast.State.LOADED -> viewModel.downloadPodcast(podcast)
                     Podcast.State.DOWNLOADING -> {}
-                    //Podcast.State.DOWNLOADED -> interactor.deleteDownload(podcast)
+                    Podcast.State.DOWNLOADED -> viewModel.deletePodcast(podcast)
                 }
-                //interactor.refreshDownloadedPodcasts()
+                viewModel.refreshDownloadedPodcast()
             }
 
             podcast_title.text = podcast.title

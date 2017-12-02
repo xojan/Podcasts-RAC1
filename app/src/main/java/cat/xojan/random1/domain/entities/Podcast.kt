@@ -19,6 +19,7 @@ data class Podcast(private var audio: Audio,
 
     companion object {
         val PODCAST_STATE = "podcast_state"
+        val PODCAST_FILE_PATH = "podcast_downloaded_file_path"
     }
 
     val title: String

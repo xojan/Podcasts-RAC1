@@ -8,19 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
-import java.util.ArrayList
-
-import javax.inject.Inject
-
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.injection.component.HomeComponent
 import cat.xojan.random1.ui.BaseFragment
-import cat.xojan.random1.ui.browser.PodcastListAdapter
 import cat.xojan.random1.ui.browser.BrowserViewModel
+import cat.xojan.random1.ui.browser.PodcastListAdapter
 import io.reactivex.disposables.CompositeDisposable
+import java.util.*
+import javax.inject.Inject
 
 class DownloadsFragment : BaseFragment() {
 
@@ -28,8 +24,7 @@ class DownloadsFragment : BaseFragment() {
         val TAG = DownloadsFragment::class.simpleName
     }
 
-    @Inject internal lateinit var mPodcastsViewModel: BrowserViewModel
-    @Inject internal lateinit var mProgramDataInteractor: ProgramDataInteractor
+    @Inject internal lateinit var viewModel: BrowserViewModel
 
     private val mCompositeDisposable = CompositeDisposable()
     private var mAdapter: PodcastListAdapter? = null
@@ -50,7 +45,7 @@ class DownloadsFragment : BaseFragment() {
         mSwipeRefresh!!.isEnabled = false
         mEmptyList!!.text = getString(R.string.no_downloaded_podcasts)
 
-        mAdapter = PodcastListAdapter()
+        mAdapter = PodcastListAdapter(viewModel)
         mRecyclerView!!.adapter = mAdapter
 
         return view

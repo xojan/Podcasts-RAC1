@@ -1,5 +1,6 @@
 package cat.xojan.random1.ui.browser
 
+import android.support.v4.media.MediaDescriptionCompat
 import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import javax.inject.Inject
@@ -18,6 +19,18 @@ constructor(
             return programInteractor.hasSections(programId)
         }
         return false
+    }
+
+    fun downloadPodcast(podcast: MediaDescriptionCompat) {
+        podcastInteractor.download(podcast)
+    }
+
+    fun deletePodcast(podcast: MediaDescriptionCompat) {
+        podcastInteractor.deleteDownload(podcast)
+    }
+
+    fun refreshDownloadedPodcast() {
+        podcastInteractor.refreshDownloadedPodcasts()
     }
 
     /* val downloadedPodcastsUpdates: PublishSubject<List<Podcast>>

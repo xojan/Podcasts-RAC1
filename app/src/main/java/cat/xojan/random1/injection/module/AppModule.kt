@@ -37,13 +37,13 @@ class AppModule(private val application: Application) {
 
     @Provides
     @Singleton
-    internal fun provideDownloadManager(): DownloadManager {
+    fun provideDownloadManager(): DownloadManager {
         return application.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     }
 
     @Provides
     @Singleton
-    internal fun provideRetrofitRac1Service(): Rac1ApiService {
+    fun provideRetrofitRac1Service(): Rac1ApiService {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
@@ -71,22 +71,27 @@ class AppModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun provideProgramDataInteractor(
-            downloadManager: DownloadManager,
-            eventLogger: EventLogger,
-            programRepository: ProgramRepository) : ProgramDataInteractor {
+    fun provideProgramDataInteractor(eventLogger: EventLogger,
+                                     programRepository: ProgramRepository) : ProgramDataInteractor {
         return ProgramDataInteractor(programRepository,
                 SharedPrefDownloadPodcastRepository(application),
-                application, downloadManager, eventLogger)
+                application, eventLogger)
     }
 
     @Provides
     @Singleton
     fun providePodcastDataInteractor(podcastRepository: PodcastRepository,
                                      programRepository: ProgramRepository,
-                                     podcastPrefRepository: PodcastPreferencesRepository)
+                                     podcastPrefRepository: PodcastPreferencesRepository,
+                                     downloadManager: DownloadManager)
             : PodcastDataInteractor {
-        return PodcastDataInteractor(programRepository, podcastRepository, podcastPrefRepository)
+        return PodcastDataInteractor(
+                programRepository,
+                podcastRepository,
+                podcastPrefRepository,
+                downloadManager,
+                application,
+                SharedPrefDownloadPodcastRepository(application))
     }
 
     @Provides

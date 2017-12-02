@@ -23,18 +23,11 @@ class ProgramDataInteractor @Inject constructor(
         private val programRepo: ProgramRepository,
         private val downloadRepo: SharedPrefDownloadPodcastRepository,
         private val context: Context,
-        private val downloadManager: DownloadManager,
         private val eventLogger: EventLogger) {
 
     companion object {
         val EXTENSION = ".mp3"
     }
-
-    private val PREF_NAME = "shared_preferences"
-    private val PREF_SECTION = "pref_section"
-    private val TAG = ProgramDataInteractor::class.java.simpleName
-
-    private val mDownloadedPodcastsSubject: PublishSubject<List<Podcast>> = PublishSubject.create()
 
     fun loadPrograms(): Single<List<Program>> {
         return programRepo.getPrograms()
@@ -69,80 +62,8 @@ class ProgramDataInteractor @Inject constructor(
                 }
     }
 
-    fun addDownload(audioId: String) {
-        val from = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() +
-                File.separator + audioId + EXTENSION)
-        val to = File(context.getExternalFilesDir(Environment.DIRECTORY_PODCASTS).toString() +
-                File.separator + audioId + EXTENSION)
-
-        if (from.renameTo(to)) {
-            Log.d(TAG, "moving download from " + from.path + " to " + to.path)
-            downloadRepo.setPodcastAsDownloaded(audioId, to.path)
-        } else {
-            from.delete()
-            to.delete()
-        }
-    }
-
-    fun getDownloadedPodcasts(): Single<List<Podcast>> {
-        return Single.just(fetchDownloadedPodcasts())
-    }
-
-    fun getDownloadedPodcastsUpdates(): PublishSubject<List<Podcast>> {
-        return mDownloadedPodcastsSubject
-    }
-
-    fun refreshDownloadedPodcasts() {
-        mDownloadedPodcastsSubject.onNext(fetchDownloadedPodcasts())
-    }
-
-    private fun fetchDownloadedPodcasts(): List<Podcast> {
-        val podcastList = HashSet<Podcast>()
-        val downloading = downloadRepo.getDownloadingPodcasts()
-        val downloaded = downloadRepo.getDownloadedPodcasts()
-        podcastList.addAll(downloading)
-        podcastList.addAll(downloaded)
-
-        Log.d(TAG, "Downloading: " + downloading.size + ", downloaded: " + downloaded.size)
-        return ArrayList(podcastList)
-    }
-
-    fun deleteDownload(podcast: Podcast) {
-        val file = File(podcast.filePath!!)
-        if (file.delete()) {
-            downloadRepo.deleteDownloadedPodcast(podcast)
-        }
-    }
-
-    fun download(podcast: Podcast) {
-        val uri = Uri.parse(podcast.path)
-        val request = DownloadManager.Request(uri)
-                .setTitle(podcast.title)
-                .setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS,
-                        podcast.audioId!! + EXTENSION)
-                .setVisibleInDownloadsUi(true)
-
-        val reference = downloadManager.enqueue(request)
-        podcast.downloadReference = reference
-        addDownloadingPodcast(podcast)
-    }
-
-    private fun addDownloadingPodcast(podcast: Podcast): Boolean {
-        return downloadRepo.addDownloadingPodcast(podcast)
-    }
-
     fun getDownloadedPodcastTitle(audioId: String): String? {
         return downloadRepo.getDownloadedPodcastTitle(audioId)
-    }
-
-    fun deleteDownloading(reference: Long) {
-        var podcast: Podcast? = null
-        for (pod in downloadRepo.getDownloadingPodcasts()) {
-            if (reference == pod.downloadReference) {
-                podcast = pod
-            }
-        }
-        downloadRepo.deleteDownloadingPodcast(podcast!!)
     }
 
     fun exportPodcasts(): Observable<Boolean> {

@@ -11,16 +11,17 @@ import cat.xojan.random1.Application
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.EventLogger
+import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import javax.inject.Inject
 
 
 class DownloadCompleteReceiver : BroadcastReceiver() {
 
-    @Inject internal lateinit var mProgramDataInteractor: ProgramDataInteractor
-    @Inject internal lateinit var mDownloadManager: DownloadManager
-    @Inject internal lateinit var mEventLogger: EventLogger
-    @Inject internal lateinit var mCrashReporter: CrashReporter
+    @Inject internal lateinit var podcastDataInteractor: PodcastDataInteractor
+    @Inject internal lateinit var downloadManager: DownloadManager
+    @Inject internal lateinit var eventLogger: EventLogger
+    @Inject internal lateinit var crashReporter: CrashReporter
 
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "onReceive()")
@@ -29,7 +30,7 @@ class DownloadCompleteReceiver : BroadcastReceiver() {
         val reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
         val query = DownloadManager.Query()
         query.setFilterById(reference)
-        val cursor = mDownloadManager!!.query(query)
+        val cursor = downloadManager.query(query)
 
         if (cursor != null && cursor.moveToFirst()) {
             val statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
@@ -46,8 +47,8 @@ class DownloadCompleteReceiver : BroadcastReceiver() {
                     val audioId = uri.split((Environment.DIRECTORY_DOWNLOADS + "/").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
                             .replace(ProgramDataInteractor.EXTENSION, "")
 
-                    mEventLogger!!.logDownloadedPodcast(title)
-                    mProgramDataInteractor!!.addDownload(audioId)
+                    eventLogger.logDownloadedPodcast(title)
+                    podcastDataInteractor.addDownload(audioId)
 
                     Toast.makeText(context, context.getString(R.string.download_successful) + ": " +
                             title, Toast.LENGTH_SHORT).show()
@@ -70,19 +71,19 @@ class DownloadCompleteReceiver : BroadcastReceiver() {
                         DownloadManager.ERROR_UNKNOWN -> reasonText = "ERROR_UNKNOWN"
                     }
 
-                    mCrashReporter!!.logException("Download failed: $reason $reasonText")
-                    mProgramDataInteractor!!.deleteDownloading(reference)
+                    crashReporter.logException("Download failed: $reason $reasonText")
+                    podcastDataInteractor.deleteDownloading(reference)
                     Toast.makeText(context, context.getString(R.string.download_failed) + ": "
                             + reasonText, Toast.LENGTH_SHORT).show()
                 }
             }
             cursor.close()
         } else {
-            mProgramDataInteractor!!.deleteDownloading(reference)
+            podcastDataInteractor.deleteDownloading(reference)
             Toast.makeText(context, context.getString(R.string.download_cancelled),
                     Toast.LENGTH_SHORT).show()
         }
-        mProgramDataInteractor!!.refreshDownloadedPodcasts()
+        podcastDataInteractor.refreshDownloadedPodcasts()
     }
 
     private fun initInjector(context: Context) {
