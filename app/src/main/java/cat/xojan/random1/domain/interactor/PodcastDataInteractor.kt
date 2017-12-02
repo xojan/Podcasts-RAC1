@@ -6,6 +6,7 @@ import android.os.Environment
 import android.support.v4.media.MediaDescriptionCompat
 import android.util.Log
 import cat.xojan.random1.domain.entities.Podcast
+import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_DOWNLOAD_REFERENCE
 import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_FILE_PATH
 import cat.xojan.random1.domain.repository.DownloadPodcastRepository
 import cat.xojan.random1.domain.repository.PodcastPreferencesRepository
@@ -14,8 +15,7 @@ import cat.xojan.random1.domain.repository.ProgramRepository
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import java.io.File
-import java.util.ArrayList
-import java.util.HashSet
+import java.util.*
 import javax.inject.Inject
 
 class PodcastDataInteractor @Inject constructor(
@@ -27,7 +27,6 @@ class PodcastDataInteractor @Inject constructor(
         private val downloadRepo: DownloadPodcastRepository)
 {
     private val TAG = PodcastDataInteractor::class.simpleName
-    private val PODCAST_DOWNLOAD_REFERENCE = "PODCAST_DOWNLOAD_REFERENCE"
 
     private val downloadedPodcastsSubject: PublishSubject<List<MediaDescriptionCompat>> =
             PublishSubject.create()
