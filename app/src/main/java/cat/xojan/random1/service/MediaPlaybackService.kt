@@ -4,19 +4,17 @@ import android.app.PendingIntent
 import android.content.*
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
-import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v4.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import cat.xojan.random1.Application
 import cat.xojan.random1.domain.interactor.MediaProvider
 import cat.xojan.random1.ui.home.ProgramFragment.Companion.MEDIA_ID_ROOT
+import cat.xojan.random1.ui.mediaplayback.PlaybackManager
 import cat.xojan.random1.ui.notification.NotificationController
 import javax.inject.Inject
 
@@ -28,6 +26,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var notificationController: NotificationController
+    private lateinit var playbackManager: PlaybackManager
 
     @Inject internal lateinit var mediaProvider: MediaProvider
 
@@ -36,8 +35,9 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         initInjector()
 
         initMediaPlayer()
-        initMediaSession()
         initNoisyReceiver()
+        initPlaybackManager()
+        initMediaSession()
         initNotificationController()
     }
 
@@ -60,7 +60,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         mediaSession = MediaSessionCompat(applicationContext, " MediaPlaybackService",
                 mediaButtonReceiver, null)
 
-        mediaSession.setCallback(mediaSessionCallback)
+        mediaSession.setCallback(playbackManager.mediaSessionCallback)
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
                 or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
                 or MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
@@ -81,6 +81,10 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
 
     private fun initNotificationController() {
         notificationController = NotificationController(this, mediaSession)
+    }
+
+    private fun initPlaybackManager() {
+        playbackManager = PlaybackManager(mediaPlayer)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -142,89 +146,6 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
                 mediaPlayer.setVolume(1.0f, 1.0f)
             }
         }
-    }
-
-    private val mediaSessionCallback = object : MediaSessionCompat.Callback() {
-
-        override fun onPlay() {
-            super.onPlay()
-            if( !successfullyRetrievedAudioFocus() ) {
-                return
-            }
-            mediaSession.isActive = true
-            setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING)
-            notificationController.showPlaying()
-            mediaPlayer.start()
-        }
-
-        override fun onPause() {
-            super.onPause()
-            if( mediaPlayer.isPlaying) {
-                mediaPlayer.pause()
-                setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED)
-                notificationController.showPaused()
-            }
-        }
-
-        override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            Log.d(TAG, "onPlayFromMediaId: " + mediaId)
-
-            /*// Measures bandwidth during playback. Can be null if not required.
-            val bandwidthMeter = DefaultBandwidthMeter()
-            val audioTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
-            val trackSelector = DefaultTrackSelector(audioTrackSelectionFactory)
-            exoPlayer = ExoPlayerFactory.newSimpleInstance(baseContext, trackSelector)
-
-            // Produces DataSource instances through which media data is loaded.
-            val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(baseContext,
-                Util.getUserAgent(baseContext, "yourApplicationName"), bandwidthMeter)
-            // Produces Extractor instances for parsing the media data.
-            val extractorsFactory: ExtractorsFactory = DefaultExtractorsFactory()
-            // This is the MediaSource representing the media to be played.
-            val uri: Uri? = extras?.getParcelable("mediaUrl")
-            val videoSource: MediaSource = ExtractorMediaSource(uri,
-                dataSourceFactory, extractorsFactory, null, null)
-            // Prepare the player with the source.
-            exoPlayer.prepare(videoSource)
-            exoPlayer.playWhenReady = true*/
-            val uri: Uri? = extras?.getParcelable("mediaUrl")
-            mediaPlayer.setDataSource(uri.toString())
-            mediaPlayer.setOnPreparedListener { mediaPlayer.start() }
-            mediaPlayer.prepareAsync()
-        }
-
-        override fun onCommand(command: String?, extras: Bundle?, cb: ResultReceiver?) {
-            super.onCommand(command, extras, cb)
-            /*if( COMMAND_EXAMPLE.equalsIgnoreCase(command) ) {
-                //Custom command here
-            }*/
-            Log.d("onCommand", command)
-        }
-
-        override fun onSeekTo(pos: Long) {
-            super.onSeekTo(pos)
-            Log.d("onSeekTo", pos.toString())
-        }
-    }
-
-    private fun successfullyRetrievedAudioFocus(): Boolean {
-        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-        val result = audioManager.requestAudioFocus(this,
-                AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
-
-        return result == AudioManager.AUDIOFOCUS_GAIN
-    }
-
-    private fun setMediaPlaybackState(state: Int) {
-        val playbackstateBuilder = PlaybackStateCompat.Builder()
-        if (state == PlaybackStateCompat.STATE_PLAYING) {
-            playbackstateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_PAUSE)
-        } else {
-            playbackstateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_PLAY)
-        }
-        playbackstateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
-        mediaSession.setPlaybackState(playbackstateBuilder.build())
     }
 
     private val noisyReceiver = object : BroadcastReceiver() {
