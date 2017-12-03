@@ -4,15 +4,15 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="@dimen/playback_controls_padding"
-    android:background="@color/colorPrimaryDark">
+    android:padding="8dp"
+    android:background="@color/colorPrimary">
 
     <ImageView
         android:id="@+id/album_art"
-        tools:src="@drawable/default_rac1"
-        android:layout_width="@dimen/playback_controls_albumart_size"
-        android:layout_height="@dimen/playback_controls_albumart_size"
         android:scaleType="centerCrop"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/default_rac1"
         android:layout_alignParentLeft="true"/>
 
     <LinearLayout
@@ -22,6 +22,7 @@
         android:orientation="vertical"
         android:layout_toRightOf="@id/album_art"
         android:layout_toLeftOf="@+id/play_pause"
+        android:layout_marginLeft="8dp"
         android:layout_centerVertical="true">
 
         <TextView
@@ -58,12 +59,11 @@
     <ImageButton
         android:id="@+id/play_pause"
         android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_alignParentRight="true"
         android:background="?selectableItemBackgroundBorderless"
-        app:srcCompat="@drawable/ic_play_arrow"
+        app:srcCompat="@drawable/ic_pause"
         android:tintMode="src_in"/>
 
 </RelativeLayout>
