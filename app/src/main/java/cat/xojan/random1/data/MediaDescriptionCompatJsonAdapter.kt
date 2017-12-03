@@ -28,8 +28,8 @@ class MediaDescriptionCompatJsonAdapter {
     fun fromJson(itemJson: MediaDescriptionCompatJson): MediaDescriptionCompat {
         val extras = Bundle()
         extras.putSerializable(PODCAST_STATE, itemJson.state)
-        extras.putSerializable(PODCAST_DOWNLOAD_REFERENCE, itemJson.downloadReference)
-        extras.putSerializable(PODCAST_FILE_PATH, itemJson.mediaFilePath)
+        extras.putLong(PODCAST_DOWNLOAD_REFERENCE, itemJson.downloadReference!!)
+        extras.putString(PODCAST_FILE_PATH, itemJson.mediaFilePath)
 
         return MediaDescriptionCompat.Builder()
                 .setMediaId(itemJson.id)

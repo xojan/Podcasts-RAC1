@@ -33,7 +33,7 @@ class PodcastDataInteractor @Inject constructor(
     }
     private val TAG = PodcastDataInteractor::class.simpleName
 
-    private val downloadedPodcastsSubject: PublishSubject<List<MediaBrowserCompat.MediaItem>> =
+    private val stateUpdatesSubject: PublishSubject<List<MediaBrowserCompat.MediaItem>> =
             PublishSubject.create()
 
     fun getHourByHourPodcasts(programId: String): Single<List<Podcast>> {
@@ -98,15 +98,15 @@ class PodcastDataInteractor @Inject constructor(
         return Single.just(fetchDownloadedPodcasts())
     }
 
-    fun getDownloadedPodcastsUpdates(): PublishSubject<List<MediaBrowserCompat.MediaItem>> {
-        return downloadedPodcastsSubject
+    fun getPodcastStateUpdates(): PublishSubject<List<MediaBrowserCompat.MediaItem>> {
+        return stateUpdatesSubject
     }
 
     fun refreshDownloadedPodcasts() {
-        downloadedPodcastsSubject.onNext(fetchDownloadedPodcasts())
+        stateUpdatesSubject.onNext(fetchDownloadedPodcasts())
     }
 
-    private fun fetchDownloadedPodcasts(): List<MediaBrowserCompat.MediaItem> {
+    fun fetchDownloadedPodcasts(): List<MediaBrowserCompat.MediaItem> {
         val podcastList = HashSet<MediaDescriptionCompat>()
         val downloading = downloadRepo.getDownloadingPodcasts()
         val downloaded = downloadRepo.getDownloadedPodcasts()

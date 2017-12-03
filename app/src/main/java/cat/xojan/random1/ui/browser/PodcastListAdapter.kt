@@ -1,15 +1,14 @@
 package cat.xojan.random1.ui.browser
 
 import android.graphics.drawable.Animatable
-import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.session.MediaControllerCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.entities.Podcast
+import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_FILE_PATH
 import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_STATE
 import com.squareup.picasso.Picasso
 import kotlinx.android.extensions.LayoutContainer
@@ -20,26 +19,30 @@ import java.util.*
 class PodcastListAdapter(private val viewModel: BrowserViewModel) : RecyclerView
 .Adapter<PodcastListAdapter.MediaItemViewHolder>() {
 
-    var podcasts: List<MediaBrowserCompat.MediaItem> = emptyList()
+    var podcasts = emptyList<MediaBrowserCompat.MediaItem>()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    fun updateWithDownloaded(downloadedPodcasts: List<Podcast>) {
-       /* for (podcast in podcasts) {
-            podcast.filePath = null
-            podcast.state = Podcast.State.LOADED
+    fun updatePodcastsState(updatedStatePodcasts: List<MediaBrowserCompat.MediaItem>) {
+        for (mediaItem in podcasts) {
+            val podcast = mediaItem.description
+            podcast.extras?.putString(PODCAST_FILE_PATH, null)
+            podcast.extras?.putSerializable(PODCAST_STATE, Podcast.State.LOADED)
         }
 
-        for (download in downloadedPodcasts) {
-            val index = podcasts.indexOf(download)
-            if (index >= 0) {
-                val podcast = podcasts[index]
-                podcast.filePath = download.filePath
-                podcast.state = download.state
+        for (p in updatedStatePodcasts) {
+            val updatedPodcast = p.description
+            val currentPodcast = podcasts.firstOrNull { it.mediaId == p.mediaId }
+            currentPodcast?.let {
+                val description = currentPodcast.description
+                description.extras?.putString(PODCAST_FILE_PATH,
+                        updatedPodcast.extras?.getString(PODCAST_FILE_PATH))
+                description.extras?.putSerializable(PODCAST_STATE,
+                        updatedPodcast.extras?.getSerializable(PODCAST_STATE) as Podcast.State)
             }
-        }*/
+        }
         notifyDataSetChanged()
     }
 
@@ -65,11 +68,11 @@ class PodcastListAdapter(private val viewModel: BrowserViewModel) : RecyclerView
 //                val intent = Intent(itemView.context, RadioPlayerActivity::class.java)
 //                intent.putExtra(RadioPlayerActivity.EXTRA_PODCAST, podcast)
                 //itemView.context.startActivity(intent)
-                val extras = Bundle()
+                /*val extras = Bundle()
 
                 extras.putParcelable("mediaUrl", item.description.mediaUri)
                 MediaControllerCompat.getMediaController(itemView.context as BrowseActivity).transportControls
-                        .playFromMediaId(item.mediaId, extras)
+                        .playFromMediaId(item.mediaId, extras)*/
             }
 
             val state = podcast.extras?.getSerializable(PODCAST_STATE) as Podcast.State

@@ -22,7 +22,9 @@ import cat.xojan.random1.ui.BaseFragment
 import cat.xojan.random1.ui.IsMediaBrowserFragment
 import cat.xojan.random1.ui.MediaBrowserProvider
 import cat.xojan.random1.ui.home.ProgramFragment
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recycler_view_fragment.*
 import javax.inject.Inject
 
@@ -96,16 +98,16 @@ class SectionPodcastListFragment : BaseFragment(), IsMediaBrowserFragment {
         }
     }
 
-    /* @Override
-    public void onResume() {
-        super.onResume();
-        compositeDisposable.add(mPodcastsViewModel.getDownloadedPodcastsUpdates()
-                .subscribeOn(Schedulers.io())
+    override fun onResume() {
+        super.onResume()
+        compositeDisposable.add(viewModel.getPodcastStateUpdates()
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::updateViewWithDownloaded));
-        getActivity().setTitle(((Section) getArguments().get(ARG_SECTION)).getTitle());
-        showBackArrow();
-    } */
+                .subscribe(
+                        {p -> adapter.updatePodcastsState(p)},
+                        {e -> e.printStackTrace()}
+                ))
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -174,7 +176,7 @@ class SectionPodcastListFragment : BaseFragment(), IsMediaBrowserFragment {
                 handleError(children[0].description)
             } else {
                 Log.d(TAG, "onChildrenLoaded, parentId=" + parentId + "  count=" + children.size)
-                adapter.podcasts = children
+                adapter.podcasts = viewModel.updatePodcastState(children)
                 showPodcasts()
             }
         }

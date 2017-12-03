@@ -60,7 +60,7 @@ class DownloadsFragment : BaseFragment() {
                         {p -> this.updateView(p)},
                         {e -> this.onError(e)}
                 ))
-        compositeDisposable.add(viewModel.downloadedPodcastsUpdates()
+        compositeDisposable.add(viewModel.getPodcastStateUpdates()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
