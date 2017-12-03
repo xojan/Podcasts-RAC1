@@ -1,4 +1,4 @@
-package cat.xojan.random1.ui.mediaplayer;
+package cat.xojan.random1.ui.mediaplayback;
 
 import android.app.Notification;
 import android.app.PendingIntent;

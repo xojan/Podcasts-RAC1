@@ -1,6 +1,6 @@
 package cat.xojan.random1.injection.module
 
-import cat.xojan.random1.ui.mediaplayer.RadioPlayerActivity
+import cat.xojan.random1.ui.mediaplayback.RadioPlayerActivity
 import dagger.Module
 
 @Module

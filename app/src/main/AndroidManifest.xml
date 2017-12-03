@@ -40,7 +40,7 @@
 
         <activity android:name=".ui.browser.BrowseActivity"/>
 
-        <activity android:name=".ui.mediaplayer.MediaPlaybackActivity"/>
+        <activity android:name=".ui.mediaplayback.MediaPlaybackFullScreenActivity"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"

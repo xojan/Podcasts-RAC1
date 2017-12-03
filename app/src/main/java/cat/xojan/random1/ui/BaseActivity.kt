@@ -14,6 +14,7 @@ import cat.xojan.random1.R
 import cat.xojan.random1.injection.component.AppComponent
 import cat.xojan.random1.injection.module.BaseActivityModule
 import cat.xojan.random1.service.MediaPlaybackService
+import cat.xojan.random1.ui.mediaplayback.MediaPlaybackControlsFragment
 
 
 abstract class BaseActivity : AppCompatActivity(), MediaBrowserProvider {
@@ -48,6 +49,7 @@ abstract class BaseActivity : AppCompatActivity(), MediaBrowserProvider {
 
     private val TAG = BaseActivity::class.simpleName
     lateinit var mMediaBrowser: MediaBrowserCompat
+    private lateinit var controlsFragment: MediaPlaybackControlsFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +72,10 @@ abstract class BaseActivity : AppCompatActivity(), MediaBrowserProvider {
 
     override fun onStart() {
         super.onStart()
+        controlsFragment = supportFragmentManager.findFragmentById(R.id.fragment_playback_controls)
+                as MediaPlaybackControlsFragment
+        //hidePlaybackControls()
+
         mMediaBrowser.connect()
     }
 
