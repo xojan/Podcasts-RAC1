@@ -27,6 +27,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
     private lateinit var playbackManager: PlaybackManager
 
     @Inject internal lateinit var mediaProvider: MediaProvider
+    @Inject internal lateinit var queueManager: QueueManager
 
     override fun onCreate() {
         super.onCreate()
@@ -82,7 +83,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
     }
 
     private fun initPlaybackManager() {
-        playbackManager = PlaybackManager(mediaPlayer)
+        playbackManager = PlaybackManager(mediaPlayer, queueManager)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {

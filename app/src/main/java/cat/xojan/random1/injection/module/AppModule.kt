@@ -13,6 +13,7 @@ import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.domain.repository.PodcastPreferencesRepository
 import cat.xojan.random1.domain.repository.PodcastRepository
 import cat.xojan.random1.domain.repository.ProgramRepository
+import cat.xojan.random1.feature.mediaplayback.QueueManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.squareup.moshi.KotlinJsonAdapterFactory
@@ -110,9 +111,10 @@ class AppModule(private val application: Application) {
     @Provides
     @Singleton
     fun provideMediaProvider(programDataInteractor: ProgramDataInteractor,
-                             podcastDataInteractor: PodcastDataInteractor
+                             podcastDataInteractor: PodcastDataInteractor,
+                             queueManager: QueueManager
     ): MediaProvider {
-        return MediaProvider(programDataInteractor, podcastDataInteractor)
+        return MediaProvider(programDataInteractor, podcastDataInteractor, queueManager)
     }
 
     @Provides
@@ -130,5 +132,11 @@ class AppModule(private val application: Application) {
     @Provides
     fun providesPodcastsPreferencesRepository(): PodcastPreferencesRepository {
         return SharedPrefPodcastPreferencesRepository(application)
+    }
+
+    @Provides
+    @Singleton
+    fun provideQueueManager(): QueueManager {
+        return QueueManager()
     }
 }

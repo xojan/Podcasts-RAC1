@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v4.media.MediaDescriptionCompat
+import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import cat.xojan.random1.domain.model.Podcast
 import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_STATE
@@ -21,7 +22,8 @@ import javax.inject.Inject
 
 class MediaProvider @Inject constructor(
         private val programInteractor: ProgramDataInteractor,
-        private val podcastInteractor: PodcastDataInteractor) {
+        private val podcastInteractor: PodcastDataInteractor,
+        private val queueManager: QueueManager) {
 
     companion object {
         val ERROR = "ERROR"
@@ -36,8 +38,9 @@ class MediaProvider @Inject constructor(
     fun retrieveMedia(
             result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>,
             parentId: String) {
-        if (parentId == ProgramFragment.MEDIA_ID_ROOT) {
-            compositeDisposable.add(programInteractor.loadPrograms()
+        when {
+            parentId == ProgramFragment.MEDIA_ID_ROOT ->
+                compositeDisposable.add(programInteractor.loadPrograms()
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
@@ -45,29 +48,30 @@ class MediaProvider @Inject constructor(
                             { e -> handleError(e, result) }
                     )
             )
-        } else if (parentId.contains("/SECTIONS")) {
-            val programId = parentId.split("/")[0]
-            compositeDisposable.add(programInteractor.loadSections(programId)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { s -> handleNextSections(s, result) },
-                            { e -> handleError(e, result) }
-                    )
-            )
-        } else if (parentId.contains("/")) {
-            val programId = parentId.split("/")[0]
-            val sectionId = parentId.split("/")[1]
-            compositeDisposable.add(podcastInteractor.getSectionPodcasts(programId, sectionId)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { p -> handleNextPodcasts(p, result) },
-                            { e -> handleError(e, result) }
-                    )
-            )
-        } else {
-            compositeDisposable.add(podcastInteractor.getHourByHourPodcasts(parentId)
+            parentId.contains("/SECTIONS") -> {
+                val programId = parentId.split("/")[0]
+                compositeDisposable.add(programInteractor.loadSections(programId)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                { s -> handleNextSections(s, result) },
+                                { e -> handleError(e, result) }
+                        )
+                )
+            }
+            parentId.contains("/") -> {
+                val programId = parentId.split("/")[0]
+                val sectionId = parentId.split("/")[1]
+                compositeDisposable.add(podcastInteractor.getSectionPodcasts(programId, sectionId)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                { p -> handleNextPodcasts(p, result) },
+                                { e -> handleError(e, result) }
+                        )
+                )
+            }
+            else -> compositeDisposable.add(podcastInteractor.getHourByHourPodcasts(parentId)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
@@ -92,6 +96,8 @@ class MediaProvider @Inject constructor(
         Log.d(tag, "Retrieve podcasts success")
         val mediaItems = podcasts.mapTo(ArrayList()) { createBrowsableMediaItemForPodcast(it) }
         result.sendResult(mediaItems)
+
+        queueManager.items = mediaItemsToQueueItems(mediaItems)
     }
 
     private fun handleNextSections(
@@ -150,5 +156,13 @@ class MediaProvider @Inject constructor(
                 .setExtras(extras)
                 .build()
         return MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
+    }
+
+    private fun mediaItemsToQueueItems(mediaItems: ArrayList<MediaBrowserCompat.MediaItem>)
+            : List<MediaSessionCompat.QueueItem> {
+
+        return mediaItems.mapTo(ArrayList()) {
+            it -> MediaSessionCompat.QueueItem(it.description, mediaItems.indexOf(it).toLong())
+        }
     }
 }

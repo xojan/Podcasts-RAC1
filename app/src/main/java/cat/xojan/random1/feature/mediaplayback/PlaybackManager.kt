@@ -7,7 +7,7 @@ import android.os.ResultReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 
-class PlaybackManager(val mediaPlayer: MediaPlayer) {
+class PlaybackManager(val mediaPlayer: MediaPlayer, val queueManager: QueueManager) {
 
     private val TAG = PlaybackManager::class.simpleName
 
@@ -29,8 +29,7 @@ class PlaybackManager(val mediaPlayer: MediaPlayer) {
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             Log.d(TAG, "onPlayFromMediaId: " + mediaId)
-            val uri: Uri? = extras?.getParcelable("mediaUrl")
-            mediaPlayer.setDataSource(uri.toString())
+            mediaPlayer.setDataSource(queueManager.getPodcastUri(mediaId))
             mediaPlayer.setOnPreparedListener { mediaPlayer.start() }
             mediaPlayer.prepareAsync()
         }

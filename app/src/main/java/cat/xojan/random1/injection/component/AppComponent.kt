@@ -12,6 +12,7 @@ import cat.xojan.random1.injection.module.AppModule
 import cat.xojan.random1.feature.downloads.DownloadCompleteReceiver
 import cat.xojan.random1.feature.mediaplayback.MediaPlaybackService
 import cat.xojan.random1.feature.BaseActivity
+import cat.xojan.random1.feature.mediaplayback.QueueManager
 import dagger.Component
 import javax.inject.Singleton
 
@@ -30,4 +31,5 @@ interface AppComponent {
     fun programRepository(): ProgramRepository
     fun podcastRepository(): PodcastRepository
     fun podcastPreferencesRepository(): PodcastPreferencesRepository
+    fun queueManager(): QueueManager
 }
