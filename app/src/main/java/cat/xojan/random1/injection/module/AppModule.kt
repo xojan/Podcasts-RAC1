@@ -7,7 +7,7 @@ import cat.xojan.random1.BuildConfig
 import cat.xojan.random1.data.*
 import cat.xojan.random1.domain.entities.CrashReporter
 import cat.xojan.random1.domain.entities.EventLogger
-import cat.xojan.random1.domain.interactor.MediaProvider
+import cat.xojan.random1.feature.mediaplayback.MediaProvider
 import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.domain.repository.PodcastPreferencesRepository

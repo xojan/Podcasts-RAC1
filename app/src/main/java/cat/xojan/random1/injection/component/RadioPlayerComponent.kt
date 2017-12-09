@@ -3,7 +3,7 @@ package cat.xojan.random1.injection.component
 import cat.xojan.random1.injection.PerActivity
 import cat.xojan.random1.injection.module.BaseActivityModule
 import cat.xojan.random1.injection.module.RadioPlayerModule
-import cat.xojan.random1.ui.mediaplayback.RadioPlayerActivity
+import cat.xojan.random1.feature.mediaplayback.RadioPlayerActivity
 import dagger.Component
 
 @PerActivity

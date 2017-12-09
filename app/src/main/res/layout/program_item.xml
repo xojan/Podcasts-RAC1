@@ -5,7 +5,7 @@
     android:foreground="?android:attr/selectableItemBackground"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <cat.xojan.random1.ui.home.SquareImageView
+    <cat.xojan.random1.feature.home.SquareImageView
         android:id="@+id/programImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

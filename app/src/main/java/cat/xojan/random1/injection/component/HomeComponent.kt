@@ -3,9 +3,9 @@ package cat.xojan.random1.injection.component
 import cat.xojan.random1.injection.PerActivity
 import cat.xojan.random1.injection.module.BaseActivityModule
 import cat.xojan.random1.injection.module.HomeModule
-import cat.xojan.random1.ui.home.HomeActivity
-import cat.xojan.random1.ui.home.DownloadsFragment
-import cat.xojan.random1.ui.home.ProgramFragment
+import cat.xojan.random1.feature.home.HomeActivity
+import cat.xojan.random1.feature.home.DownloadsFragment
+import cat.xojan.random1.feature.home.ProgramFragment
 import dagger.Component
 
 @PerActivity

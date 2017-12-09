@@ -2,6 +2,8 @@ package cat.xojan.random1.service;
 
 import org.junit.Test;
 
+import cat.xojan.random1.feature.mediaplayback.PlayerUtil;
+
 import static org.junit.Assert.assertEquals;
 
 public class PlayerUtilTest {

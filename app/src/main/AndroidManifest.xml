@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name=".feature.splash.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,20 +33,20 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.home.HomeActivity"
+        <activity android:name=".feature.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <!--<activity android:name=".ui.mediaplayer.RadioPlayerActivity"/>-->
 
-        <activity android:name=".ui.browser.BrowseActivity"/>
+        <activity android:name=".feature.browser.BrowseActivity"/>
 
-        <activity android:name=".ui.mediaplayback.MediaPlaybackFullScreenActivity"/>
+        <activity android:name=".feature.mediaplayback.MediaPlaybackFullScreenActivity"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="5742c867fe11c1f0cb1fc503b90ed10ff5f54e91" />
 
-        <receiver android:name=".receiver.DownloadCompleteReceiver"
+        <receiver android:name=".feature.downloads.DownloadCompleteReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -67,7 +67,7 @@
             android:stopWithTask="false"/>-->
 
         <service
-            android:name=".service.MediaPlaybackService"
+            android:name=".feature.mediaplayback.MediaPlaybackService"
             android:exported="true"
             tools:ignore="ExportedService">
             <intent-filter>

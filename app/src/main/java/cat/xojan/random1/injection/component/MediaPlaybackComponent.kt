@@ -3,7 +3,7 @@ package cat.xojan.random1.injection.component
 import cat.xojan.random1.injection.PerActivity
 import cat.xojan.random1.injection.module.BaseActivityModule
 import cat.xojan.random1.injection.module.MediaPlaybackModule
-import cat.xojan.random1.ui.mediaplayback.MediaPlaybackFullScreenActivity
+import cat.xojan.random1.feature.mediaplayback.MediaPlaybackFullScreenActivity
 import dagger.Component
 
 @PerActivity

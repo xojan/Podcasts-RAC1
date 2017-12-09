@@ -9,9 +9,9 @@ import cat.xojan.random1.domain.repository.PodcastPreferencesRepository
 import cat.xojan.random1.domain.repository.PodcastRepository
 import cat.xojan.random1.domain.repository.ProgramRepository
 import cat.xojan.random1.injection.module.AppModule
-import cat.xojan.random1.receiver.DownloadCompleteReceiver
-import cat.xojan.random1.service.MediaPlaybackService
-import cat.xojan.random1.ui.BaseActivity
+import cat.xojan.random1.feature.downloads.DownloadCompleteReceiver
+import cat.xojan.random1.feature.mediaplayback.MediaPlaybackService
+import cat.xojan.random1.feature.BaseActivity
 import dagger.Component
 import javax.inject.Singleton
 

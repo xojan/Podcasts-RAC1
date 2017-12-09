@@ -3,10 +3,10 @@ package cat.xojan.random1.injection.component
 import cat.xojan.random1.injection.PerActivity
 import cat.xojan.random1.injection.module.BaseActivityModule
 import cat.xojan.random1.injection.module.BrowseModule
-import cat.xojan.random1.ui.browser.BrowseActivity
-import cat.xojan.random1.ui.browser.HourByHourListFragment
-import cat.xojan.random1.ui.browser.SectionPodcastListFragment
-import cat.xojan.random1.ui.browser.SectionFragment
+import cat.xojan.random1.feature.browser.BrowseActivity
+import cat.xojan.random1.feature.browser.HourByHourListFragment
+import cat.xojan.random1.feature.browser.SectionPodcastListFragment
+import cat.xojan.random1.feature.browser.SectionFragment
 import dagger.Component
 
 @PerActivity

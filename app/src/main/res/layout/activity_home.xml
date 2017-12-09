@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".ui.home.HomeActivity"
+        tools:context=".feature.home.HomeActivity"
         android:layout_above="@+id/fragment_playback_controls">
 
         <android.support.design.widget.AppBarLayout
@@ -51,7 +51,7 @@
     </android.support.design.widget.CoordinatorLayout>
 
     <fragment
-        android:name="cat.xojan.random1.ui.mediaplayback.MediaPlaybackControlsFragment"
+        android:name="cat.xojan.random1.feature.mediaplayback.MediaPlaybackControlsFragment"
         android:id="@+id/fragment_playback_controls"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
