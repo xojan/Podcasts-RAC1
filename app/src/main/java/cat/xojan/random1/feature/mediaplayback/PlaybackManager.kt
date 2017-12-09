@@ -1,7 +1,6 @@
 package cat.xojan.random1.feature.mediaplayback
 
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
 import android.os.ResultReceiver
 import android.support.v4.media.session.MediaSessionCompat
@@ -30,7 +29,7 @@ class PlaybackManager(val mediaPlayer: MediaPlayer, val queueManager: QueueManag
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             Log.d(TAG, "onPlayFromMediaId: " + mediaId)
             mediaPlayer.setDataSource(queueManager.getPodcastUri(mediaId))
-            mediaPlayer.setOnPreparedListener { mediaPlayer.start() }
+            mediaPlayer.setOnPreparedListener { onPlay() }
             mediaPlayer.prepareAsync()
         }
 

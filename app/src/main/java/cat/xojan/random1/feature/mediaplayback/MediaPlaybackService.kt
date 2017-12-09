@@ -8,8 +8,11 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN
 import android.util.Log
 import cat.xojan.random1.Application
 import cat.xojan.random1.feature.home.ProgramFragment.Companion.MEDIA_ID_ROOT
@@ -17,7 +20,9 @@ import cat.xojan.random1.feature.notification.NotificationController
 import javax.inject.Inject
 
 
-class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFocusChangeListener {
+class MediaPlaybackService: MediaBrowserServiceCompat(),
+        AudioManager.OnAudioFocusChangeListener,
+        MetaDataUpdateListener {
 
     private val TAG = MediaPlaybackService::class.java.simpleName
 
@@ -38,6 +43,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
         initPlaybackManager()
         initMediaSession()
         initNotificationController()
+        initQueueManager()
     }
 
     private fun initInjector() {
@@ -84,6 +90,10 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
 
     private fun initPlaybackManager() {
         playbackManager = PlaybackManager(mediaPlayer, queueManager)
+    }
+
+    private fun initQueueManager() {
+        queueManager.initListener(this)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -153,5 +163,15 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),  AudioManager.OnAudioFo
                 mediaPlayer.pause()
             }
         }
+    }
+
+    override fun onMetadataChanged(metadata: MediaMetadataCompat) {
+        mediaSession.setMetadata(metadata)
+        val state = PlaybackStateCompat.Builder()
+                .setState(PlaybackStateCompat.STATE_PLAYING,
+                        PLAYBACK_POSITION_UNKNOWN,
+                        1.0F)
+                .build()
+        mediaSession.setPlaybackState(state)
     }
 }
