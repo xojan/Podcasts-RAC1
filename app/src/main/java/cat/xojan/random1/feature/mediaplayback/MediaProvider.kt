@@ -6,10 +6,10 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.util.Log
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_STATE
-import cat.xojan.random1.domain.entities.Program
-import cat.xojan.random1.domain.entities.Section
+import cat.xojan.random1.domain.model.Podcast
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_STATE
+import cat.xojan.random1.domain.model.Program
+import cat.xojan.random1.domain.model.Section
 import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.feature.home.ProgramFragment

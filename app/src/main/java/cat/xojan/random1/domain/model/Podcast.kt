@@ -1,4 +1,4 @@
-package cat.xojan.random1.domain.entities
+package cat.xojan.random1.domain.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

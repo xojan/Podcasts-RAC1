@@ -9,8 +9,8 @@ import android.util.Log
 import android.widget.Toast
 import cat.xojan.random1.Application
 import cat.xojan.random1.R
-import cat.xojan.random1.domain.entities.CrashReporter
-import cat.xojan.random1.domain.entities.EventLogger
+import cat.xojan.random1.domain.model.CrashReporter
+import cat.xojan.random1.domain.model.EventLogger
 import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import javax.inject.Inject
 

@@ -3,10 +3,10 @@ package cat.xojan.random1.data
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.MediaDescriptionCompat
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_DOWNLOAD_REFERENCE
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_FILE_PATH
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_STATE
+import cat.xojan.random1.domain.model.Podcast
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_DOWNLOAD_REFERENCE
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_FILE_PATH
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_STATE
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 

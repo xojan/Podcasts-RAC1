@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import cat.xojan.random1.R
-import cat.xojan.random1.domain.entities.CrashReporter
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_STATE
+import cat.xojan.random1.domain.model.CrashReporter
+import cat.xojan.random1.domain.model.Podcast
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_STATE
 import cat.xojan.random1.injection.component.HomeComponent
 import cat.xojan.random1.feature.BaseFragment
 import cat.xojan.random1.feature.browser.BrowserViewModel

@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import cat.xojan.random1.R
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_FILE_PATH
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_STATE
+import cat.xojan.random1.domain.model.Podcast
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_FILE_PATH
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_STATE
 import com.squareup.picasso.Picasso
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.podcast_item.*

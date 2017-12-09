@@ -6,9 +6,9 @@ import android.os.Environment
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.util.Log
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_DOWNLOAD_REFERENCE
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_FILE_PATH
+import cat.xojan.random1.domain.model.Podcast
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_DOWNLOAD_REFERENCE
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_FILE_PATH
 import cat.xojan.random1.domain.repository.DownloadPodcastRepository
 import cat.xojan.random1.domain.repository.PodcastPreferencesRepository
 import cat.xojan.random1.domain.repository.PodcastRepository

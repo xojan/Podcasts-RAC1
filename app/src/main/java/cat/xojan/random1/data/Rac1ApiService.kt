@@ -1,7 +1,7 @@
 package cat.xojan.random1.data
 
-import cat.xojan.random1.domain.entities.PodcastData
-import cat.xojan.random1.domain.entities.ProgramData
+import cat.xojan.random1.domain.model.PodcastData
+import cat.xojan.random1.domain.model.ProgramData
 import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.http.GET

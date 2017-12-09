@@ -8,9 +8,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
-import cat.xojan.random1.domain.entities.Podcast;
-import cat.xojan.random1.domain.entities.PodcastData;
-import cat.xojan.random1.domain.entities.ProgramData;
+import cat.xojan.random1.domain.model.Podcast;
+import cat.xojan.random1.domain.model.PodcastData;
+import cat.xojan.random1.domain.model.ProgramData;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 

@@ -1,7 +1,7 @@
 package cat.xojan.random1.data
 
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.PodcastData
+import cat.xojan.random1.domain.model.Podcast
+import cat.xojan.random1.domain.model.PodcastData
 import cat.xojan.random1.domain.repository.PodcastRepository
 import io.reactivex.Observable
 import java.io.IOException

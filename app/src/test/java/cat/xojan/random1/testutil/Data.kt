@@ -1,6 +1,6 @@
 package cat.xojan.random1.testutil
 
-import cat.xojan.random1.domain.entities.*
+import cat.xojan.random1.domain.model.*
 import java.util.*
 
 val podcast1 = Podcast(Audio("audioId"), "path1", "filePath1", Date(), 0, "podcastId1", null, Podcast.State.DOWNLOADED, "programTitle1", 1)

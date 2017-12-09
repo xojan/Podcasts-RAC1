@@ -1,7 +1,7 @@
 package cat.xojan.random1.data
 
-import cat.xojan.random1.domain.entities.Program
-import cat.xojan.random1.domain.entities.Section
+import cat.xojan.random1.domain.model.Program
+import cat.xojan.random1.domain.model.Section
 import cat.xojan.random1.domain.repository.ProgramRepository
 import io.reactivex.Single
 import java.io.IOException

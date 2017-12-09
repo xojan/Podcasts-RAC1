@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
-import cat.xojan.random1.domain.entities.Program;
+import cat.xojan.random1.domain.model.Program;
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor;
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;

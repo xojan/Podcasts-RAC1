@@ -3,9 +3,9 @@ package cat.xojan.random1.data
 import android.content.Context
 import android.content.SharedPreferences
 import android.support.v4.media.MediaDescriptionCompat
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_FILE_PATH
-import cat.xojan.random1.domain.entities.Podcast.Companion.PODCAST_STATE
+import cat.xojan.random1.domain.model.Podcast
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_FILE_PATH
+import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_STATE
 import cat.xojan.random1.domain.repository.DownloadPodcastRepository
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi

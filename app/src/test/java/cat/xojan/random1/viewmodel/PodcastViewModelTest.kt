@@ -1,7 +1,7 @@
 package cat.xojan.random1.viewmodel
 
 import android.content.Context
-import cat.xojan.random1.domain.entities.Podcast
+import cat.xojan.random1.domain.model.Podcast
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.testutil.podcast1
 import org.junit.Before

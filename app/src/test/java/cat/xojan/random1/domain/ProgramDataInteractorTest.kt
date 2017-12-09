@@ -13,10 +13,10 @@ import java.io.IOException
 import java.util.ArrayList
 
 import cat.xojan.random1.data.SharedPrefDownloadPodcastRepository
-import cat.xojan.random1.domain.entities.EventLogger
-import cat.xojan.random1.domain.entities.Podcast
-import cat.xojan.random1.domain.entities.Program
-import cat.xojan.random1.domain.entities.Section
+import cat.xojan.random1.domain.model.EventLogger
+import cat.xojan.random1.domain.model.Podcast
+import cat.xojan.random1.domain.model.Program
+import cat.xojan.random1.domain.model.Section
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import cat.xojan.random1.domain.repository.ProgramRepository
 import io.reactivex.Flowable

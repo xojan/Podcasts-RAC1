@@ -1,22 +1,16 @@
 package cat.xojan.random1.domain.interactor
-import android.app.DownloadManager
 import android.content.Context
-import android.net.Uri
 import android.os.Environment
 import android.text.TextUtils
-import android.util.Log
 import cat.xojan.random1.data.SharedPrefDownloadPodcastRepository
-import cat.xojan.random1.domain.entities.*
+import cat.xojan.random1.domain.model.*
 import cat.xojan.random1.domain.repository.ProgramRepository
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.subjects.PublishSubject
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.*
 import javax.inject.Inject
 
 class ProgramDataInteractor @Inject constructor(

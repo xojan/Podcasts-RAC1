@@ -1,6 +1,6 @@
 package cat.xojan.random1.data
 
-import cat.xojan.random1.domain.entities.Podcast
+import cat.xojan.random1.domain.model.Podcast
 
 class MediaDescriptionCompatJson(
         val id: String?,

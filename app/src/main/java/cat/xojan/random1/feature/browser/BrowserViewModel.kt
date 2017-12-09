@@ -2,7 +2,7 @@ package cat.xojan.random1.feature.browser
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
-import cat.xojan.random1.domain.entities.Podcast
+import cat.xojan.random1.domain.model.Podcast
 import cat.xojan.random1.domain.interactor.PodcastDataInteractor
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor
 import io.reactivex.Single

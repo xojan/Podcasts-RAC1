@@ -7,7 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.*
 import cat.xojan.random1.R
-import cat.xojan.random1.domain.entities.CrashReporter
+import cat.xojan.random1.domain.model.CrashReporter
 import cat.xojan.random1.injection.component.BrowseComponent
 import cat.xojan.random1.feature.BaseActivity
 import cat.xojan.random1.feature.BaseFragment

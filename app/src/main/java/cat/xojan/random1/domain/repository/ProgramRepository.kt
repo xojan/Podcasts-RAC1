@@ -1,7 +1,7 @@
 package cat.xojan.random1.domain.repository
 
-import cat.xojan.random1.domain.entities.Program
-import cat.xojan.random1.domain.entities.Section
+import cat.xojan.random1.domain.model.Program
+import cat.xojan.random1.domain.model.Section
 import io.reactivex.Single
 
 interface ProgramRepository {

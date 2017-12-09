@@ -3,7 +3,7 @@ package cat.xojan.random1.viewmodel;
 
 import org.junit.Before;
 
-import cat.xojan.random1.domain.entities.Program;
+import cat.xojan.random1.domain.model.Program;
 import cat.xojan.random1.domain.interactor.ProgramDataInteractor;
 import cat.xojan.random1.feature.BaseActivity;
 

@@ -2,7 +2,7 @@ package cat.xojan.random1.viewmodel;
 
 import org.junit.Before;
 
-import cat.xojan.random1.domain.entities.Section;
+import cat.xojan.random1.domain.model.Section;
 import cat.xojan.random1.feature.BaseActivity;
 
 import static cat.xojan.random1.testutil.DataKt.getSection1;

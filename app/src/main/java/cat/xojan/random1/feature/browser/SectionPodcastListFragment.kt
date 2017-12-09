@@ -15,7 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import cat.xojan.random1.R
-import cat.xojan.random1.domain.entities.CrashReporter
+import cat.xojan.random1.domain.model.CrashReporter
 import cat.xojan.random1.injection.component.BrowseComponent
 import cat.xojan.random1.feature.BaseActivity
 import cat.xojan.random1.feature.BaseFragment

@@ -19,9 +19,9 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import cat.xojan.random1.R;
-import cat.xojan.random1.domain.entities.CrashReporter;
-import cat.xojan.random1.domain.entities.EventLogger;
-import cat.xojan.random1.domain.entities.Podcast;
+import cat.xojan.random1.domain.model.CrashReporter;
+import cat.xojan.random1.domain.model.EventLogger;
+import cat.xojan.random1.domain.model.Podcast;
 import cat.xojan.random1.injection.component.DaggerRadioPlayerComponent;
 import cat.xojan.random1.injection.component.RadioPlayerComponent;
 import cat.xojan.random1.feature.BaseActivity;

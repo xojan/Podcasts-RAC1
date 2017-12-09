@@ -1,6 +1,6 @@
 package cat.xojan.random1.domain.repository
 
-import cat.xojan.random1.domain.entities.Podcast
+import cat.xojan.random1.domain.model.Podcast
 import io.reactivex.Observable
 import java.io.IOException
 
