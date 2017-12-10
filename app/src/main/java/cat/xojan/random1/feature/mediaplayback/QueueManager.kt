@@ -12,18 +12,39 @@ class QueueManager {
         listener = mediaPlaybackService
     }
 
-    fun getPodcastUri(mediaId: String?): String {
-        val item = items.filter { it -> it.description.mediaId == mediaId }
-        val itemMediaData = item[0].description
+    fun getMediaItem(mediaId: String?): MediaMetadataCompat? {
+        return if (mediaId != null) {
+            val item = items.filter { it -> it.description.mediaId == mediaId }
+            val itemMediaData = item[0].description
 
-        val metaDataItem = MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, itemMediaData.mediaId)
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, itemMediaData.title.toString())
-                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, item[0].queueId + 1)
-                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, items.size.toLong())
-                .build()
+            MediaMetadataCompat.Builder()
+                    .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, itemMediaData.mediaId)
+                    .putText(MediaMetadataCompat.METADATA_KEY_TITLE, itemMediaData.title)
+                    .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI,
+                            itemMediaData.mediaUri.toString())
+                    .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, item[0].queueId + 1)
+                    .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, items.size.toLong())
+                    .build()
+        } else {
+            null
+        }
+    }
 
-        listener.onMetadataChanged(metaDataItem)
-        return itemMediaData.mediaUri.toString()
+    fun setQueue(mediaId: String?) {
+        // TODO reuse queue or different queue
+        setCurrentQueue()
+        updateMetadata(mediaId)
+    }
+
+    private fun setCurrentQueue() {
+        val newQueue = items
+        listener.updateQueue("title queue", newQueue)
+    }
+
+    private fun updateMetadata(mediaId: String?) {
+        listener.updateMetadata(getMediaItem(mediaId))
+        // TODO: Set the proper album artwork on the media session,
+        // so it can be shown in the
+        // locked screen and in other places.
     }
 }

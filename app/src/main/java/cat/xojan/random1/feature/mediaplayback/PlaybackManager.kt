@@ -1,36 +1,44 @@
 package cat.xojan.random1.feature.mediaplayback
 
-import android.media.MediaPlayer
+import android.content.Context
 import android.os.Bundle
 import android.os.ResultReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 
-class PlaybackManager(val mediaPlayer: MediaPlayer, val queueManager: QueueManager) {
+class PlaybackManager(appContext: Context,
+                      val queueManager: QueueManager,
+                      private val listener: PlaybackStateListener) {
 
     private val TAG = PlaybackManager::class.simpleName
+    val player = Player(appContext)
+
+    fun handlePlayRequest(mediaId: String?) {
+        Log.d(TAG, "handlePlayRequest: mediaId= " + mediaId)
+        val currentMedia = queueManager.getMediaItem(mediaId)
+        listener.onPlaybackStart()
+        player.play(currentMedia)
+    }
 
     val mediaSessionCallback = object : MediaSessionCompat.Callback() {
 
         override fun onPlay() {
             super.onPlay()
             Log.d(TAG, "onPlay: ")
-            mediaPlayer.start()
         }
 
         override fun onPause() {
             super.onPause()
             Log.d(TAG, "onPause: ")
-            if( mediaPlayer.isPlaying) {
-                mediaPlayer.pause()
+            if( player.isPlaying()) {
+                player.pause()
             }
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             Log.d(TAG, "onPlayFromMediaId: " + mediaId)
-            mediaPlayer.setDataSource(queueManager.getPodcastUri(mediaId))
-            mediaPlayer.setOnPreparedListener { onPlay() }
-            mediaPlayer.prepareAsync()
+            queueManager.setQueue(mediaId)
+            handlePlayRequest(mediaId)
         }
 
         override fun onCommand(command: String?, extras: Bundle?, cb: ResultReceiver?) {
