@@ -3,15 +3,16 @@ package cat.xojan.random1.feature.mediaplayback
 import android.content.Context
 import android.os.Bundle
 import android.os.ResultReceiver
+import android.os.SystemClock
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 
-class PlaybackManager(appContext: Context,
-                      val queueManager: QueueManager,
-                      private val listener: PlaybackStateListener) {
+class PlaybackManager(appContext: Context, val queueManager: QueueManager,
+                      private val listener: PlaybackStateListener): PlayerListener {
 
     private val TAG = PlaybackManager::class.simpleName
-    val player = Player(appContext)
+    val player = Player(appContext, this)
 
     fun handlePlayRequest(mediaId: String?) {
         Log.d(TAG, "handlePlayRequest: mediaId= " + mediaId)
@@ -74,4 +75,36 @@ class PlaybackManager(appContext: Context,
         playbackstateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
         mediaSession.setPlaybackState(playbackstateBuilder.build())
     }*/
+
+    override fun onCompletion() {
+    }
+
+    override fun onPlaybackStatusChanged(state: Int) {
+        val position: Long = player.getCurrentPosition().toLong()
+        val stateBuilder = PlaybackStateCompat.Builder().setActions(getAvailableActions())
+        stateBuilder.setState(state, position, 1.0f, SystemClock.elapsedRealtime())
+        listener.updatePlaybackState(stateBuilder.build())
+
+        if (state == PlaybackStateCompat.STATE_PLAYING ||
+                state == PlaybackStateCompat.STATE_PAUSED) {
+            listener.onNotificationRequired()
+        }
+    }
+
+    override fun onError(error: String) {
+    }
+
+    private fun getAvailableActions(): Long {
+        var actions = PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+
+        actions = if (player.isPlaying()) {
+            actions or PlaybackStateCompat.ACTION_PAUSE
+        } else {
+            actions or PlaybackStateCompat.ACTION_PLAY
+        }
+        return actions
+    }
 }

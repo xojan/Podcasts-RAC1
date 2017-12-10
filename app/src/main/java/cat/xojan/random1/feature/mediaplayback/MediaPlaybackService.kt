@@ -11,10 +11,11 @@ import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import cat.xojan.random1.Application
 import cat.xojan.random1.feature.home.ProgramFragment.Companion.MEDIA_ID_ROOT
-import cat.xojan.random1.feature.notification.NotificationController
+import cat.xojan.random1.feature.notification.NotificationManager
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
     private val TAG = MediaPlaybackService::class.java.simpleName
 
     private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var notificationController: NotificationController
+    private lateinit var notificationManager: NotificationManager
     private lateinit var playbackManager: PlaybackManager
     private val delayedStopHandler = DelayedStopHandler(this)
 
@@ -74,7 +75,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
     }*/
 
     private fun initNotificationController() {
-        notificationController = NotificationController(this, mediaSession)
+        notificationManager = NotificationManager(this, mediaSession)
     }
 
     private fun initPlaybackManager() {
@@ -101,7 +102,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
         audioManager.abandonAudioFocus(this)*/
         //unregisterReceiver(noisyReceiver)
         mediaSession.release()
-        notificationController.release()
+        notificationManager.release()
 
        /* if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
@@ -173,8 +174,8 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
         // handle play request
     }
 
-    override fun updatePlaybackState() {
-
+    override fun updatePlaybackState(newState: PlaybackStateCompat) {
+        mediaSession.setPlaybackState(newState)
     }
 
     override fun onPlaybackStart() {
@@ -184,6 +185,13 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
         // MediaController) disconnects, otherwise the music player will stop.
         // Calling startService(Intent) will keep the service running until it is explicitly killed.
         startService(Intent(applicationContext, MediaPlaybackService::class.java))
+    }
+
+    override fun onPlaybackStop() {
+    }
+
+    override fun onNotificationRequired() {
+        notificationManager.startNotification()
     }
 
     /**

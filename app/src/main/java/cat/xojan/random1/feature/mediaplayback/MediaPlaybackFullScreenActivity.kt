@@ -11,6 +11,11 @@ import cat.xojan.random1.feature.BaseActivity
 
 class MediaPlaybackFullScreenActivity : BaseActivity(), HasComponent<MediaPlaybackComponent> {
 
+    companion object {
+        val EXTRA_START_FULLSCREEN = "EXTRA_START_FULLSCREEN"
+        val EXTRA_CURRENT_MEDIA_DESCRIPTION = "EXTRA_CURRENT_MEDIA_DESCRIPTION"
+    }
+
     override val component: MediaPlaybackComponent by lazy {
         DaggerMediaPlaybackComponent.builder()
                 .appComponent(applicationComponent)

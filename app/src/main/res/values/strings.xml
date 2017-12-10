@@ -14,4 +14,10 @@
     <string name="export_podcasts">Export downloaded podcasts</string>
     <string name="podcasts_exported">Podcasts exported to Podcasts folder</string>
     <string name="try_again">Try again</string>
+    <string name="notification_channel" translatable="false">Podcasts_RAC1_channel_ID</string>
+    <string name="notification_channel_description" translatable="false">Channel ID for Podcasts RAC1</string>
+    <string name="label_previous">Previous</string>
+    <string name="label_pause">Pause</string>
+    <string name="label_play">Play</string>
+    <string name="label_next">Next</string>
 </resources>
