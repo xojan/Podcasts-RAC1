@@ -1,8 +1,10 @@
 package cat.xojan.random1.feature.mediaplayback
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.PowerManager
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -15,10 +17,19 @@ class Player(appContext: Context, private val listener: PlayerListener) {
 
     init {
         mediaPlayer.setWakeMode(appContext, PowerManager.PARTIAL_WAKE_LOCK)
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val audioAttributes = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+            //TODO find setaudtioattributes compat
+            mediaPlayer.setAudioAttributes(audioAttributes)
+        } else {
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        }
         mediaPlayer.setVolume(1.0f, 1.0f)
-        mediaPlayer.setOnCompletionListener {
-            mediaPlayer -> mediaPlayer.release()
+        mediaPlayer.setOnCompletionListener { mediaPlayer ->
+            mediaPlayer.release()
         }
     }
 

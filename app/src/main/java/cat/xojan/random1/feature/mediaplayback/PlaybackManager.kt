@@ -29,22 +29,18 @@ class PlaybackManager(appContext: Context, val queueManager: QueueManager,
 
         override fun onSkipToNext() {
             Log.d(TAG, "skipToNext")
-            /*if (queueManager.skipQueuePosition(1)) {
-                handlePlayRequest()
-            } else {
-                handleStopRequest("Cannot skip")
-            }
-            queueManager.updateMetadata()*/
+            val nextMediaId = queueManager.getNextMediaId()
+            Log.d(TAG, "nextMediaId: " + nextMediaId)
+            handlePlayRequest(nextMediaId)
+            queueManager.updateMetadata(nextMediaId)
         }
 
         override fun onSkipToPrevious() {
             Log.d(TAG, "skipToPrevious")
-            /*if (mQueueManager.skipQueuePosition(-1)) {
-                handlePlayRequest();
-            } else {
-                handleStopRequest("Cannot skip");
-            }
-            mQueueManager.updateMetadata();*/
+            val previousMediaId = queueManager.getPreviousMediaId()
+            Log.d(TAG, "nextMediaId: " + previousMediaId)
+            handlePlayRequest(previousMediaId)
+            queueManager.updateMetadata(previousMediaId)
         }
 
         override fun onPause() {

@@ -7,6 +7,7 @@ class QueueManager {
 
     var items: List<MediaSessionCompat.QueueItem> = listOf()
     lateinit var listener: MetaDataUpdateListener
+    private var currentQueueId: Long = -1
 
     fun initListener(mediaPlaybackService: MediaPlaybackService) {
         listener = mediaPlaybackService
@@ -16,6 +17,7 @@ class QueueManager {
         return if (mediaId != null) {
             val item = items.filter { it -> it.description.mediaId == mediaId }
             val itemMediaData = item[0].description
+            currentQueueId = item[0].queueId
 
             MediaMetadataCompat.Builder()
                     .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, itemMediaData.mediaId)
@@ -41,10 +43,20 @@ class QueueManager {
         listener.updateQueue("title queue", newQueue)
     }
 
-    private fun updateMetadata(mediaId: String?) {
+    fun updateMetadata(mediaId: String?) {
         listener.updateMetadata(getMediaItem(mediaId))
         // TODO: Set the proper album artwork on the media session,
         // so it can be shown in the
         // locked screen and in other places.
+    }
+
+    fun getNextMediaId(): String? {
+        val nextQueueId:Int = ((currentQueueId + 1) % items.size).toInt()
+        return items[nextQueueId].description.mediaId
+    }
+
+    fun getPreviousMediaId(): String? {
+        val previousQueueId:Int = ((currentQueueId + -1) % items.size).toInt()
+        return items[previousQueueId].description.mediaId
     }
 }
