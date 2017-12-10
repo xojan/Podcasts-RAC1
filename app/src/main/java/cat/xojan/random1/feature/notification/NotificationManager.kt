@@ -60,11 +60,16 @@ class NotificationManager(private val service: MediaPlaybackService,
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
-
-    }
-
-    fun release() {
-        NotificationManagerCompat.from(service).cancel(1)
+        val action = intent?.action
+        Log.d(TAG, "Received intent with action " + action!!)
+        val transportControls = mediaSession.controller.transportControls
+        when (action) {
+            ACTION_PAUSE -> transportControls.pause()
+            ACTION_PLAY -> transportControls.play()
+            ACTION_NEXT -> transportControls.skipToNext()
+            ACTION_PREV -> transportControls.skipToPrevious()
+            else -> Log.w(TAG, "Unknown intent ignored. Action= " + action)
+        }
     }
 
     /**
@@ -196,12 +201,25 @@ class NotificationManager(private val service: MediaPlaybackService,
                                              playbackState: PlaybackStateCompat) {
         Log.d(TAG, "updateNotificationPlaybackState. mPlaybackState=" + playbackState)
 
-        // TODO cancel notification
-        /*Log.d(TAG, "updateNotificationPlaybackState. cancelling notification!")
-        service.stopForeground(true)
-        return*/
+        if (playbackState == null) {
+            // TODO
+            Log.d(TAG, "updateNotificationPlaybackState. cancelling notification!")
+            service.stopForeground(true)
+            return
+        }
 
         // Make sure that the notification can be dismissed by the user when we are not playing:
         builder.setOngoing(playbackState.state == PlaybackStateCompat.STATE_PLAYING)
+    }
+
+    fun stopNotification() {
+        try {
+            notificationManager.cancel(NOTIFICATION_ID)
+            service.unregisterReceiver(this)
+        } catch (ex: IllegalArgumentException) {
+            // ignore if the receiver is not registered.
+        }
+
+        service.stopForeground(true)
     }
 }

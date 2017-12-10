@@ -35,6 +35,18 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
     @Inject internal lateinit var mediaProvider: MediaProvider
     @Inject internal lateinit var queueManager: QueueManager
 
+    companion object {
+        // The action of the incoming Intent indicating that it contains a command
+        // to be executed (see {@link #onStartCommand})
+        val ACTION_CMD = "cat.xojan.random1.ACTION_CMD"
+        // The key in the extras of the incoming Intent indicating the command that
+        // should be executed (see {@link #onStartCommand})
+        val CMD_NAME = "CMD_NAME"
+        // A value of a CMD_NAME key in the extras of the incoming Intent that
+        // indicates that the music playback should be paused (see {@link #onStartCommand})
+        val CMD_PAUSE = "CMD_PAUSE"
+    }
+
     override fun onCreate() {
         super.onCreate()
         initInjector()
@@ -86,9 +98,22 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
         queueManager.initListener(this)
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        MediaButtonReceiver.handleIntent(mediaSession, intent)
-        return super.onStartCommand(intent, flags, startId)
+    override fun onStartCommand(startIntent: Intent, flags: Int, startId: Int): Int {
+        val action = startIntent.action
+        val command = startIntent.getStringExtra(CMD_NAME)
+        if (ACTION_CMD == action) {
+            if (CMD_PAUSE == command) {
+                playbackManager.handlePauseRequest()
+            }
+        } else {
+            // Try to handle the intent as a media button event wrapped by MediaButtonReceiver
+            MediaButtonReceiver.handleIntent(mediaSession, startIntent)
+        }
+        // Reset the delay handler to enqueue a message to stop the service if
+        // nothing is playing.
+        delayedStopHandler.removeCallbacksAndMessages(null)
+        delayedStopHandler.sendEmptyMessageDelayed(0, 30000)
+        return START_STICKY
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -97,19 +122,18 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        Log.d(TAG, "onDestroy")
+        // Service is being killed, so make sure we release our resources
+        playbackManager.handleStopRequest()
+        notificationManager.stopNotification()
+
+        delayedStopHandler.removeCallbacksAndMessages(null)
+        mediaSession.release()
+        mediaProvider.clear()
+
         /*val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         audioManager.abandonAudioFocus(this)*/
         //unregisterReceiver(noisyReceiver)
-        mediaSession.release()
-        notificationManager.release()
-
-       /* if (mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
-        }
-        mediaPlayer.reset()
-        mediaPlayer.release()*/
-        mediaProvider.clear()
     }
 
     override fun onLoadChildren(
@@ -157,12 +181,6 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
 
     override fun updateMetadata(metadata: MediaMetadataCompat?) {
         metadata?.let { mediaSession.setMetadata(metadata) }
-        /*val state = PlaybackStateCompat.Builder()
-                .setState(PlaybackStateCompat.STATE_PLAYING,
-                        PLAYBACK_POSITION_UNKNOWN,
-                        1.0F)
-                .build()
-        mediaSession.setPlaybackState(state)*/
     }
 
     override fun updateQueue(title: String, queue: List<MediaSessionCompat.QueueItem>) {
@@ -170,8 +188,8 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
         mediaSession.setQueueTitle(title)
     }
 
-    override fun updateQueueIndex(queueIndex: Int) {
-        // handle play request
+    override fun updateQueueIndex(mediaId: String) {
+        playbackManager.handlePlayRequest(mediaId)
     }
 
     override fun updatePlaybackState(newState: PlaybackStateCompat) {
@@ -188,6 +206,12 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
     }
 
     override fun onPlaybackStop() {
+        mediaSession.isActive = false
+        // Reset the delayed stop handler, so after STOP_DELAY it will be executed again,
+        // potentially stopping the service.
+        delayedStopHandler.removeCallbacksAndMessages(null)
+        delayedStopHandler.sendEmptyMessageDelayed(0, 30000)
+        stopForeground(true)
     }
 
     override fun onNotificationRequired() {

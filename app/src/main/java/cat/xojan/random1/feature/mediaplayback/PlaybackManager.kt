@@ -14,26 +14,42 @@ class PlaybackManager(appContext: Context, val queueManager: QueueManager,
     private val TAG = PlaybackManager::class.simpleName
     val player = Player(appContext, this)
 
-    fun handlePlayRequest(mediaId: String?) {
-        Log.d(TAG, "handlePlayRequest: mediaId= " + mediaId)
-        val currentMedia = queueManager.getMediaItem(mediaId)
-        listener.onPlaybackStart()
-        player.play(currentMedia)
-    }
-
     val mediaSessionCallback = object : MediaSessionCompat.Callback() {
 
         override fun onPlay() {
-            super.onPlay()
-            Log.d(TAG, "onPlay: ")
+            Log.d(TAG, "onPlay")
+            handlePlayRequest()
+        }
+
+        override fun onSkipToQueueItem(queueId: Long) {
+            Log.d(TAG, "OnSkipToQueueItem: " + queueId)
+            /*queueManager.setCurrentQueueItem(queueId)
+            queueManager.updateMetadata()*/
+        }
+
+        override fun onSkipToNext() {
+            Log.d(TAG, "skipToNext")
+            /*if (queueManager.skipQueuePosition(1)) {
+                handlePlayRequest()
+            } else {
+                handleStopRequest("Cannot skip")
+            }
+            queueManager.updateMetadata()*/
+        }
+
+        override fun onSkipToPrevious() {
+            Log.d(TAG, "skipToPrevious")
+            /*if (mQueueManager.skipQueuePosition(-1)) {
+                handlePlayRequest();
+            } else {
+                handleStopRequest("Cannot skip");
+            }
+            mQueueManager.updateMetadata();*/
         }
 
         override fun onPause() {
-            super.onPause()
-            Log.d(TAG, "onPause: ")
-            if( player.isPlaying()) {
-                player.pause()
-            }
+            Log.d(TAG, "onPause")
+            handlePauseRequest()
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
@@ -43,16 +59,16 @@ class PlaybackManager(appContext: Context, val queueManager: QueueManager,
         }
 
         override fun onCommand(command: String?, extras: Bundle?, cb: ResultReceiver?) {
-            super.onCommand(command, extras, cb)
-            /*if( COMMAND_EXAMPLE.equalsIgnoreCase(command) ) {
-                //Custom command here
-            }*/
             Log.d(TAG, "onCommand " + command)
         }
 
         override fun onSeekTo(pos: Long) {
-            super.onSeekTo(pos)
-            Log.d(TAG, "onSeekTo " + pos.toString())
+            Log.d(TAG, "onSeekTo: " + pos)
+            player.seekTo(pos)
+        }
+
+        override fun onCustomAction(action: String?, extras: Bundle?) {
+            Log.i(TAG, "onCustomAction: " + action)
         }
     }
 
@@ -63,17 +79,6 @@ class PlaybackManager(appContext: Context, val queueManager: QueueManager,
                 AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
 
         return result == AudioManager.AUDIOFOCUS_GAIN
-    }
-
-    private fun setMediaPlaybackState(state: Int) {
-        val playbackstateBuilder = PlaybackStateCompat.Builder()
-        if (state == PlaybackStateCompat.STATE_PLAYING) {
-            playbackstateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_PAUSE)
-        } else {
-            playbackstateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_PLAY)
-        }
-        playbackstateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
-        mediaSession.setPlaybackState(playbackstateBuilder.build())
     }*/
 
     override fun onCompletion() {
@@ -106,5 +111,28 @@ class PlaybackManager(appContext: Context, val queueManager: QueueManager,
             actions or PlaybackStateCompat.ACTION_PLAY
         }
         return actions
+    }
+
+    fun handlePlayRequest(mediaId: String? = null) {
+        Log.d(TAG, "handlePlayRequest: mediaId= " + mediaId)
+        mediaId?.let {
+            val currentMedia = queueManager.getMediaItem(mediaId)
+            listener.onPlaybackStart()
+            player.play(currentMedia)
+        }
+    }
+
+    fun handlePauseRequest() {
+        Log.d(TAG, "handlePauseRequest")
+        if(player.isPlaying()) {
+            player.pause()
+            listener.onPlaybackStop()
+        }
+    }
+
+    fun handleStopRequest() {
+        Log.d(TAG, "handleStopRequest")
+        player.release()
+        listener.onPlaybackStop()
     }
 }

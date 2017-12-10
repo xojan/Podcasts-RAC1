@@ -45,4 +45,20 @@ class Player(appContext: Context, private val listener: PlayerListener) {
 
     fun getCurrentPosition() = mediaPlayer.currentPosition
     // or PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN
+
+    fun release() {
+        /*giveUpAudioFocus();
+        unregisterAudioNoisyReceiver();*/
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.stop()
+        }
+        mediaPlayer.reset()
+        mediaPlayer.release()
+
+        listener.onPlaybackStatusChanged(PlaybackStateCompat.STATE_STOPPED)
+    }
+
+    fun seekTo(pos: Long) {
+
+    }
 }
