@@ -37,6 +37,7 @@ class Player(appContext: Context, private val listener: PlayerListener) {
 
     fun play(currentMedia: MediaMetadataCompat? = null) {
         if (currentMedia != null) {
+            mediaPlayer.reset()
             val mediaUri = currentMedia.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI)
             Log.d(TAG, mediaUri)
             mediaPlayer.setDataSource(mediaUri)
