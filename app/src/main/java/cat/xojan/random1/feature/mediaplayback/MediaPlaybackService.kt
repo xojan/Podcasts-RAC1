@@ -1,7 +1,5 @@
 package cat.xojan.random1.feature.mediaplayback
 
-import android.app.PendingIntent
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
@@ -9,7 +7,6 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
@@ -62,22 +59,16 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
     }
 
     private fun initMediaSession() {
-        val mediaButtonReceiver = ComponentName(applicationContext, MediaButtonReceiver::class.java)
         mediaSession = MediaSessionCompat(
                 applicationContext,
                 MediaPlaybackService::class.java.simpleName,
-                mediaButtonReceiver,
+                null,
                 null)
 
         mediaSession.setCallback(playbackManager.mediaSessionCallback)
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
                 or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
                 or MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
-
-        val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
-        mediaButtonIntent.setClass(this, MediaButtonReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, 0)
-        mediaSession.setMediaButtonReceiver(pendingIntent)
 
         sessionToken = mediaSession.sessionToken
     }
@@ -106,9 +97,6 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
             Log.d(TAG, "action: $action, command: $command")
             if (ACTION_CMD == action && CMD_PAUSE == command) {
                 playbackManager.handlePauseRequest()
-            } else {
-                // Try to handle the intent as a media button event wrapped by MediaButtonReceiver
-                MediaButtonReceiver.handleIntent(mediaSession, startIntent)
             }
         }
         return START_STICKY
