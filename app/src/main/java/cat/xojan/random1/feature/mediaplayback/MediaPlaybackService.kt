@@ -127,6 +127,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         Log.d(TAG, "onGetRoot: " + MEDIA_ID_ROOT)
+        eventLogger.logClientPackageName(clientPackageName)
         return MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_ROOT, null)
     }
 

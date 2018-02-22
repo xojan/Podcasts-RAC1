@@ -74,4 +74,10 @@ class EventLogger(val firebaseAnalytics: FirebaseAnalytics?) {
         bundle.putLong("time_milliseconds",milliseconds)
         firebaseAnalytics?.logEvent("sleep_timer_action", bundle)
     }
+
+    fun logClientPackageName(clientPackageName: String) {
+        val bundle = Bundle()
+        bundle.putString("client_package_name", clientPackageName)
+        firebaseAnalytics?.logEvent("on_get_root", bundle)
+    }
 }
