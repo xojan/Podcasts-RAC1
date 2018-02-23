@@ -49,6 +49,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name="android.support.v4.media.session.MediaButtonReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".feature.mediaplayback.MediaPlaybackService"
             android:exported="true"
