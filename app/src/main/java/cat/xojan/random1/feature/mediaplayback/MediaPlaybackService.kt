@@ -15,6 +15,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import cat.xojan.random1.Application
 import cat.xojan.random1.domain.model.EventLogger
+import cat.xojan.random1.feature.home.ProgramFragment.Companion.MEDIA_ID_EMPTY_ROOT
 import cat.xojan.random1.feature.home.ProgramFragment.Companion.MEDIA_ID_ROOT
 import cat.xojan.random1.feature.notification.NotificationManager
 import javax.inject.Inject
@@ -30,6 +31,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
     private lateinit var notificationManager: NotificationManager
     private lateinit var playbackManager: PlaybackManager
     private lateinit var audioManager: AudioManager
+    private lateinit var packageValidator: PackageValidator
 
     @Inject internal lateinit var mediaProvider: MediaProvider
     @Inject internal lateinit var queueManager: QueueManager
@@ -55,6 +57,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
         initMediaSession()
         initNotificationController()
         initQueueManager()
+        packageValidator = PackageValidator()
     }
 
     private fun initInjector() {
@@ -133,14 +136,26 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
             parentId: String,
             result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         Log.d(TAG, "onLoadChildren: " + parentId)
-        result.detach()
-        mediaProvider.retrieveMedia(result, parentId)
+        if (MEDIA_ID_EMPTY_ROOT == parentId) {
+            result.sendResult(ArrayList())
+        } else {
+            result.detach()
+            mediaProvider.retrieveMedia(result, parentId)
+        }
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         Log.d(TAG, "onGetRoot: " + MEDIA_ID_ROOT)
         eventLogger.logClientPackageName(clientPackageName)
-        return MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_ROOT, null)
+        // To ensure we are not allowing any arbitrary app to browse the app's contents, we
+        // need to check the origin:
+        if (!packageValidator.isCallerAllowed(this, clientPackageName, clientUid)) {
+            // If the request comes from an untrusted package, return an empty browser root.
+            // If you return null, then the media browser will not be able to connect and
+            // no further calls will be made to other media browsing methods.
+            return BrowserRoot(MEDIA_ID_EMPTY_ROOT, null)
+        }
+        return BrowserRoot(MEDIA_ID_ROOT, null)
     }
 
     override fun updateMetadata(metadata: MediaMetadataCompat?) {

@@ -30,6 +30,7 @@ class ProgramFragment: BaseFragment(), IsMediaBrowserFragment {
     companion object {
         val TAG = ProgramFragment::class.simpleName
         val MEDIA_ID_ROOT = "__PROGRAMS__"
+        val MEDIA_ID_EMPTY_ROOT = "__EMPTY_ROOT__"
     }
 
     @Inject internal lateinit var crashReporter: CrashReporter
