@@ -6,17 +6,20 @@ class ProgramData(
         @Json(name = "resposta") val resposta: Resposta
 ): ProgramInterface {
     override fun toPrograms(): List<Program> {
-        return resposta.items.lletres.flatMap { it ->
-            it.items.map { p ->
-                Program(
-                        p.id,
-                        p.titol,
-                        p.imatges?.imatge?.get(0)?.text, //TODO
-                        p.imatges?.imatge?.get(0)?.text, //TODO
-                        toSections(p.seccions,p.imatges?.imatge?.get(0)?.text, p.id)
-                )
+        return resposta.items.lletres
+            .flatMap { it ->
+                it.items
+                    .filter { p -> p.domini == "PUCR" }
+                    .map { p ->
+                        Program(
+                                p.id,
+                                p.titol,
+                                p.imatges?.imatge?.get(0)?.text, //TODO
+                                p.imatges?.imatge?.get(0)?.text, //TODO
+                                toSections(p.seccions,p.imatges?.imatge?.get(0)?.text, p.id)
+                        )
+                    }
             }
-        }
     }
 
     private fun toSections(seccions: SectionsCatRadio?, imageUrl: String?, programId: String)
