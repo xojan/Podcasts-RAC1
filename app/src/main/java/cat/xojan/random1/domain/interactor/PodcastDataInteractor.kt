@@ -57,8 +57,8 @@ class PodcastDataInteractor @Inject constructor(
                 BiFunction<Program, List<Podcast>, List<Podcast>> { pr, podList ->
             for (p in podList) {
                 p.programId = pr.id
-                p.imageUrl = pr.imageUrl()
-                p.bigImageUrl = pr.bigImageUrl()
+                p.imageUrl = pr.smallImageUrl
+                p.bigImageUrl = pr.bigImageUrl
             }
                     podList
         })
@@ -73,8 +73,8 @@ class PodcastDataInteractor @Inject constructor(
                 BiFunction<Program, List<Podcast>, List<Podcast>> { pr, podList ->
                     for (p in podList) {
                         p.programId = pr.id
-                        p.imageUrl = pr.imageUrl()
-                        p.bigImageUrl = pr.bigImageUrl()
+                        p.imageUrl = pr.smallImageUrl
+                        p.bigImageUrl = pr.bigImageUrl
                     }
                     podList
                 })

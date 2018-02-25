@@ -24,7 +24,6 @@ class Lletra(
 
 class Item(
         @Json(name = "lletra") val lletra: Char,
-        @Json(name = "presentador") val presentador: String? = null,
         @Json(name = "url_podcast") val urlPodcast: String? = null,
         @Json(name = "id") val id: String,
         @Json(name = "titol") val titol: String,

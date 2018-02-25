@@ -5,18 +5,18 @@ import kotlinx.android.parcel.Parcelize
 import org.jetbrains.annotations.TestOnly
 
 @Parcelize
-data class Program(val id: String,
+data class OldProgram(val id: String,
               var title: String,
-              var sections: List<Section>,
-              private var images: Images,
+              var sections: List<OldSection>,
+              private var images: OldImages,
               var active: Boolean
 ): Parcelable {
 
     @TestOnly
     constructor(id: String): this(id,
             "title",
-            emptyList<Section>(),
-            Images("bigImage.url", "image.url"),
+            emptyList<OldSection>(),
+            OldImages("bigImage.url", "image.url"),
             false)
 
     fun imageUrl(): String = images.imageUrl
@@ -28,7 +28,7 @@ data class Program(val id: String,
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
 
-        val program = other as Program?
+        val program = other as OldProgram?
 
         return id == program!!.id
 

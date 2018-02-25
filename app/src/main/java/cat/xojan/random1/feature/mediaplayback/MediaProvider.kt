@@ -159,7 +159,7 @@ class MediaProvider @Inject constructor(
         val description = MediaDescriptionCompat.Builder()
                 .setMediaId(program.id)
                 .setTitle(program.title)
-                .setIconUri(Uri.parse(program.imageUrl()))
+                .setIconUri(Uri.parse(program.smallImageUrl))
                 .build()
         return MediaBrowserCompat.MediaItem(description,
                 MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)

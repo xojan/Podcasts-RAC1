@@ -17,7 +17,7 @@ class RemoteProgramRepository(private val service: ApiService): ProgramRepositor
         if (programData == null || refresh) {
             programData = service.getProgramData().cache()
         }
-        return programData!!.map { pd: ProgramData -> pd.programs }
+        return programData!!.map { pd: ProgramData -> pd.toPrograms() }
     }
 
     override fun getProgram(programId: String): Single<Program> =
