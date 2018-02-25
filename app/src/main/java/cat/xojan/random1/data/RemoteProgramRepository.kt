@@ -28,7 +28,7 @@ class RemoteProgramRepository(private val service: ApiService): ProgramRepositor
             }
 
     override fun hasSections(programId: String): Single<Boolean> =
-            getProgram(programId).map { p -> p.sections.size > 1 }
+            getProgram(programId).map { p -> p.sections!!.size > 1 }
 
     override fun getSections(programId: String): Single<List<Section>> =
             getProgram(programId)

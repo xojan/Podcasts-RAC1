@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Section(
         val id: String,
-        val title: String,
+        val title: String?,
         val imageUrl: String?,
         val programId: String?
 ) : Parcelable {

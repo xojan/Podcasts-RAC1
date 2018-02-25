@@ -9,14 +9,14 @@ data class Program(
         val title: String?,
         val smallImageUrl: String?,
         val bigImageUrl: String?,
-        val sections: List<Section>
+        val sections: List<Section>? = listOf()
 ): Parcelable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
 
-        val program = other as OldProgram?
+        val program = other as Program?
 
         return id == program!!.id
 

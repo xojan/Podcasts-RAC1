@@ -28,7 +28,7 @@ class ProgramData(
                 .map { s ->
                     Section(
                             s.id,
-                            s.title,
+                            s.title?,
                             imageUrl,
                             programId
                     )
@@ -51,7 +51,7 @@ class ImagesRac1(
 
 class SectionRac1(
         @Json(name = "id") val id: String,
-        @Json(name = "title") val title: String,
+        @Json(name = "title") val title: String? = null,
         @Json(name = "active") val active: Boolean,
         @Json(name = "type") var type: String
 )

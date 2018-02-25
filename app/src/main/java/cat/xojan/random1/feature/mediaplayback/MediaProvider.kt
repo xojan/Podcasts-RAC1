@@ -156,12 +156,14 @@ class MediaProvider @Inject constructor(
     }
 
     private fun createBrowsableMediaItemForProgram(program: Program): MediaBrowserCompat.MediaItem {
-        val description = MediaDescriptionCompat.Builder()
+        val descriptionBuilder = MediaDescriptionCompat.Builder()
                 .setMediaId(program.id)
                 .setTitle(program.title)
-                .setIconUri(Uri.parse(program.smallImageUrl))
-                .build()
-        return MediaBrowserCompat.MediaItem(description,
+
+        program.smallImageUrl?.let {
+            descriptionBuilder.setIconUri(Uri.parse(program.smallImageUrl))
+        }
+        return MediaBrowserCompat.MediaItem(descriptionBuilder.build(),
                 MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
     }
 
