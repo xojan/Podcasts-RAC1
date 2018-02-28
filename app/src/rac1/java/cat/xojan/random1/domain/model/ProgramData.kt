@@ -28,7 +28,7 @@ class ProgramData(
                 .map { s ->
                     Section(
                             s.id,
-                            s.title?,
+                            s.title,
                             imageUrl,
                             programId
                     )

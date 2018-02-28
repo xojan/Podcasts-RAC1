@@ -186,10 +186,10 @@ class MediaProvider @Inject constructor(
         extras.putSerializable(PODCAST_DATE, podcast.dateTime)
 
         val description = MediaDescriptionCompat.Builder()
-                .setMediaId(podcast.audioId)
+                .setMediaId(podcast.id)
                 .setTitle(podcast.title)
-                .setMediaUri(Uri.parse(podcast.path))
-                .setIconUri(Uri.parse(podcast.imageUrl))
+                .setMediaUri(Uri.parse(podcast.remoteUrl))
+                .setIconUri(Uri.parse(podcast.smallImageUrl))
                 .setExtras(extras)
                 .build()
         return MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)

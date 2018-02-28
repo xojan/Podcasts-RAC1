@@ -13,21 +13,21 @@ class PodcastJsonAdapter {
     fun toJson(podcast: Podcast): PodcastJson {
         return PodcastJson(
                 podcast.title,
-                podcast.audio,
+                podcast.id,
                 df.format(podcast.dateTime),
                 podcast.durationSeconds,
                 podcast.filePath,
-                podcast.imageUrl,
+                podcast.smallImageUrl,
                 podcast.programId,
                 podcast.state,
-                podcast.path
+                podcast.remoteUrl
         )
     }
 
     @FromJson
     fun fromJson(itemJson: PodcastJson): Podcast {
         return Podcast(
-                itemJson.audio,
+                itemJson.id,
                 itemJson.path,
                 itemJson.mFilePath,
                 df.parse(itemJson.dateTime),

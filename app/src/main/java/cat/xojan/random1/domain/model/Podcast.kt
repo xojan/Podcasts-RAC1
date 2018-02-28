@@ -1,21 +1,20 @@
 package cat.xojan.random1.domain.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
-data class Podcast(var audio: Audio,
-                   var path: String,
+data class Podcast(var id: String,
+                   var remoteUrl: String,
                    var filePath: String?,
                    var dateTime: Date?,
                    var durationSeconds: Long,
-                   var programId: String?,
-                   private var _imageUrl: String?,
-                   private var _bigImageUrl: String?,
-                   private var _state: PodcastState?,
-                   private var appMobileTitle: String,
+                   var programId: String,
+                   var smallImageUrl: String?,
+                   var bigImageUrl: String?,
+                   var state: PodcastState,
+                   var title: String,
                    var downloadReference: Long = 0
 ) : Parcelable {
 
@@ -29,52 +28,21 @@ data class Podcast(var audio: Audio,
         val PODCAST_DATE = "podcast_date"
     }
 
-    val title: String
-        get() = appMobileTitle
-
-    var imageUrl: String?
-        get() = _imageUrl
-        set(value) {
-            _imageUrl = value
-        }
-
-    var bigImageUrl: String?
-        get() = _bigImageUrl
-        set(value) {
-            _bigImageUrl = value
-        }
-
-    var state: PodcastState
-        get() {
-            _state?.let {
-                return _state as PodcastState
-            }
-            return PodcastState.LOADED
-        }
-        set(value) {
-            _state = value
-        }
-
-    @Transient
-    @IgnoredOnParcel
-    var audioId: String? = null
-        get() = audio.id
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
 
         val podcast = other as Podcast
 
-        if (path != podcast.path) return false
+        if (remoteUrl != podcast.remoteUrl) return false
         if (programId != podcast.programId) return false
-        return appMobileTitle == podcast.appMobileTitle
+        return title == podcast.title
     }
 
     override fun hashCode(): Int {
-        var result = path.hashCode()
-        result = 31 * result + programId!!.hashCode()
-        result = 31 * result + appMobileTitle.hashCode()
+        var result = remoteUrl.hashCode()
+        result = 31 * result + programId.hashCode()
+        result = 31 * result + title.hashCode()
         return result
     }
 }

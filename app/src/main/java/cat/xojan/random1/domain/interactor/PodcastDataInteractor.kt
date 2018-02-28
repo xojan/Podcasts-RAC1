@@ -57,7 +57,7 @@ class PodcastDataInteractor @Inject constructor(
                 BiFunction<Program, List<Podcast>, List<Podcast>> { pr, podList ->
             for (p in podList) {
                 p.programId = pr.id
-                p.imageUrl = pr.smallImageUrl
+                p.smallImageUrl = pr.smallImageUrl
                 p.bigImageUrl = pr.bigImageUrl
             }
                     podList
@@ -73,7 +73,7 @@ class PodcastDataInteractor @Inject constructor(
                 BiFunction<Program, List<Podcast>, List<Podcast>> { pr, podList ->
                     for (p in podList) {
                         p.programId = pr.id
-                        p.imageUrl = pr.smallImageUrl
+                        p.smallImageUrl = pr.smallImageUrl
                         p.bigImageUrl = pr.bigImageUrl
                     }
                     podList
@@ -263,10 +263,10 @@ class PodcastDataInteractor @Inject constructor(
         extras.putSerializable(PODCAST_FILE_PATH, podcast.filePath)
 
         return MediaDescriptionCompat.Builder()
-                .setMediaId(podcast.audioId)
+                .setMediaId(podcast.id)
                 .setTitle(podcast.title)
-                .setMediaUri(Uri.parse(podcast.path))
-                .setIconUri(Uri.parse(podcast.imageUrl))
+                .setMediaUri(Uri.parse(podcast.remoteUrl))
+                .setIconUri(Uri.parse(podcast.smallImageUrl))
                 .setExtras(extras)
                 .build()
     }

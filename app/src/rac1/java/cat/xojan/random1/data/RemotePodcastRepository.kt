@@ -30,6 +30,6 @@ class RemotePodcastRepository(private val service: ApiService): PodcastRepositor
         this.programId = programId
         this.sectionId = sectionId
 
-        return podcastData.map { pd -> pd.podcasts }
+        return podcastData.map { pd -> pd.toPodcasts(programId) }
     }
 }
