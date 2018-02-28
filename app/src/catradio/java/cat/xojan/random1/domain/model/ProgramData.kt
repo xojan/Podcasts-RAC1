@@ -6,20 +6,28 @@ class ProgramData(
         @Json(name = "resposta") val resposta: Resposta
 ): ProgramInterface {
     override fun toPrograms(): List<Program> {
-        return resposta.items.lletres
-            .flatMap { it ->
-                it.items
-                    .filter { p -> p.domini == "PUCR" }
-                    .map { p ->
-                        Program(
-                                p.id,
-                                p.titol,
-                                p.imatges?.imatge?.get(0)?.text, //TODO
-                                p.imatges?.imatge?.get(0)?.text, //TODO
-                                toSections(p.seccions,p.imatges?.imatge?.get(0)?.text, p.id)
-                        )
-                    }
+        return resposta.items.items
+            .map { p ->
+                    Program(
+                            p.id,
+                            p.titol,
+                            getSmallImageUrl(p.imatges?.imatge),
+                            getBigImageUrl(p.imatges?.imatge),
+                            toSections(p.seccions,p.imatges?.imatge?.get(0)?.text, p.id)
+                    )
             }
+    }
+
+    private fun getSmallImageUrl(images: List<ImageCatRadio>?): String? {
+        return images?.firstOrNull {
+            it -> it.size == "200x200"
+        }?.text
+    }
+
+    private fun getBigImageUrl(images: List<ImageCatRadio>?): String? {
+        return images?.firstOrNull {
+            it -> it.size == "670x378"
+        }?.text
     }
 
     private fun toSections(seccions: SectionsCatRadio?, imageUrl: String?, programId: String)
@@ -41,21 +49,14 @@ class Resposta(
 )
 
 class Items(
-        @Json(name = "lletra") val lletres: List<Lletra>
-)
-
-class Lletra(
-        @Json(name="valor") val valor: Char,
-        @Json(name="item") val items: List<Item>
+        @Json(name="item") val items: List<Item>,
+        @Json(name = "num") val numItems: Int
 )
 
 class Item(
-        @Json(name = "lletra") val lletra: Char,
         @Json(name = "url_podcast") val urlPodcast: String? = null,
         @Json(name = "id") val id: String,
         @Json(name = "titol") val titol: String,
-        @Json(name = "data_publicacio") val dataPublicacio: String,
-        @Json(name = "domini") val domini: String, // PUCR, WCR
         @Json(name = "imatges") val imatges: ImagesCatRadio? = null,
         @Json(name = "seccions") val seccions: SectionsCatRadio? = null
 
