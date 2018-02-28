@@ -204,7 +204,7 @@ class NotificationManager(private val service: MediaPlaybackService): BroadcastR
 
         setNotificationPlaybackState(notificationBuilder)
 
-        val placeholder = BitmapFactory.decodeResource(service.resources, R.drawable.default_rac1)
+        val placeholder = BitmapFactory.decodeResource(service.resources, R.drawable.placeholder)
         Picasso.with(service)
                 .load(description?.iconUri)
                 .into(object: Target {

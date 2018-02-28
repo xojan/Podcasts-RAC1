@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Podcasts Catalunya Ràdio - No Official</string>
+    <string name="no_podcasts_available">Podcasts no disponibles. Mira si estàs connectat a internet i torna-ho a intentar.</string>
+    <string name="podcasts_latest">Últims</string>
+    <string name="podcasts_programs">Programes</string>
+    <string name="podcasts_downloaded">Descàrregues</string>
+    <string name="download_program">Descarregar programa</string>
+    <string name="download_failed">Descàrrega fallida</string>
+    <string name="download_cancelled">Descàrrega cancel·lada</string>
+    <string name="download_successful">Descàrrega completa</string>
+    <string name="no_downloaded_podcasts">Cap podcast descarregat</string>
+    <string name="podcasts_sections">Seccions</string>
+    <string name="podcasts_hour_by_hour">Hora a hora</string>
+    <string name="export_podcasts">Exportar podcasts descarregats</string>
+    <string name="podcasts_exported">Podcasts exportats a la carpeta Podcasts</string>
+    <string name="try_again">Torna-ho a intentar</string>
+    <string name="label_previous">Anterior</string>
+    <string name="label_pause">Pausar</string>
+    <string name="label_play">Reproduir</string>
+    <string name="label_next">Següent</string>
+    <string name="label_forward">Endavant 30 segons</string>
+    <string name="label_rewind">Endarrere 30 segons</string>
+    <string name="play_all_podcasts">Reprodueix tots els podcasts</string>
+    <string name="five_minutes">5 minuts</string>
+    <string name="ten_minutes">10 minuts</string>
+    <string name="fifteen_minutes">15 minuts</string>
+    <string name="twenty_minutes">20 minuts</string>
+    <string name="thirty_minutes">30 minuts</string>
+    <string name="forty_five_minutes">45 minuts</string>
+    <string name="one_hour">1 hora</string>
+    <string name="do_not_stop">No parar</string>
+</resources>

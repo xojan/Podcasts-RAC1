@@ -46,7 +46,7 @@ class SectionListAdapter(private val activity: BrowseActivity)
                     .load(section.iconUri.toString() + "?w=" + getWeekOfTheYear())
                     .resize(200, 200)
                     .transform(CircleTransform())
-                    .placeholder(R.drawable.default_rac1)
+                    .placeholder(R.drawable.placeholder)
                     .into(section_image)
         }
 

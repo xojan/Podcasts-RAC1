@@ -17,7 +17,7 @@
             android:layout_height="280dp"
             android:layout_centerInParent="true"
             android:background="@drawable/gradient_background"
-            tools:src="@drawable/default_rac1" />
+            tools:src="@drawable/placeholder" />
 
         <ImageView
             android:id="@+id/sleep_timer_icon"

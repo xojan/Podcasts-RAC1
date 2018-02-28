@@ -179,7 +179,7 @@ class MediaPlaybackFullScreenActivity : MediaPlayerBaseActivity(),
             Picasso.with(this)
                     .load(metadata.description?.iconUri)
                     .resize(800, 800)
-                    .placeholder(R.drawable.default_rac1)
+                    .placeholder(R.drawable.placeholder)
                     .into(podcast_art)
 
             if (metadata.getLong(METADATA_HAS_NEXT_OR_PREVIOUS) == 1L) {

@@ -9,7 +9,7 @@ import retrofit2.http.Query
 
 interface ApiService {
     //http://api.ccma.cat/programesradio?en_emissio=true&amb_medias=true&agrupar=true&fills=canal&origen=llistat&canal=PUC_CR&cache=1800
-    @GET("programesradio/")
+    @GET("programesradio")
     fun getProgramData(
             @Query("en_emissio") inEmission: Boolean,
             @Query("agrupar") groupByLetter: Boolean,
@@ -18,8 +18,10 @@ interface ApiService {
             @Query("version") version: String //1.0
     ): Single<ProgramData>
 
-    @GET("v1/sessions/{programId}")
-    fun getPodcastData(@Path("programId") programId: String): Single<PodcastData>
+    @GET("audios")
+    fun getPodcastData(
+            @Query("programaradio_id") programId: String
+    ): Single<PodcastData>
 
     @GET("v1/sessions/{programId}/{sectionId}")
     fun getPodcastData(@Path("programId") programId: String,

@@ -44,7 +44,7 @@ class ProgramListAdapter: RecyclerView.Adapter<ProgramListAdapter.MediaItemViewH
             programTitle.text = description.title
             Picasso.with(itemView.context)
                     .load(description.iconUri.toString() + "?w=" + getWeekOfTheYear())
-                    .placeholder(R.drawable.default_rac1)
+                    .placeholder(R.drawable.placeholder)
                     .into(programImage)
         }
 

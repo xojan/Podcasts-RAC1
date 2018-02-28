@@ -78,7 +78,7 @@ class MediaPlaybackControlsFragment : Fragment() {
         Picasso.with(activity)
                 .load(metadata.description.iconUri.toString() + "?w=" + getWeekOfTheYear())
                 .resize(200, 200)
-                .placeholder(R.drawable.default_rac1)
+                .placeholder(R.drawable.placeholder)
                 .into(playback_icon)
     }
 

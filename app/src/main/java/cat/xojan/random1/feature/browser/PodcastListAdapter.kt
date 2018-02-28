@@ -134,7 +134,7 @@ class PodcastListAdapter(private val viewModel: BrowserViewModel,
             Picasso.with(itemView.context)
                     .load(podcast.iconUri.toString() + "?w=" + getWeekOfTheYear())
                     .resize(200, 200)
-                    .placeholder(R.drawable.default_rac1)
+                    .placeholder(R.drawable.placeholder)
                     .transform(CircleTransform())
                     .into(podcast_image)
 
