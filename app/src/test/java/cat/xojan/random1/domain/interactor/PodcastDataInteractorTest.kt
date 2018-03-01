@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.mock
 
@@ -46,7 +47,7 @@ class PodcastDataInteractorTest {
                 eventLogger)
     }
 
-    @Test
+    @Test @Ignore
     fun test_converting_old_podcasts() {
         val oldPodcastsJson = IOUtils.toString(this.javaClass.classLoader
                 .getResourceAsStream("oldpodcasts.json"))

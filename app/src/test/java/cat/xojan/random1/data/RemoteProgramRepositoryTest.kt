@@ -53,9 +53,10 @@ class RemoteProgramRepositoryTest {
 
         remoteProgramRepository.getPrograms(true).subscribe(testSubscriber)
         testSubscriber.assertValue(
-                listOf(Program("el-mon"),
-                        Program("la-competencia"),
-                        Program("la-segona-hora")))
+            listOf(
+                Program("el-mon", null, null, null),
+                Program("la-competencia", null, null, null),
+                Program("la-segona-hora", null, null, null)))
     }
 
     /*@Test
