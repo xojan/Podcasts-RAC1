@@ -15,7 +15,6 @@ import android.os.Build
 import android.os.RemoteException
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -194,7 +193,6 @@ class NotificationManager(private val service: MediaPlaybackService): BroadcastR
                 .setStyle(style)
                 .setDeleteIntent(stopIntent)
                 .setSmallIcon(R.mipmap.ic_notification)
-                .setColor(ContextCompat.getColor(service, R.color.colorPrimary))
                 .setColorized(true)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setOnlyAlertOnce(true)
