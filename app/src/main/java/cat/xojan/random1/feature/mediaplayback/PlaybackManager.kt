@@ -16,9 +16,9 @@ class PlaybackManager(appContext: Context,
                       eventLogger: EventLogger): PlayerListener {
 
     companion object {
-        val SET_SLEEP_TIMER = "set_sleep_timer"
-        val SLEEP_TIMER_MILLISECONDS = "sleep_timer_milliseconds"
-        val SLEEP_TIMER_LABEL = "sleep_timer_label"
+        const val SET_SLEEP_TIMER = "set_sleep_timer"
+        const val SLEEP_TIMER_MILLISECONDS = "sleep_timer_milliseconds"
+        const val SLEEP_TIMER_LABEL = "sleep_timer_label"
     }
 
     private val TAG = PlaybackManager::class.simpleName
@@ -33,7 +33,7 @@ class PlaybackManager(appContext: Context,
 
         override fun onSkipToNext() {
             val nextMediaId = queueManager.getNextMediaId()
-            Log.d(TAG, "skipToNext: " + nextMediaId)
+            Log.d(TAG, "skipToNext: $nextMediaId")
             nextMediaId?.let {
                 handlePlayRequest(nextMediaId)
                 queueManager.updateMetadata(nextMediaId)
@@ -42,7 +42,7 @@ class PlaybackManager(appContext: Context,
 
         override fun onSkipToPrevious() {
             val previousMediaId = queueManager.getPreviousMediaId()
-            Log.d(TAG, "skipToPrevious: " + previousMediaId)
+            Log.d(TAG, "skipToPrevious: $previousMediaId")
             previousMediaId?.let {
                 handlePlayRequest(previousMediaId)
                 queueManager.updateMetadata(previousMediaId)
@@ -55,13 +55,13 @@ class PlaybackManager(appContext: Context,
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            Log.d(TAG, "onPlayFromMediaId: " + mediaId)
+            Log.d(TAG, "onPlayFromMediaId: $mediaId")
             queueManager.setQueue(mediaId)
             handlePlayRequest(mediaId)
         }
 
         override fun onSeekTo(pos: Long) {
-            Log.d(TAG, "onSeekTo: " + pos)
+            Log.d(TAG, "onSeekTo: $pos")
             player.seekTo(pos)
         }
 
@@ -76,7 +76,7 @@ class PlaybackManager(appContext: Context,
         }
 
         override fun onCustomAction(action: String?, extras: Bundle?) {
-            Log.d(TAG, "onCustomAction: " + action)
+            Log.d(TAG, "onCustomAction: $action")
             when (action) {
                 SET_SLEEP_TIMER -> player.setSleepTimer(
                         extras?.getLong(SLEEP_TIMER_MILLISECONDS),

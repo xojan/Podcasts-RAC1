@@ -14,10 +14,12 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import java.io.File
 
 
-class Player(appContext: Context,
+class Player(private val appContext: Context,
              private val listener: PlayerListener,
              private val audioManager: AudioManager,
              private val eventLogger: EventLogger) : AudioManager.OnAudioFocusChangeListener {
@@ -104,10 +106,16 @@ class Player(appContext: Context,
         exoPlayer.playWhenReady = true
     }
 
-    private fun buildMediaSource(url: String): MediaSource {
-        return ExtractorMediaSource.Factory(
-                DefaultHttpDataSourceFactory("exoplayer-random1"))
-                .createMediaSource(Uri.parse(url))
+    private fun buildMediaSource(path: String): MediaSource {
+        return if (path.contains("http")) {
+            ExtractorMediaSource.Factory(
+                    DefaultHttpDataSourceFactory("exoplayer-random1"))
+                    .createMediaSource(Uri.parse(path))
+        } else {
+            ExtractorMediaSource.Factory(
+                    DefaultDataSourceFactory(appContext, "exoplayer-random1"))
+                    .createMediaSource(Uri.fromFile(File(path)))
+        }
     }
 
     fun pause() {
