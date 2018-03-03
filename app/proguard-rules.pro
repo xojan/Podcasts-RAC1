@@ -63,3 +63,9 @@
 -keep class cat.xojan.random1.domain.model.** { *; }
 -keepclassmembers class cat.xojan.random1.domain.model.** { *; }
 -keep public class kotlin.reflect.jvm.internal.impl.builtins.* { public *; }
+
+# ExoPlayer
+-dontnote com.google.android.exoplayer2.ext.ima.ImaAdsLoader
+-keepclassmembers class com.google.android.exoplayer2.ext.ima.ImaAdsLoader {
+  <init>(android.content.Context, android.net.Uri);
+}

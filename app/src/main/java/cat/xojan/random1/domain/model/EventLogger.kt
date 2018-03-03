@@ -81,4 +81,10 @@ class EventLogger(val firebaseAnalytics: FirebaseAnalytics?) {
         bundle.putString("client_package_name", clientPackageName)
         firebaseAnalytics?.logEvent("on_get_root", bundle)
     }
+
+    fun logPlayerException(message: String?) {
+        val bundle = Bundle()
+        bundle.putString("exception_msg", message)
+        firebaseAnalytics?.logEvent("player_exception", bundle)
+    }
 }
