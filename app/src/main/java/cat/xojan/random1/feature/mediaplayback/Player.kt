@@ -188,7 +188,7 @@ class Player(private val appContext: Context,
                     }
                 }.start()
             }
-            //notifyListener()
+            notifyListener()
         }
     }
 
