@@ -91,7 +91,8 @@ class PlaybackManager(appContext: Context,
             handlePlayRequest(nextMediaId)
             queueManager.updateMetadata(nextMediaId)
         } else {
-            handlePauseRequest()
+            player.pause()
+            player.seekTo(0)
         }
     }
 
@@ -141,11 +142,7 @@ class PlaybackManager(appContext: Context,
         Log.d(TAG, "handlePlayRequest: mediaId= $mediaId")
         val currentMedia = queueManager.getMediaItem(mediaId)
         listener.onPlaybackStart()
-        player.play(currentMedia, hasNext())
-    }
-
-    private fun hasNext(): Boolean {
-        return queueManager.hasNextOrPrevious() == 1L
+        player.play(currentMedia)
     }
 
     fun handlePauseRequest() {
