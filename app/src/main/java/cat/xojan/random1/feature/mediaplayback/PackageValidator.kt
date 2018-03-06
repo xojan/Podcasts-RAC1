@@ -59,7 +59,7 @@ class PackageValidator {
             val pm = context.packageManager
             return pm.getPackageInfo(pkgName, PackageManager.GET_SIGNATURES)
         } catch (e: PackageManager.NameNotFoundException) {
-            Log.w(TAG, "Package manager can't find package: " + pkgName)
+            Log.w(TAG, "Package manager can't find package: $pkgName")
         }
 
         return null

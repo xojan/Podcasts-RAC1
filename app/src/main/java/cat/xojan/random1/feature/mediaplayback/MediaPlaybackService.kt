@@ -42,13 +42,13 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
     companion object {
         // The action of the incoming Intent indicating that it contains a command
         // to be executed (see {@link #onStartCommand})
-        val ACTION_CMD = "cat.xojan.random1.ACTION_CMD"
+        const val ACTION_CMD = "cat.xojan.random1.ACTION_CMD"
         // The key in the extras of the incoming Intent indicating the command that
         // should be executed (see {@link #onStartCommand})
-        val CMD_NAME = "CMD_NAME"
+        const val CMD_NAME = "CMD_NAME"
         // A value of a CMD_NAME key in the extras of the incoming Intent that
         // indicates that the music playback should be paused (see {@link #onStartCommand})
-        val CMD_PAUSE = "CMD_PAUSE"
+        const val CMD_PAUSE = "CMD_PAUSE"
     }
 
     override fun onCreate() {
@@ -138,7 +138,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
     override fun onLoadChildren(
             parentId: String,
             result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        Log.d(TAG, "onLoadChildren: " + parentId)
+        Log.d(TAG, "onLoadChildren: $parentId")
         if (MEDIA_ID_EMPTY_ROOT == parentId) {
             result.sendResult(ArrayList())
         } else {
@@ -151,12 +151,19 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
         Log.d(TAG, "onGetRoot: $clientPackageName, $clientUid")
         // To ensure we are not allowing any arbitrary app to browse the app's contents, we
         // need to check the origin:
+        crashReporter.logException("onGetRoot: $clientPackageName, $clientUid")
+        if (clientPackageName == "com.android.bluetooth") {
+            crashReporter.logException("null")
+            return null
+        }
         if (!packageValidator.isCallerAllowed(this, clientPackageName, clientUid)) {
             // If the request comes from an untrusted package, return an empty browser root.
             // If you return null, then the media browser will not be able to connect and
             // no further calls will be made to other media browsing methods.
+            crashReporter.logException("MEDIA_ID_EMPTY_ROOT")
             return BrowserRoot(MEDIA_ID_EMPTY_ROOT, null)
         }
+        crashReporter.logException("MEDIA_ID_ROOT")
         return BrowserRoot(MEDIA_ID_ROOT, null)
     }
 
@@ -174,7 +181,7 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
     }
 
     override fun updatePlaybackState(newState: PlaybackStateCompat) {
-        Log.d(TAG, "newState: " + newState)
+        Log.d(TAG, "newState: $newState")
         mediaSession.setPlaybackState(newState)
     }
 

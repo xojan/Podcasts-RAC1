@@ -46,8 +46,8 @@ android {
     productFlavors {
         rac1 {
             applicationId "cat.xojan.random1"
-            versionCode 36
-            versionName "3.2.0"
+            versionCode 1
+            versionName "1.0.0"
             buildConfigField "String", "BASE_URL", "\"http://api.audioteca.rac1.cat/api/app/\""
         }
         catradio {
