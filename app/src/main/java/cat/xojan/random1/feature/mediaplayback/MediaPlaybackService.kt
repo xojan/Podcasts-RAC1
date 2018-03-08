@@ -149,21 +149,18 @@ class MediaPlaybackService: MediaBrowserServiceCompat(),
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         Log.d(TAG, "onGetRoot: $clientPackageName, $clientUid")
-        // To ensure we are not allowing any arbitrary app to browse the app's contents, we
-        // need to check the origin:
-        crashReporter.logException("onGetRoot: $clientPackageName, $clientUid")
+        // http://www.ventismedia.com/mantis/view.php?id=14201&nbn=6
         if (clientPackageName == "com.android.bluetooth") {
-            crashReporter.logException("null")
             return null
         }
+        // To ensure we are not allowing any arbitrary app to browse the app's contents, we
+        // need to check the origin:
         if (!packageValidator.isCallerAllowed(this, clientPackageName, clientUid)) {
             // If the request comes from an untrusted package, return an empty browser root.
             // If you return null, then the media browser will not be able to connect and
             // no further calls will be made to other media browsing methods.
-            crashReporter.logException("MEDIA_ID_EMPTY_ROOT")
             return BrowserRoot(MEDIA_ID_EMPTY_ROOT, null)
         }
-        crashReporter.logException("MEDIA_ID_ROOT")
         return BrowserRoot(MEDIA_ID_ROOT, null)
     }
 
