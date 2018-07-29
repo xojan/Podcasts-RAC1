@@ -14,7 +14,8 @@ import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_FILE_PATH
 import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_STATE
 import cat.xojan.random1.domain.model.PodcastState
 import cat.xojan.random1.feature.mediaplayback.QueueManager.Companion.MEDIA_ID_PLAY_ALL
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.podcast_item.*
 import java.util.*
@@ -131,11 +132,11 @@ class PodcastListAdapter(private val viewModel: BrowserViewModel,
             }
 
             podcast_title.text = podcast.title
-            Picasso.with(itemView.context)
+            Glide.with(itemView.context)
                     .load(podcast.iconUri.toString() + "?w=" + getWeekOfTheYear())
-                    //.resize(200, 200)
-                    .placeholder(R.drawable.placeholder)
-                    .transform(CircleTransform())
+                    .apply(RequestOptions()
+                            .placeholder(R.drawable.placeholder)
+                            .transform(CircleTransform()))
                     .into(podcast_image)
 
             val playbackState = getMediaItemState(activity, item)

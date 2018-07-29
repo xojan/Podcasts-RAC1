@@ -6,7 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import cat.xojan.random1.R
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.section_item.*
 import java.util.*
@@ -42,11 +43,12 @@ class SectionListAdapter(private val activity: BrowseActivity)
             }
             val section = item.description
             section_title.text = section.title
-            Picasso.with(itemView.context)
+            Glide.with(itemView.context)
                     .load(section.iconUri.toString() + "?w=" + getWeekOfTheYear())
-                    .resize(200, 200)
-                    .transform(CircleTransform())
-                    .placeholder(R.drawable.placeholder)
+                    .apply(RequestOptions()
+                            .override(200, 200)
+                            .transform(CircleTransform())
+                            .placeholder(R.drawable.placeholder))
                     .into(section_image)
         }
 

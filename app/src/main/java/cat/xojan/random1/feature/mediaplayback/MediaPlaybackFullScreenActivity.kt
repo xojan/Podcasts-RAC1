@@ -23,7 +23,8 @@ import cat.xojan.random1.feature.mediaplayback.PlaybackManager.Companion.SLEEP_T
 import cat.xojan.random1.feature.mediaplayback.QueueManager.Companion.METADATA_HAS_NEXT_OR_PREVIOUS
 import cat.xojan.random1.injection.component.DaggerMediaPlaybackFullScreenComponent
 import cat.xojan.random1.injection.component.MediaPlaybackFullScreenComponent
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.activity_media_playback.*
 import javax.inject.Inject
 
@@ -176,9 +177,9 @@ class MediaPlaybackFullScreenActivity : MediaPlayerBaseActivity(),
         metadata?.let {
             title = metadata.description.title
 
-            Picasso.with(this)
+            Glide.with(this)
                     .load(metadata.description?.iconUri)
-                    .placeholder(R.drawable.placeholder)
+                    .apply(RequestOptions().placeholder(R.drawable.placeholder))
                     .into(podcast_art)
 
             if (metadata.getLong(METADATA_HAS_NEXT_OR_PREVIOUS) == 1L) {

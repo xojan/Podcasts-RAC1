@@ -9,8 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.RemoteException
 import android.support.annotation.RequiresApi
@@ -24,8 +22,9 @@ import cat.xojan.random1.R
 import cat.xojan.random1.feature.mediaplayback.MediaPlaybackFullScreenActivity
 import cat.xojan.random1.feature.mediaplayback.MediaPlaybackService
 import cat.xojan.random1.feature.mediaplayback.QueueManager.Companion.METADATA_HAS_NEXT_OR_PREVIOUS
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 
 class NotificationManager(private val service: MediaPlaybackService): BroadcastReceiver() {
 
@@ -201,26 +200,16 @@ class NotificationManager(private val service: MediaPlaybackService): BroadcastR
                 .setContentText(description?.title)
 
         setNotificationPlaybackState(notificationBuilder)
-
-        val placeholder = BitmapFactory.decodeResource(service.resources, R.drawable.placeholder)
-        Picasso.with(service)
+        
+        Glide.with(service)
+                .asBitmap()
                 .load(description?.iconUri)
-                .into(object: Target {
-                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                    }
-
-                    override fun onBitmapFailed(errorDrawable: Drawable?) {
-                        notificationBuilder.setLargeIcon(placeholder)
+                .into(object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        notificationBuilder.setLargeIcon(resource)
                         setNotificationPlaybackState(notificationBuilder)
                         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
                     }
-
-                    override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                        notificationBuilder.setLargeIcon(bitmap)
-                        setNotificationPlaybackState(notificationBuilder)
-                        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
-                    }
-
                 })
 
         return notificationBuilder.build()

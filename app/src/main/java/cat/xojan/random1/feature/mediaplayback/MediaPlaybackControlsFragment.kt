@@ -11,7 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import cat.xojan.random1.R
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.fragment_playback_controls.*
 import java.util.*
 
@@ -75,9 +76,9 @@ class MediaPlaybackControlsFragment : Fragment() {
         }
         title.text = metadata.description.title
 
-        Picasso.with(activity)
+        Glide.with(this)
                 .load(metadata.description.iconUri.toString() + "?w=" + getWeekOfTheYear())
-                .placeholder(R.drawable.placeholder)
+                .apply(RequestOptions().placeholder(R.drawable.placeholder))
                 .into(playback_icon)
     }
 

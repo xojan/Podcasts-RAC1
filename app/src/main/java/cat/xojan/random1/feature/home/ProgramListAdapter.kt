@@ -7,7 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import cat.xojan.random1.R
 import cat.xojan.random1.feature.browser.BrowseActivity
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.program_item.*
 import java.util.*
@@ -42,9 +43,10 @@ class ProgramListAdapter: RecyclerView.Adapter<ProgramListAdapter.MediaItemViewH
             }
             val description = item.description
             programTitle.text = description.title
-            Picasso.with(itemView.context)
+            Glide.with(itemView.context)
                     .load(description.iconUri.toString() + "?w=" + getWeekOfTheYear())
-                    .placeholder(R.drawable.placeholder)
+                    .apply(RequestOptions()
+                            .placeholder(R.drawable.placeholder))
                     .into(programImage)
         }
 

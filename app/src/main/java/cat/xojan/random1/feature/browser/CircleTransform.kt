@@ -1,18 +1,25 @@
 package cat.xojan.random1.feature.browser
 
 import android.graphics.*
-import com.squareup.picasso.Transformation
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import java.security.MessageDigest
 
-class CircleTransform : Transformation {
-    override fun transform(source: Bitmap): Bitmap {
-        val size = Math.min(source.width, source.height)
+class CircleTransform : BitmapTransformation() {
 
-        val squaredBitmap = Bitmap.createBitmap(source, 0, 0, size, size)
-        if (squaredBitmap != source) {
-            source.recycle()
+    override fun updateDiskCacheKey(messageDigest: MessageDigest) {
+        messageDigest.update("circle".toByteArray())
+    }
+
+    override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap {
+        val size = Math.min(toTransform.width, toTransform.height)
+
+        val squaredBitmap = Bitmap.createBitmap(toTransform, 0, 0, size, size)
+        if (squaredBitmap != toTransform) {
+            toTransform.recycle()
         }
 
-        val bitmap = Bitmap.createBitmap(size, size, source.config)
+        val bitmap = Bitmap.createBitmap(size, size, toTransform.config)
 
         val canvas = Canvas(bitmap)
         val paint = Paint()
@@ -25,9 +32,5 @@ class CircleTransform : Transformation {
 
         squaredBitmap.recycle()
         return bitmap
-    }
-
-    override fun key(): String {
-        return "circle"
     }
 }
