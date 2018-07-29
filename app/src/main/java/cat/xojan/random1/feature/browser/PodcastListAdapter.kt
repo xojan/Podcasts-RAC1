@@ -136,7 +136,7 @@ class PodcastListAdapter(private val viewModel: BrowserViewModel,
                     .load(podcast.iconUri.toString() + "?w=" + getWeekOfTheYear())
                     .apply(RequestOptions()
                             .placeholder(R.drawable.placeholder)
-                            .transform(CircleTransform()))
+                            .circleCrop())
                     .into(podcast_image)
 
             val playbackState = getMediaItemState(activity, item)
