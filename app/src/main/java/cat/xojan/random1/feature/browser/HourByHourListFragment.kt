@@ -8,11 +8,11 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.recyclerview.widget.LinearLayoutManager
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.model.CrashReporter
 import cat.xojan.random1.feature.BaseFragment

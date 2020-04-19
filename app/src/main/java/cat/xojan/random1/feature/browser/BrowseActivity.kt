@@ -3,8 +3,8 @@ package cat.xojan.random1.feature.browser
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.media.MediaBrowserCompat
+import androidx.fragment.app.Fragment
 import cat.xojan.random1.R
 import cat.xojan.random1.feature.MediaPlayerBaseActivity
 import cat.xojan.random1.injection.HasComponent

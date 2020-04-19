@@ -11,13 +11,13 @@ import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.RemoteException
-import android.support.annotation.RequiresApi
-import android.support.v4.app.NotificationCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import cat.xojan.random1.R
 import cat.xojan.random1.feature.mediaplayback.MediaPlaybackFullScreenActivity
 import cat.xojan.random1.feature.mediaplayback.MediaPlaybackService
@@ -177,7 +177,7 @@ class NotificationManager(private val service: MediaPlaybackService): BroadcastR
         val notificationBuilder = NotificationCompat.Builder(service, CHANNEL_ID)
         addActions(notificationBuilder)
 
-        val style = android.support.v4.media.app.NotificationCompat.MediaStyle()
+        val style = androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowCancelButton(true)
                 .setCancelButtonIntent(stopIntent)
                 .setMediaSession(sessionToken)

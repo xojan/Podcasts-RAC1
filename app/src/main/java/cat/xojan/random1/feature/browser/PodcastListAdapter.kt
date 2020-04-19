@@ -5,10 +5,10 @@ import android.graphics.drawable.Animatable
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_FILE_PATH
 import cat.xojan.random1.domain.model.Podcast.Companion.PODCAST_STATE

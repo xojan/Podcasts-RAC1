@@ -1,61 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/container_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/fragment_playback_controls"
         android:fitsSystemWindows="true"
-        tools:context=".feature.home.HomeActivity"
-        android:layout_above="@+id/fragment_playback_controls">
+        tools:context=".feature.home.HomeActivity">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/appbar_padding_top"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            </android.support.v7.widget.Toolbar>
-
-            <android.support.design.widget.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabGravity="fill"
                 app:tabMode="fixed" />
 
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/fragment_playback_controls"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <fragment
-        android:name="cat.xojan.random1.feature.mediaplayback.MediaPlaybackControlsFragment"
         android:id="@+id/fragment_playback_controls"
-        android:layout_alignParentBottom="true"
+        android:name="cat.xojan.random1.feature.mediaplayback.MediaPlaybackControlsFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout="@layout/fragment_playback_controls"/>
+        android:layout_alignParentBottom="true"
+        tools:layout="@layout/fragment_playback_controls" />
 
 </RelativeLayout>

@@ -1,8 +1,8 @@
 package cat.xojan.random1.feature
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import cat.xojan.random1.Application
 import cat.xojan.random1.R
 import cat.xojan.random1.injection.component.AppComponent

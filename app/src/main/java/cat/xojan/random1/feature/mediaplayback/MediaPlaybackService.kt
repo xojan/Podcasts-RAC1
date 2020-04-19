@@ -7,12 +7,12 @@ import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import androidx.media.MediaBrowserServiceCompat
+import androidx.media.session.MediaButtonReceiver
 import cat.xojan.random1.Application
 import cat.xojan.random1.domain.model.CrashReporter
 import cat.xojan.random1.domain.model.EventLogger

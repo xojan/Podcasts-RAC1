@@ -3,9 +3,9 @@ package cat.xojan.random1.feature.browser
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.*
+import androidx.recyclerview.widget.LinearLayoutManager
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.model.CrashReporter
 import cat.xojan.random1.feature.BaseFragment

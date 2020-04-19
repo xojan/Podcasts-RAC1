@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.ContentFrameLayout
+    <FrameLayout
         android:id="@+id/container_fragment"
         android:layout_height="match_parent"
         android:layout_width="match_parent"

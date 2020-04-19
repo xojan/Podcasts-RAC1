@@ -9,6 +9,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import androidx.fragment.app.Fragment
 import cat.xojan.random1.R
 import cat.xojan.random1.feature.mediaplayback.MediaPlaybackControlsFragment
 import cat.xojan.random1.feature.mediaplayback.MediaPlaybackService
@@ -61,7 +62,8 @@ abstract class MediaPlayerBaseActivity : BaseActivity(), MediaBrowserProvider {
             controlsFragment = supportFragmentManager
                     .findFragmentById(R.id.fragment_playback_controls)
                     as MediaPlaybackControlsFragment
-        } catch (t:Throwable) {}
+        } catch (t: Throwable) {
+        }
         hidePlaybackControls()
 
         mMediaBrowser.connect()
@@ -97,7 +99,7 @@ abstract class MediaPlayerBaseActivity : BaseActivity(), MediaBrowserProvider {
     private fun hidePlaybackControls() {
         controlsFragment?.let {
             supportFragmentManager.beginTransaction()
-                    .hide(controlsFragment as MediaPlaybackControlsFragment)
+                    .hide(controlsFragment as Fragment)
                     .commit()
         }
     }
@@ -119,7 +121,7 @@ abstract class MediaPlayerBaseActivity : BaseActivity(), MediaBrowserProvider {
     private fun showPlaybackControls() {
         controlsFragment?.let {
             supportFragmentManager.beginTransaction()
-                    .show(controlsFragment as MediaPlaybackControlsFragment)
+                    .show(controlsFragment as Fragment)
                     .commitAllowingStateLoss()
         }
     }

@@ -3,11 +3,12 @@ package cat.xojan.random1.feature.home
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.PagerAdapter
 import cat.xojan.random1.R
 import cat.xojan.random1.domain.model.CrashReporter
 import cat.xojan.random1.feature.MediaPlayerBaseActivity
@@ -75,7 +76,7 @@ class HomeActivity : MediaPlayerBaseActivity(), HasComponent<HomeComponent> {
         pageAdapter.addFragment(programFragment!!)
         pageAdapter.addFragment(downloadsFragment!!)
 
-        viewPager.adapter = pageAdapter
+        viewPager.adapter = pageAdapter as PagerAdapter
         tabLayout.setupWithViewPager(viewPager)
     }
 

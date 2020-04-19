@@ -1,6 +1,6 @@
 package cat.xojan.random1
 
-import android.support.multidex.MultiDexApplication
+import androidx.multidex.MultiDexApplication
 import cat.xojan.random1.injection.component.AppComponent
 import cat.xojan.random1.injection.component.DaggerAppComponent
 import cat.xojan.random1.injection.module.AppModule

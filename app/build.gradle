@@ -3,7 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
-apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     compileSdkVersion compileSdk
@@ -46,14 +45,14 @@ android {
     productFlavors {
         rac1 {
             applicationId "cat.xojan.random1"
-            versionCode 39
-            versionName "3.3.1"
+            versionCode 40
+            versionName "3.4.0"
             buildConfigField "String", "BASE_URL", "\"http://api.audioteca.rac1.cat/api/app/\""
         }
         catradio {
             applicationId "cat.xojan.randomcat"
             versionCode 3
-            versionName "0.2.1"
+            versionName "0.3.0"
             buildConfigField "String", "BASE_URL", "\"http://api.ccma.cat/\""
         }
     }
@@ -108,7 +107,7 @@ dependencies {
     testImplementation 'org.apache.directory.studio:org.apache.commons.io:2.4'
 
     // Crashlytics
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     // Dagger 2
     kapt "com.google.dagger:dagger-compiler:$dagger"
@@ -120,7 +119,6 @@ dependencies {
 
     // Firebase
     implementation "com.google.firebase:firebase-core:$firebase"
-    implementation 'com.google.firebase:firebase-perf:16.2.4'
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.7.1'

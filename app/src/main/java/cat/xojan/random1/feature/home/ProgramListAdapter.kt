@@ -1,10 +1,10 @@
 package cat.xojan.random1.feature.home
 
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import cat.xojan.random1.R
 import cat.xojan.random1.feature.browser.BrowseActivity
 import com.bumptech.glide.Glide

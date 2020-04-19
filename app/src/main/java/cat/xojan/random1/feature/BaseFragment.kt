@@ -1,7 +1,7 @@
 package cat.xojan.random1.feature
 
-import android.support.v4.app.Fragment
 import android.support.v4.media.MediaBrowserCompat
+import androidx.fragment.app.Fragment
 import cat.xojan.random1.feature.mediaplayback.MediaProvider.Companion.ERROR
 import cat.xojan.random1.injection.HasComponent
 
