@@ -9,40 +9,33 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import cat.xojan.random1.domain.model.CrashReporter
 import cat.xojan.random1.domain.model.EventLogger
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import okhttp3.OkHttpClient
 import java.io.File
 
-
-class Player(private val appContext: Context,
+class Player(appContext: Context,
              private val listener: PlayerListener,
              private val audioManager: AudioManager,
              private val eventLogger: EventLogger,
              private val crashReporter: CrashReporter) : AudioManager.OnAudioFocusChangeListener {
 
     private val TAG = Player::class.simpleName
+    private val USER_AGENT = "exoplayer-random1"
 
-    private val exoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(
-            DefaultRenderersFactory(appContext),
-            DefaultTrackSelector(),
-            DefaultLoadControl()
-    )
+    private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(appContext).build();
 
-    private val remoteDataSource = ExtractorMediaSource.Factory(
-            OkHttpDataSourceFactory(OkHttpClient(),
-                    "exoplayer-random1",
-                    null))
-    private val localDataSource = ExtractorMediaSource.Factory(
-            DefaultDataSourceFactory(
-                    appContext,
-                    "exoplayer-random1"))
+    private val remoteSourceFactory = OkHttpDataSourceFactory(OkHttpClient(), USER_AGENT)
+    private val remoteMediaSourceFactory: ProgressiveMediaSource.Factory =
+            ProgressiveMediaSource.Factory(remoteSourceFactory)
+
+    private val localSourceFactory = DefaultDataSourceFactory(appContext, USER_AGENT)
+    private val localMediaSourceFactory: ProgressiveMediaSource.Factory =
+            ProgressiveMediaSource.Factory(localSourceFactory)
 
     private var countDownTimer: CountDownTimer? = null
     private var timerMilliseconds: Long = 0L
@@ -50,16 +43,10 @@ class Player(private val appContext: Context,
 
 
     init {
-
-        exoPlayer.addListener(object: com.google.android.exoplayer2.Player.EventListener {
-            override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {}
-
+        exoPlayer.addListener(object : com.google.android.exoplayer2.Player.EventListener {
             override fun onSeekProcessed() {}
 
-            override fun onTracksChanged(trackGroups: TrackGroupArray?,
-                                         trackSelections: TrackSelectionArray?) {}
-
-            override fun onPlayerError(error: ExoPlaybackException?) {
+            override fun onPlayerError(error: ExoPlaybackException) {
                 crashReporter.logException(error.toString())
             }
 
@@ -71,8 +58,6 @@ class Player(private val appContext: Context,
 
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
 
-            override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {}
-
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 when (playbackState) {
                     com.google.android.exoplayer2.Player.STATE_BUFFERING ->
@@ -80,7 +65,7 @@ class Player(private val appContext: Context,
                     com.google.android.exoplayer2.Player.STATE_READY -> {
                         notifyListener()
                     }
-                    com.google.android.exoplayer2.Player.STATE_ENDED  ->
+                    com.google.android.exoplayer2.Player.STATE_ENDED ->
                         listener.onCompletion()
                 }
             }
@@ -120,9 +105,9 @@ class Player(private val appContext: Context,
 
     private fun buildMediaSource(path: String): MediaSource {
         return if (path.contains("http")) {
-            remoteDataSource.createMediaSource(Uri.parse(path))
+            remoteMediaSourceFactory.createMediaSource(Uri.parse(path))
         } else {
-            localDataSource.createMediaSource(Uri.fromFile(File(path)))
+            localMediaSourceFactory.createMediaSource(Uri.fromFile(File(path)))
         }
     }
 
@@ -188,7 +173,7 @@ class Player(private val appContext: Context,
             if (milliseconds == 0L) {
                 countDownTimer?.cancel()
             } else {
-                countDownTimer = object: CountDownTimer(milliseconds, 1000) {
+                countDownTimer = object : CountDownTimer(milliseconds, 1000) {
                     override fun onTick(millisUntilFinished: Long) {}
 
                     override fun onFinish() {

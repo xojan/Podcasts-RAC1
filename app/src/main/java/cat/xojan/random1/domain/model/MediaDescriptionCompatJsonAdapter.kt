@@ -23,7 +23,7 @@ class MediaDescriptionCompatJsonAdapter {
                 item.title.toString(),
                 item.mediaUri.toString(),
                 item.iconUri.toString(),
-                PodcastState.fromString(item.extras!!.getString(PODCAST_STATE)),
+                PodcastState.fromString(item.extras?.getString(PODCAST_STATE)!!),
                 item.extras?.getLong(PODCAST_DOWNLOAD_REFERENCE),
                 item.extras?.getString(PODCAST_FILE_PATH),
                 item.extras?.getString(PODCAST_PROGRAM_ID),
